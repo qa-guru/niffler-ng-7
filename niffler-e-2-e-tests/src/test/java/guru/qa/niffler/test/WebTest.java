@@ -71,5 +71,6 @@ public class WebTest {
                 .acceptDelButtonClick()
                 .searchSpend(spendingJson.description())
                 .resultTableShouldBeNotVisibleCheck();
+
     }
 }
