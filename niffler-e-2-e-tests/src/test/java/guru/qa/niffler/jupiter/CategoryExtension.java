@@ -12,11 +12,13 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
 
     private final SpendApiClient spendApiClient = new SpendApiClient();
 
+    private final Faker faker = new Faker();
+
     @Override
     public void beforeEach(ExtensionContext context) {
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), Category.class)
                 .ifPresent(anno -> {
-                    Faker faker = new Faker();
+
                     CategoryJson categoryJson = new CategoryJson(
                             null,
                             faker.lordOfTheRings().character(),

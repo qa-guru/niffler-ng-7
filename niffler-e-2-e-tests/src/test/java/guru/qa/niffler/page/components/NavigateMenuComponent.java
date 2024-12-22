@@ -6,13 +6,13 @@ import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Selenide.$;
 
-public class NavigateMenu {
+public class NavigateMenuComponent {
     private final SelenideElement
             accountMenuButton = $(".css-1obba8g"),
             profileButton = $(".css-z5w4ww");
 
     @Step("Нажатие на меню аккаунта ")
-    public NavigateMenu clickAccountMenuButton() {
+    public NavigateMenuComponent clickAccountMenuButton() {
         accountMenuButton.click();
         return this;
     }

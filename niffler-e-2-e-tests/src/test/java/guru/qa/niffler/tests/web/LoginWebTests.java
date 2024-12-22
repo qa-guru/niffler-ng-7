@@ -1,6 +1,5 @@
 package guru.qa.niffler.tests.web;
 
-import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.jupiter.BrowserExtension;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +21,8 @@ public class LoginWebTests {
     @DisplayName("Отображение главной страницы после успешной авторизации")
     @Test
     void mainPageShouldBeDisplayedAfterSuccessLogin() {
-        Selenide.open("http://127.0.0.1:9000/login", LoginPage.class)
+        new LoginPage()
+                .open()
                 .login(userName, password);
         $(".css-giaux5").shouldBe(visible)
                 .shouldHave(text("Statistics"));
@@ -33,7 +33,8 @@ public class LoginWebTests {
     @DisplayName("Пользователь должен остаться на странице авторизации после авторизации с некорректными кредами")
     @Test
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
-        Selenide.open("http://127.0.0.1:9000/login", LoginPage.class)
+        new LoginPage()
+                .open()
                 .login(userName, "54321");
         $(".header").shouldBe(visible)
                 .shouldHave(text("Log in"));

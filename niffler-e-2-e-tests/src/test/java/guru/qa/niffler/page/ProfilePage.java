@@ -12,10 +12,10 @@ import static com.codeborne.selenide.Selenide.$$;
 
 public class ProfilePage {
     private final SelenideElement
-            uploadNewPictureButton = $(".css-1f8fote"),
-            nameInput = $("input[id='name']"),
-            saveChangesButton = $("button[id=':r9:']"),
-            categoryInput = $("input[id='category']"),
+            uploadNewPictureButton = $("input#image__input"),
+            nameInput = $("input#name"),
+            saveChangesButton = $("button#:r9:"),
+            categoryInput = $("input#category"),
             showArchivedCheckbox = $("input[type='checkbox']");
 
     @Step("Загрузка изображения <file> на странице профиля")

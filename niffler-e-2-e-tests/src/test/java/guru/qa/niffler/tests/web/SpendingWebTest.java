@@ -1,6 +1,5 @@
 package guru.qa.niffler.tests.web;
 
-import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.jupiter.BrowserExtension;
 import guru.qa.niffler.jupiter.Spending;
 import guru.qa.niffler.model.SpendJson;
@@ -23,7 +22,8 @@ public class SpendingWebTest {
     void categoryDescriptionShouldBeChangedFromTable(SpendJson spend) {
         final String newDescription = "Обучение Niffler Next Generation";
 
-        Selenide.open("http://127.0.0.1:9000/login", LoginPage.class)
+        new LoginPage()
+                .open()
                 .login("Artur", "12345")
                 .editSpending(spend.description())
                 .setDescription(newDescription)
