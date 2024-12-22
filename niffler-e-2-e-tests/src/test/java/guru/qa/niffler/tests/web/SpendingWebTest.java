@@ -11,7 +11,7 @@ public class SpendingWebTest {
 
 
     @Spending(
-            username = "stas",
+            username = "Artur",
             category = "Обучение",
             description = "Обучение Advanced 2.0",
             amount = 79990
@@ -21,7 +21,7 @@ public class SpendingWebTest {
         final String newDescription = "Обучение Niffler Next Generation";
 
         Selenide.open("http://127.0.0.1:9000/login", LoginPage.class)
-                .login("stas", "12345")
+                .login("Artur", "12345")
                 .editSpending(spend.description())
                 .setDescription(newDescription)
                 .save();
