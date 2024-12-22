@@ -14,7 +14,8 @@ public class RegisterPage {
             submitPasswordInput = $("input[id='passwordSubmit']"),
             submitRegistrationButton = $("button[type='submit']"),
             formParagraphSuccess = $(".form__paragraph_success"),
-            signInButton = $(".form_sign-in");
+            signInButton = $(".form_sign-in"),
+            errorMessage = $(".form__error");
 
     @Step("Открытие страницы регистрации")
     public RegisterPage open() {
@@ -49,5 +50,15 @@ public class RegisterPage {
     @Step("Проверка успешной регистрации")
     public void checkSuccessfulRegistration(String text) {
         formParagraphSuccess.shouldBe(text(text));
+    }
+
+    @Step("Проверка успешной регистрации")
+    public void checkUnsuccessfulRegistrationWithExistUserName(String text) {
+        errorMessage.shouldBe(text(text));
+    }
+
+    @Step("Проверка успешной регистрации")
+    public void checkUnsuccessfulRegistrationIfPasswordAndConfirmPasswordAreNotEqual(String text) {
+        errorMessage.shouldBe(text(text));
     }
 }
