@@ -11,6 +11,7 @@ import static com.codeborne.selenide.Configuration.*;
 public class BaseTest {
 
     private static void setLocalDriver() {
+        timeout = 30000;
         browser = "chrome";
         browserSize = "1920x1080";
         headless = false;
