@@ -6,9 +6,12 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
+import jupiter.BrowserExtension;
 import jupiter.Spend;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(BrowserExtension.class)
 public class SpendingWebTest {
 
     private static final Config CFG = Config.getInstance();
