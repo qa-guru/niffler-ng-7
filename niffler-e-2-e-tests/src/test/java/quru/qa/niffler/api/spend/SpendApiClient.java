@@ -1,12 +1,17 @@
-package quru.qa.niffler.api;
+package quru.qa.niffler.api.spend;
 
 
-import lombok.SneakyThrows;
 import okhttp3.OkHttpClient;
+import org.apache.hc.core5.http.HttpStatus;
 import quru.qa.niffler.config.Config;
 import quru.qa.niffler.model.SpendJson;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SpendApiClient {
 
@@ -20,10 +25,15 @@ public class SpendApiClient {
 
     private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
-    @SneakyThrows
     public SpendJson createSpend(SpendJson spend) {
-        return spendApi.addSpend(spend)
-                .execute()
-                .body();
+        final Response<SpendJson> response;
+        try {
+            response = spendApi.addSpend(spend)
+                    .execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(HttpStatus.SC_CREATED, response.code());
+        return response.body();
     }
 }

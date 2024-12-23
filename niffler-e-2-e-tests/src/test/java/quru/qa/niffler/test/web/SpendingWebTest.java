@@ -2,14 +2,15 @@ package quru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import quru.qa.niffler.config.Config;
-import quru.qa.niffler.jupiter.Spending;
+import quru.qa.niffler.jupiter.BrowserExtension;
+import quru.qa.niffler.jupiter.spend.Spending;
 import quru.qa.niffler.model.SpendJson;
 import quru.qa.niffler.page.LoginPage;
 import quru.qa.niffler.page.MainPage;
 
-import static com.codeborne.selenide.Selenide.sleep;
-
+@ExtendWith(BrowserExtension.class)
 public class SpendingWebTest {
 
     private static final Config CFG = Config.getInstance();
@@ -29,8 +30,6 @@ public class SpendingWebTest {
                 .editSpending(spend.description())
                 .setNewSpendingDescription(newDescription)
                 .save();
-
-        sleep(5000);
 
         new MainPage().checkThatTableContainsSpending(newDescription);
     }
