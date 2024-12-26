@@ -1,7 +1,7 @@
 package guru.qa.niffler.tests.web;
 
 import com.github.javafaker.Faker;
-import guru.qa.niffler.jupiter.BrowserExtension;
+import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.page.RegisterPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
