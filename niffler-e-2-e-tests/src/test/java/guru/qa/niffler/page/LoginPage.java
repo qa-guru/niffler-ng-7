@@ -1,5 +1,6 @@
 package guru.qa.niffler.page;
 
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -16,5 +17,10 @@ public class LoginPage {
         submitButton.click();
 
         return new MainPage();
+    }
+
+    public LoginPage open(){
+        Selenide.open("http://127.0.0.1:9000/login");
+        return this;
     }
 }
