@@ -1,7 +1,10 @@
 package quru.qa.niffler.page;
 
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import quru.qa.niffler.config.Config;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,6 +16,8 @@ public class RegisterPage {
     private final SelenideElement submitButton = $("button[type='submit']");
     private final SelenideElement successText = $(".form__paragraph_success");
     private final SelenideElement errorText = $(".form__error");
+
+    private static final Config CFG = Config.getInstance();
 
     public RegisterPage setUsername(String username) {
         usernameInput.clear();
@@ -50,6 +55,15 @@ public class RegisterPage {
     public void shouldSeePasswordsShouldBeEqualErrorText() {
         errorText.should(visible);
         String expected = "Passwords should be equal";
-        assertEquals(expected, errorText.getText());
+        errorText.shouldHave(text(expected));
+    }
+
+    public static RegisterPage register(String username, String password, String passwordSubmit) {
+        return Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .openRegistrationPage()
+                .setUsername(username)
+                .setPassword(password)
+                .setPasswordSubmit(passwordSubmit)
+                .submitRegistration();
     }
 }

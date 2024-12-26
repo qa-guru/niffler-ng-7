@@ -2,9 +2,9 @@ package quru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LoginPage {
     private final SelenideElement usernameInput = $("input[name='username']");
@@ -29,6 +29,6 @@ public class LoginPage {
         errorText.should(visible);
 //        String expected = "Bad credentials";
         String expected = "Неверные учетные данные пользователя";
-        assertEquals(expected, errorText.text());
+        errorText.shouldHave(text(expected));
     }
 }

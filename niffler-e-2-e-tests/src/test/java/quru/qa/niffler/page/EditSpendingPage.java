@@ -25,12 +25,11 @@ public class EditSpendingPage {
     }
 
 
-    public void shouldSeeCategoryInCategoryList(String category, boolean archived) {
-        if (archived){
-            assertFalse(categoryList.stream().anyMatch(e -> e.text().equals(category)));
-        } else {
-            assertTrue(categoryList.stream().anyMatch(e -> e.text().equals(category)));
-        }
+    public void shouldNotSeeArchivedCategoryInCategoryList(String category) {
+        assertFalse(categoryList.stream().anyMatch(e -> e.text().equals(category)));
+    }
 
+    public void shouldSeeActiveCategoryInCategoryList(String category) {
+        assertTrue(categoryList.stream().anyMatch(e -> e.text().equals(category)));
     }
 }

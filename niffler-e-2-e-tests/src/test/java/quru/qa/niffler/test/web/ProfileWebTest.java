@@ -23,7 +23,7 @@ public class ProfileWebTest {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login("filkot", "12345")
                 .addNewSpending()
-                .shouldSeeCategoryInCategoryList(category.name(), category.archived());
+                .shouldNotSeeArchivedCategoryInCategoryList(category.name());
     }
 
     @Category(
@@ -35,6 +35,6 @@ public class ProfileWebTest {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login("filkot", "12345")
                 .addNewSpending()
-                .shouldSeeCategoryInCategoryList(category.name(), category.archived());
+                .shouldSeeActiveCategoryInCategoryList(category.name());
     }
 }
