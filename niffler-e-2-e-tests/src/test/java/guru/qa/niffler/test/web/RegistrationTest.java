@@ -32,7 +32,7 @@ public class RegistrationTest {
                 .checkThatSuccessMsgContains(SUCCESS_REGISTRATION_MSG_TEXT)
                 .openLoginPage()
                 .doLogin(username, pw)
-                .checkThatMainElementsAreDisplayed();
+                .checkIsLoaded();
     }
 
     @Test

@@ -21,7 +21,7 @@ public class LoginTest {
     public void mainPageShouldBeDisplayedAfterSuccessfulLogin() {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(USERNAME, PW)
-                .checkThatMainElementsAreDisplayed();
+                .checkIsLoaded();
     }
 
     @Test

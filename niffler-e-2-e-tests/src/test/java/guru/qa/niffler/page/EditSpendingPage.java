@@ -8,7 +8,7 @@ public class EditSpendingPage {
     private final SelenideElement descriptionInput = $("#description");
     private final SelenideElement submitBtn = $("#save");
 
-    public void editSpendingDescription(String description) {
+    public void setDescription(String description) {
         descriptionInput.clear();
         descriptionInput.setValue(description);
         submitBtn.click();

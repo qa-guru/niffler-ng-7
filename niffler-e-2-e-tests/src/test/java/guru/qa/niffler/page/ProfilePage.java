@@ -33,7 +33,7 @@ public class ProfilePage {
     private final SelenideElement popUpArchiveBtn = $(By.xpath("//button[text() = 'Archive']"));
     private final SelenideElement popUpUnArchiveBtn = $(By.xpath("//button[text() = 'Unarchive']"));
 
-    public ProfilePage profilePageIsOpened () {
+    public ProfilePage profilePageIsOpened() {
         profileHeader.shouldBe(visible);
         categoriesHeader.shouldBe(visible);
         return this;

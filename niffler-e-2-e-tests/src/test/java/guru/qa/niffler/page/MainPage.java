@@ -36,7 +36,7 @@ public class MainPage {
         tableRows.find(text(spendingDescription)).should(visible);
     }
 
-    public void checkThatMainElementsAreDisplayed() {
+    public void checkIsLoaded() {
         statisticsHeader.should(visible);
         statisticsImg.should(visible);
         legendBox.should(visible);
