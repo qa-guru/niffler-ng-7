@@ -13,6 +13,9 @@ public class MainPage {
   private final SelenideElement historyOfSpending = $("#spending");
   private final SelenideElement statistic = $("#stat");
   private final SelenideElement newSpendingLink = $(By.xpath("//a[@href = '/spending']"));
+  private final SelenideElement menuBtn = $("button[aria-label='Menu']");
+  private final SelenideElement friendsLink = $("a[href='/people/friends']");
+  private final SelenideElement allPeopleLink = $("a[href='/people/all']");
 
   public EditSpendingPage editSpending(String spendingDescription) {
     tableRows.find(text(spendingDescription)).$$("td").get(5).click();
@@ -22,6 +25,20 @@ public class MainPage {
   public EditSpendingPage addNewSpending(){
     newSpendingLink.click();
     return new EditSpendingPage();
+  }
+
+  public FriendsPage openFriendsPage(){
+    menuBtn.click();
+    friendsLink.should(visible);
+    friendsLink.click();
+    return new FriendsPage();
+  }
+
+  public AllPeoplePage openAllPeoplePage(){
+    menuBtn.click();
+    allPeopleLink.should(visible);
+    allPeopleLink.click();
+    return new AllPeoplePage();
   }
 
   public void checkThatTableContainsSpending(String spendingDescription) {

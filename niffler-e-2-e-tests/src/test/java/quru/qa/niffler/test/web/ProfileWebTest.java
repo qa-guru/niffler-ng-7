@@ -4,8 +4,8 @@ import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import quru.qa.niffler.config.Config;
-import quru.qa.niffler.jupiter.BrowserExtension;
-import quru.qa.niffler.jupiter.category.Category;
+import quru.qa.niffler.jupiter.annotation.Category;
+import quru.qa.niffler.jupiter.extension.BrowserExtension;
 import quru.qa.niffler.model.CategoryJson;
 import quru.qa.niffler.page.LoginPage;
 
