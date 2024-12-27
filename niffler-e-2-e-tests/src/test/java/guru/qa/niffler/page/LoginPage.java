@@ -15,4 +15,11 @@ public class LoginPage {
     submitButton.click();
     return new MainPage();
   }
+
+  public MainPage doLogin(String username, String password)  {
+    usernameInput.setValue(username);
+    passwordInput.setValue(password);
+    submitButton.click();
+    return new MainPage();
+  }
 }

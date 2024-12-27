@@ -4,9 +4,14 @@ import com.codeborne.selenide.ElementsCollection;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
+import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Selenide.$;
 
 public class MainPage {
+  //Toolbar
+  private final SelenideElement profileBtn = $("button div.MuiAvatar-root");
+  //Profile Menu
+  private final SelenideElement FriendsMenuItem = $("a[href='/people/friends']");
   private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
 
   public EditSpendingPage editSpending(String spendingDescription) {
@@ -16,5 +21,11 @@ public class MainPage {
 
   public void checkThatTableContainsSpending(String spendingDescription) {
     tableRows.find(text(spendingDescription)).should(visible);
+  }
+
+  public FriendsPage openFriendsPage() {
+    profileBtn.click();
+    FriendsMenuItem.click();
+    return new FriendsPage();
   }
 }
