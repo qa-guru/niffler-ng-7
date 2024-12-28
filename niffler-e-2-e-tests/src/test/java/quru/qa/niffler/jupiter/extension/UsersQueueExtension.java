@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.TimeUnit;
 
-import static quru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.*;
+import static quru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.EMPTY;
 
 public class UsersQueueExtension implements
         BeforeEachCallback,
@@ -57,30 +57,25 @@ public class UsersQueueExtension implements
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        Optional<UserType> userType = Arrays.stream(context.getRequiredTestMethod().getParameters())
+        Map<UserType, StaticUser> userMap = new HashMap<>();
+        List<UserType> list = Arrays.stream(context.getRequiredTestMethod().getParameters())
                 .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
-                .findFirst()
-                .map(p -> p.getAnnotation(UserType.class));
-
-        userType.ifPresent(ut -> {
-                    Optional<StaticUser> user = Optional.empty();
-                    StopWatch sw = StopWatch.createStarted();
-                    while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
-                        user = Optional.ofNullable(getQueueByUserType(ut.value()).poll());
-                    }
-                    Allure.getLifecycle().updateTestCase(
-                            testCase -> testCase.setStart(new Date().getTime()));
-                    user.ifPresentOrElse(
-                            u -> {
-                                Map<UserType, StaticUser> userMap = new HashMap<>();
-                                userMap.put(ut, u);
-                                context.getStore(NAMESPACE)
-                                        .put(context.getUniqueId(), userMap);
-                            },
-                            () -> new IllegalStateException("Can't find user after 30 sec")
-                    );
-                }
-        );
+                .map(p -> p.getAnnotation(UserType.class))
+                .toList();
+        for (UserType ut : list) {
+            Optional<StaticUser> user = Optional.empty();
+            StopWatch sw = StopWatch.createStarted();
+            while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 30) {
+                user = Optional.ofNullable(getQueueByUserType(ut.value()).poll());
+            }
+            Allure.getLifecycle().updateTestCase(
+                    testCase -> testCase.setStart(new Date().getTime()));
+            user.ifPresentOrElse(
+                    u -> userMap.put(ut, u),
+                    () -> new IllegalStateException("Can't find user after 30 sec")
+            );
+        }
+        context.getStore(NAMESPACE).put(context.getUniqueId(), userMap);
     }
 
     @Override
@@ -106,9 +101,9 @@ public class UsersQueueExtension implements
     }
 
     private Queue<StaticUser> getQueueByUserType(Type type) {
-         return switch (type) {
+        return switch (type) {
             case EMPTY -> EMPTY_USERS;
-            case WITH_FRIEND ->  WITH_FRIEND_USERS;
+            case WITH_FRIEND -> WITH_FRIEND_USERS;
             case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS;
             case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS;
         };
