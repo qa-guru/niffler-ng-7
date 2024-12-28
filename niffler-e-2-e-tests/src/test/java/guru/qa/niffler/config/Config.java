@@ -7,4 +7,8 @@ public interface Config {
         return LocalConfig.INSTANCE;
     }
     String frontUrl();
+
+    String spendUrl();
+
+    String ghUrl();
 }
