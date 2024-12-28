@@ -3,8 +3,13 @@ package guru.qa.niffler.api;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.SpendJson;
 import lombok.SneakyThrows;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SpendApiClient {
 
@@ -17,8 +22,13 @@ public class SpendApiClient {
 
   @SneakyThrows
   public SpendJson createSpend(SpendJson spend) {
-    return spendApi.addSpend(spend)
-        .execute()
-        .body();
+    final Response<SpendJson> response;
+    try {
+      response = spendApi.addSpend(spend).execute();
+    } catch (IOException e) {
+      throw new AssertionError(e.getMessage());
+    }
+    assertEquals(200, response.code());
+    return response.body();
   }
 }

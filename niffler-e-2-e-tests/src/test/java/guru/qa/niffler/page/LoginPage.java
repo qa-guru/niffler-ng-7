@@ -2,6 +2,7 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPage {
@@ -10,7 +11,7 @@ public class LoginPage {
   private final SelenideElement submitButton = $("button[type='submit']");
 
   public MainPage login(String username, String password) {
-    usernameInput.setValue(username);
+    usernameInput.shouldBe(visible).setValue(username);
     passwordInput.setValue(password);
     submitButton.click();
     return new MainPage();
