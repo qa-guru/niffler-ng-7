@@ -15,7 +15,7 @@ public class RegisterWebTest {
         String userName = DataUtils.generateNewUserName();
         String password = DataUtils.generatePassword();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .createNewAccount()
+                .clickOnRegisterButton()
                 .fillRegisterForm(userName, password, password)
                 .checkSuccsessRegister();
     }
@@ -25,11 +25,11 @@ public class RegisterWebTest {
         String userName = DataUtils.generateNewUserName();
         String password = DataUtils.generatePassword();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .createNewAccount()
+                .clickOnRegisterButton()
                 .fillRegisterForm(userName, password, password)
                 .checkSuccsessRegister();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .createNewAccount()
+                .clickOnRegisterButton()
                 .fillRegisterForm(userName, password, password)
                 .checkErrorRegisterMessage(String.format("Username `%s` already exists", userName));
     }
@@ -40,7 +40,7 @@ public class RegisterWebTest {
         String password = DataUtils.generatePassword();
         String submitPassword = DataUtils.generatePassword();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .createNewAccount()
+                .clickOnRegisterButton()
                 .fillRegisterForm(userName, password, submitPassword)
                 .checkErrorRegisterMessage("Passwords should be equal");
     }

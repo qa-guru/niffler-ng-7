@@ -15,7 +15,7 @@ public class LoginTest {
         String password = "123";
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(userName, password)
-                .checkSuccessLogin();
+                .checkIsLoaded();
     }
 
     @Test

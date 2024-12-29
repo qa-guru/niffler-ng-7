@@ -17,7 +17,7 @@ public class MainPage {
     private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
 
 
-    public MainPage checkSuccessLogin() {
+    public MainPage checkIsLoaded() {
         historyOfSpendingsText.shouldHave(text("History of Spendings"));
         return this;
     }
@@ -37,5 +37,4 @@ public class MainPage {
     public void checkThatTableContainsSpending(String spendingDescription) {
         tableRows.find(text(spendingDescription)).should(visible);
     }
-
 }

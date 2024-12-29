@@ -14,7 +14,7 @@ public class LoginPage {
             formRegisterButton = $(".form__register"),
             errorForm = $(".form__error");
 
-    public RegisterPage createNewAccount() {
+    public RegisterPage clickOnRegisterButton() {
         formRegisterButton.click();
         return new RegisterPage();
     }

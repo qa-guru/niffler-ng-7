@@ -32,7 +32,8 @@ public interface SpendApi {
                                   @Query("to") String to);
 
   @DELETE("internal/spends/remove")
-  Call<Void> removeSpends(@Query("username") String username, @Query("ids") List<String> ids);
+  Call<Void> removeSpends(@Query("username") String username,
+                          @Query("ids") List<String> ids);
 
   @POST("internal/categories/add")
   Call<CategoryJson> addCategory(@Body CategoryJson category);
