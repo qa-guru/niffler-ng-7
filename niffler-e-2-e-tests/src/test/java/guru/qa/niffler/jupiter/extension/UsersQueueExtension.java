@@ -23,9 +23,7 @@ public class UsersQueueExtension implements
         ParameterResolver {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UsersQueueExtension.class);
 
-    public record StaticUser(String username, String password,
-                             boolean empty) implements guru.qa.niffler.jupiter.extension.StaticUser {
-    }
+    public record StaticUser(String username, String password, boolean empty){ }
 
     private static final Queue<StaticUser> EMPTY_USERS = new ConcurrentLinkedQueue<>();
     private static final Queue<StaticUser> NOT_EMPTY_USERS = new ConcurrentLinkedQueue<>();
