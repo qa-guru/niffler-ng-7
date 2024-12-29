@@ -12,10 +12,13 @@ public class MainPage {
     private final SelenideElement
             historyOfSpendingsText = $("#spendings h2"),
             avatarIcon = $(".MuiAvatar-root"),
-            profileLink = $x("//a[@href='/profile']"),
-            uplpadPickButoon = $x("//label[@for='image__input']");
+            uploadPickButton = $x("//label[@for='image__input']"),
+            placeholder = $("input[placeholder]");
     private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
 
+    private static SelenideElement getMenuElement(String hrefValue){
+        return $x(String.format("//a[@href='/%s']", hrefValue));
+    }
 
     public MainPage checkIsLoaded() {
         historyOfSpendingsText.shouldHave(text("History of Spendings"));
@@ -24,17 +27,31 @@ public class MainPage {
 
     public UserProfilePage openProfilePage() {
         avatarIcon.click();
-        profileLink.click();
-        uplpadPickButoon.shouldBe(visible);
+        getMenuElement("profile").click();
+        uploadPickButton.shouldBe(visible);
         return new UserProfilePage();
     }
 
     public EditSpendingPage editSpending(String spendingDescription) {
-        tableRows.find(text(spendingDescription)).$$("td").get(5).click();
+        tableRows.find(text(spendingDescription)).$$("td") .get(5).click();
         return new EditSpendingPage();
     }
 
     public void checkThatTableContainsSpending(String spendingDescription) {
         tableRows.find(text(spendingDescription)).should(visible);
+    }
+
+    public FriendsPage openFriendsPage() {
+        avatarIcon.click();
+        getMenuElement("people/friends").click();
+        placeholder.shouldBe(visible);
+        return new FriendsPage();
+    }
+
+    public PeoplesPage openAllPeoplesPage() {
+        avatarIcon.click();
+        getMenuElement("people/all").click();
+        placeholder.shouldBe(visible);
+        return new PeoplesPage();
     }
 }
