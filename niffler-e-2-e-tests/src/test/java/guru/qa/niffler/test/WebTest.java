@@ -1,16 +1,16 @@
 package guru.qa.niffler.test;
 
+import guru.qa.niffler.data.FriendsPageData;
 import guru.qa.niffler.data.LoginPageData;
 import guru.qa.niffler.data.UserData;
 import guru.qa.niffler.helpers.dataGeneration.FioGeneration;
 import guru.qa.niffler.helpers.dataGeneration.NewAccountDataGeneration;
 import guru.qa.niffler.helpers.jupiter.annotation.Category;
+import guru.qa.niffler.helpers.jupiter.annotation.UserType;
 import guru.qa.niffler.helpers.jupiter.extension.BrowserExtension;
+import guru.qa.niffler.helpers.jupiter.extension.UserQueueExtension;
 import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.page.EditSpendingPage;
-import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.page.ProfilePage;
+import guru.qa.niffler.page.*;
 import io.qameta.allure.Owner;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
@@ -29,6 +29,7 @@ public class WebTest {
     EditSpendingPage editSpendingPage = new EditSpendingPage();
     NewAccountDataGeneration newAccountDataGeneration = new NewAccountDataGeneration();
     ProfilePage profilePage = new ProfilePage();
+    FriendsPage friendsPage = new FriendsPage();
 
 //    @CreatingSpend(
 //            spendName = "stady",
@@ -166,7 +167,7 @@ public class WebTest {
     @DisplayName("Проверка отображения активной категории")
     @Owner("Казанцев Иван")
     @Severity(SeverityLevel.CRITICAL)
-    void archiveCategoryMustBeVisible(@NotNull CategoryJson categoryJson){
+    void archiveCategoryMustBeVisible(@NotNull CategoryJson categoryJson) {
         loginPage.openAuthorizationPage(new LoginPageData().getUrl())
                 .setUserName(new UserData().getLogin())
                 .setPassword(new UserData().getPassword())
@@ -185,7 +186,7 @@ public class WebTest {
     @DisplayName("Проверка отображения архивной категории")
     @Owner("Казанцев Иван")
     @Severity(SeverityLevel.CRITICAL)
-    void archiveCategoryMustBeNotVisible(@NotNull CategoryJson categoryJson){
+    void archiveCategoryMustBeNotVisible(@NotNull CategoryJson categoryJson) {
         loginPage.openAuthorizationPage(new LoginPageData().getUrl())
                 .setUserName(new UserData().getLogin())
                 .setPassword(new UserData().getPassword())
@@ -194,5 +195,62 @@ public class WebTest {
         profilePage.archivedCategoryDoNotVisibleInActiveCategoryTableCheck(categoryJson.name())
                 .showArchivedToggleSwitchClick()
                 .activeCategoryVisibleCheck(categoryJson.name());
+    }
+
+    @Test
+    @DisplayName("Проверка таблицы друзей когда друзей нет")
+    @Owner("Казанцев Иван")
+    @Severity(SeverityLevel.CRITICAL)
+    @ExtendWith(UserQueueExtension.class)
+    void emptyFriendTableCheck(@NotNull @UserType(UserType.Type.EMPTY) UserQueueExtension.StaticUser user) {
+        loginPage.openAuthorizationPage(new LoginPageData().getUrl())
+                .setUserName(user.username())
+                .setPassword(user.password())
+                .loginButtonClick();
+        mainPage.moveToFriendsPage();
+        friendsPage.tableCheck(new FriendsPageData().getEmptyTableText(), UserType.Type.EMPTY);
+    }
+
+    @Test
+    @DisplayName("Проверка таблицы друзей когда друзей есть")
+    @Owner("Казанцев Иван")
+    @Severity(SeverityLevel.CRITICAL)
+    @ExtendWith(UserQueueExtension.class)
+    void notEmptyFriendTableCheck(@NotNull @UserType(UserType.Type.WITH_FRIEND) UserQueueExtension.StaticUser user) {
+        loginPage.openAuthorizationPage(new LoginPageData().getUrl())
+                .setUserName(user.username())
+                .setPassword(user.password())
+                .loginButtonClick();
+        mainPage.moveToFriendsPage();
+        friendsPage.tableCheck(user.friend(), UserType.Type.WITH_FRIEND);
+    }
+
+    @Test
+    @DisplayName("Проверка таблицы у пользователя с заявкой в друзья ")
+    @Owner("Казанцев Иван")
+    @Severity(SeverityLevel.CRITICAL)
+    @ExtendWith(UserQueueExtension.class)
+    void haveRequestFriendTableCheck(@NotNull @UserType(UserType.Type.WITH_SEND_REQUEST) UserQueueExtension.StaticUser user) {
+        loginPage.openAuthorizationPage(new LoginPageData().getUrl())
+                .setUserName(user.username())
+                .setPassword(user.password())
+                .loginButtonClick();
+        mainPage.moveToFriendsPage();
+        friendsPage.tableCheck(user.sendRequest(), UserType.Type.WITH_SEND_REQUEST);
+    }
+
+    @Test
+    @DisplayName("Проверка таблицы у пользователя с отправленной заявкой в друзья ")
+    @Owner("Казанцев Иван")
+    @Severity(SeverityLevel.CRITICAL)
+    @ExtendWith(UserQueueExtension.class)
+    void sendRequestFriendTableCheck(@NotNull @UserType(UserType.Type.WITH_GET_REQUEST) UserQueueExtension.StaticUser user) {
+        loginPage.openAuthorizationPage(new LoginPageData().getUrl())
+                .setUserName(user.username())
+                .setPassword(user.password())
+                .loginButtonClick();
+        mainPage.moveToFriendsPage();
+        friendsPage.switchForAllPeopleTable()
+                .tableCheck(user.sendRequest(), UserType.Type.WITH_GET_REQUEST);
     }
 }

@@ -2,7 +2,6 @@ package guru.qa.niffler.helpers.jupiter.extension;
 
 import guru.qa.niffler.helpers.api.SpendApiClient;
 import guru.qa.niffler.helpers.dataGeneration.FioGeneration;
-import guru.qa.niffler.helpers.dataGeneration.NewAccountDataGeneration;
 import guru.qa.niffler.helpers.jupiter.annotation.Category;
 import guru.qa.niffler.model.CategoryJson;
 import org.junit.jupiter.api.extension.*;

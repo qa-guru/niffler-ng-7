@@ -1,16 +1,16 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
-import guru.qa.niffler.data.LoginPageData;
+
 import guru.qa.niffler.data.SpendData;
 import guru.qa.niffler.element.Button;
 import guru.qa.niffler.element.Input;
 import guru.qa.niffler.element.Table;
 import guru.qa.niffler.element.TextField;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
+
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.support.Color;
+
 
 import java.util.List;
 
@@ -33,6 +33,14 @@ public class MainPage extends LoginPage {
     private final SelenideElement openUserProfileDropDownButton =
             $x("//div[contains(@class,'MuiAvatar-root MuiAvatar-circular')]");
     private final SelenideElement openUserProfileButton = $(".link.nav-link");
+    private final SelenideElement friendsButton = $x("(//A[@class='link nav-link'])[2]");
+
+    @Step("Переходим в раздел друзья")
+    public MainPage moveToFriendsPage(){
+        openUserProfileDropDownButton.click();
+        friendsButton.click();
+        return this;
+    }
 
     @Step("Переходим в профиль пользователя")
     public MainPage moveToUserProfile(){
