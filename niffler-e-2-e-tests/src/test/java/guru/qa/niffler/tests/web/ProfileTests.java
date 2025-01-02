@@ -1,12 +1,14 @@
 package guru.qa.niffler.tests.web;
 
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("Тесты для страницы профиля пользователя")
+@WebTest
 public class ProfileTests {
 
     @Category(
