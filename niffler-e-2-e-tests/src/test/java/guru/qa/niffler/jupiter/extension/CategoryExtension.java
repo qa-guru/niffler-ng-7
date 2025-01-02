@@ -1,19 +1,18 @@
 package guru.qa.niffler.jupiter.extension;
 
-import com.github.javafaker.Faker;
 import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
+
 
 public class CategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
 
     private static final ExtensionContext.Namespace CATEGORY_NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
 
     private final SpendApiClient spendApiClient = new SpendApiClient();
-
-    private final Faker faker = new Faker();
 
     @Override
     public void beforeEach(ExtensionContext context) {
@@ -22,7 +21,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
 
                     CategoryJson categoryJson = new CategoryJson(
                             null,
-                            faker.lordOfTheRings().character(),
+                            RandomDataUtils.randomCategoryName(),
                             anno.username(),
                             false
                     );
