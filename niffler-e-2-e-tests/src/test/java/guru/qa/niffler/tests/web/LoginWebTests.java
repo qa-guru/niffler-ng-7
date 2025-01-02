@@ -1,17 +1,15 @@
 package guru.qa.niffler.tests.web;
 
-import guru.qa.niffler.jupiter.extension.BrowserExtension;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
-
-@ExtendWith(BrowserExtension.class)
+@WebTest
 @DisplayName("Web тесты на регистрацию")
 public class LoginWebTests {
 
