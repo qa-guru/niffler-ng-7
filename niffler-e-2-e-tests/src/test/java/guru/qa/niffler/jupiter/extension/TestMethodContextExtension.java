@@ -7,13 +7,13 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 public class TestMethodContextExtension implements BeforeEachCallback, AfterEachCallback {
 
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeEach(ExtensionContext context) {
         Holder.INSTANCE.set(context);
 
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
+    public void afterEach(ExtensionContext context) {
         Holder.INSTANCE.remove();
     }
 
