@@ -2,8 +2,7 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 
-import static com.codeborne.selenide.CollectionCondition.textsInAnyOrder;
-import static com.codeborne.selenide.Condition.exist;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 
 public class FriendsPage {
@@ -12,7 +11,7 @@ public class FriendsPage {
             requestTable = $("#requests");
 
     public void checkThatFriendsExist(String friendUserName) {
-        friendsTable.$$("tr").shouldHave(textsInAnyOrder(friendUserName));
+        friendsTable.$$("tr").find(text(friendUserName)).shouldBe(visible);
     }
 
     public void checkThatFriendsDoNotExist() {
@@ -20,7 +19,7 @@ public class FriendsPage {
     }
 
     public void checkIncomeFriendRequest(String incomeUserName) {
-        requestTable.$$("tr").shouldHave(textsInAnyOrder(incomeUserName));
+        requestTable.$$("tr").find(text(incomeUserName)).shouldBe(visible);
     }
 }
 

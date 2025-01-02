@@ -61,12 +61,11 @@ public class UsersQueueExtension implements BeforeEachCallback, AfterEachCallbac
                             Optional<StaticUsers> user = Optional.empty();
                             StopWatch stopWatch = StopWatch.createStarted();
                             while (user.isEmpty() && stopWatch.getTime(TimeUnit.SECONDS) < 30) {
-                                user = switch (userType.value()) {
-                                    case EMPTY -> Optional.ofNullable(EMPTY_USERS.poll());
-                                    case WITH_FRIEND -> Optional.ofNullable(WITH_FRIEND_USERS.poll());
-                                    case WITH_INCOME_REQUEST -> Optional.ofNullable(WITH_INCOME_REQUEST_USERS.poll());
-                                    case WITH_OUTCOME_REQUEST -> Optional.ofNullable(WITH_OUTCOME_REQUEST_USERS.poll());
-                                };
+                                user = Optional.ofNullable(
+                                        getQueueByType(userType.value())
+                                                .poll()
+                                );
+
                             }
                             Allure.getLifecycle().updateTestCase(
                                     testCase ->
@@ -91,6 +90,7 @@ public class UsersQueueExtension implements BeforeEachCallback, AfterEachCallbac
         Map<UserType, StaticUsers> map = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
         if (map != null) {
             for (Map.Entry<UserType, StaticUsers> element : map.entrySet()) {
+                getQueueByType(element.getKey().value()).add(element.getValue());
                 switch (element.getKey().value()) {
                     case EMPTY -> EMPTY_USERS.add(element.getValue());
                     case WITH_FRIEND -> WITH_FRIEND_USERS.add(element.getValue());
@@ -111,6 +111,15 @@ public class UsersQueueExtension implements BeforeEachCallback, AfterEachCallbac
     public StaticUsers resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         return (StaticUsers) extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class)
                 .get(AnnotationSupport.findAnnotation(parameterContext.getParameter(), UserType.class).get());
+    }
+
+    private Queue<StaticUsers> getQueueByType(UserType.Type userType) {
+        return switch (userType) {
+            case EMPTY -> EMPTY_USERS;
+            case WITH_FRIEND -> WITH_FRIEND_USERS;
+            case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS;
+            case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS;
+        };
     }
 
 }
