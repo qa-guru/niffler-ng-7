@@ -1,8 +1,8 @@
 package guru.qa.niffler.tests.web;
 
-import com.github.javafaker.Faker;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.page.RegisterPage;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 @WebTest
 public class RegistrationWebTests {
 
-    static final Faker faker = new Faker();
     static final String ExistUserName = "Artur";
     static final String password = "12345";
 
@@ -20,7 +19,7 @@ public class RegistrationWebTests {
     void shouldRegisterNewUser() {
         new RegisterPage()
                 .open()
-                .setUserName(faker.name().username())
+                .setUserName(RandomDataUtils.randomUsername())
                 .setPassword(password)
                 .setPasswordSubmit(password)
                 .submitRegistration()
@@ -46,7 +45,7 @@ public class RegistrationWebTests {
                 .open()
                 .setUserName(ExistUserName)
                 .setPassword(password)
-                .setPasswordSubmit(faker.internet().password())
+                .setPasswordSubmit(RandomDataUtils.randomName())
                 .submitRegistration()
                 .checkUnsuccessfulRegistrationIfPasswordAndConfirmPasswordAreNotEqual("Passwords should be equal");
     }

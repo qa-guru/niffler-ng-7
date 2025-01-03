@@ -1,6 +1,7 @@
 package guru.qa.niffler.tests.web;
 
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
@@ -11,9 +12,9 @@ import org.junit.jupiter.api.Test;
 @WebTest
 public class ProfileTests {
 
-    @Category(
+    @User(
             username = "Artur",
-            archived = true
+            categories = @Category( archived = true)
     )
     @DisplayName("Архивная категория должна присутствовать и отображаться в списке категорий")
     @Test
@@ -28,9 +29,9 @@ public class ProfileTests {
                 .checkCategoryInCategoryList(category.name());
     }
 
-    @Category(
+    @User(
             username = "Artur",
-            archived = false
+            categories = @Category( archived = false)
     )
     @DisplayName("Активная категория должна присутствовать и отображаться в списке категорий")
     @Test
