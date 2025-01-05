@@ -18,7 +18,7 @@ public class FriendsPage {
     private static final ElementsCollection outcomeRequestTableRow = $$(By.xpath("//tbody[@id = 'all']//tr[.// span[text() = 'Waiting...']]"));
     private static final SelenideElement noFriendsText = $(By.xpath("//p[./following-sibling::img[@alt = 'Lonely niffler']]"));
 
-    public FriendsPage friendsPageIsOpened() {
+    public FriendsPage checkIsLoaded() {
         friendsHeader.shouldBe(visible);
         return this;
     }

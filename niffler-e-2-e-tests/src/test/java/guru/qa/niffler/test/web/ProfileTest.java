@@ -1,37 +1,50 @@
 package guru.qa.niffler.test.web;
 
-import guru.qa.niffler.jupiter.extension.UsersQueueExtensionForTwoParams;
+import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.extension.BrowserExtension;
+import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtensionForTwoParams.StaticUser;
-import guru.qa.niffler.jupiter.extension.UsersQueueExtensionForTwoParams.UserType;
 
-@ExtendWith(UsersQueueExtensionForTwoParams.class)
+@ExtendWith(BrowserExtension.class)
 public class ProfileTest {
 
-    @Test
-    void testWithEmptyUser0(@UserType(empty = true) StaticUser user0,
-                                   @UserType(empty = false) StaticUser user1) throws InterruptedException {
+    private static final Config CFG = Config.getInstance();
+    private static final String USERNAME = "maria";
+    private static final String PW = "12345";
 
-        Thread.sleep(1000);
-        System.out.println(user0);
-        System.out.println(user1);
+    @Category(
+        username = USERNAME,
+        archived = false
+    )
+    @Test
+    public void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) throws InterruptedException {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .doLogin(USERNAME, PW)
+                .openProfilePage()
+                .profilePageIsOpened()
+                .checkThatActiveCategoryIsPresented(category.name())
+                .archiveCategory(category.name())
+                .showArchivedCategories()
+                .checkThatArchivedCategoryIsPresented(category.name());
     }
 
+    @Category(
+            username = USERNAME,
+            archived = true
+    )
     @Test
-    void testWithEmptyUser1(@UserType(empty = true) StaticUser user0,
-                                   @UserType(empty = false) StaticUser user1) throws InterruptedException {
-        Thread.sleep(1000);
-        System.out.println(user0);
-        System.out.println(user1);
+    public void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .doLogin(USERNAME, PW)
+                .openProfilePage()
+                .profilePageIsOpened()
+                .showArchivedCategories()
+                .checkThatArchivedCategoryIsPresented(category.name())
+                .unArchiveCategory(category.name())
+                .checkThatActiveCategoryIsPresented(category.name());
     }
-
-    @Test
-    void testWithEmptyUser3(@UserType(empty = false) StaticUser user0,
-                                   @UserType(empty = false) StaticUser user1) throws InterruptedException {
-        Thread.sleep(1000);
-        System.out.println(user0);
-        System.out.println(user1);
-    }
-
 }

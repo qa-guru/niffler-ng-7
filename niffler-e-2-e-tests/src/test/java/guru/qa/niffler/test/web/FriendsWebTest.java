@@ -24,7 +24,7 @@ public class FriendsWebTest {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.password())
                 .openFriendsPage()
-                .friendsPageIsOpened()
+                .checkIsLoaded()
                 .checkUserHasFriendWithName(user.friend());
     }
 
@@ -34,7 +34,7 @@ public class FriendsWebTest {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.password())
                 .openFriendsPage()
-                .friendsPageIsOpened()
+                .checkIsLoaded()
                 .checkFriendsListHasText(EMPTY_FRIENDS_LIST_TEXT);
     }
 
@@ -45,7 +45,7 @@ public class FriendsWebTest {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.password())
                 .openFriendsPage()
-                .friendsPageIsOpened()
+                .checkIsLoaded()
                 .checkIncomeRequestHasName(user.income());
     }
 
@@ -55,7 +55,7 @@ public class FriendsWebTest {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.password())
                 .openFriendsPage()
-                .friendsPageIsOpened()
+                .checkIsLoaded()
                 .openAllPeopleTab()
                 .checkOutcomeRequestHasName(user.outcome());
     }
