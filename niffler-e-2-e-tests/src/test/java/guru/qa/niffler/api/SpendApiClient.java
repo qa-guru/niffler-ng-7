@@ -58,7 +58,7 @@ public class SpendApiClient {
             response = spendApi.getSpend(id, username)
                     .execute();
         } catch (IOException e) {
-            throw new AssertionError (e);
+            throw new AssertionError(e);
         }
         assertEquals(200, response.code());
         return response.body();
@@ -76,7 +76,7 @@ public class SpendApiClient {
                             to)
                     .execute();
         } catch (IOException e) {
-            throw new AssertionError (e);
+            throw new AssertionError(e);
         }
         assertEquals(200, response.code());
         return response.body();
@@ -88,7 +88,7 @@ public class SpendApiClient {
             response = spendApi.removeSpends(username, ids)
                     .execute();
         } catch (IOException e) {
-            throw new AssertionError (e);
+            throw new AssertionError(e);
         }
         assertEquals(200, response.code());
     }
@@ -99,7 +99,7 @@ public class SpendApiClient {
             response = spendApi.createCategory(category)
                     .execute();
         } catch (IOException e) {
-            throw new AssertionError (e);
+            throw new AssertionError(e);
         }
         assertEquals(200, response.code());
         return response.body();
@@ -111,7 +111,7 @@ public class SpendApiClient {
             response = spendApi.updateCategory(category)
                     .execute();
         } catch (IOException e) {
-            throw new AssertionError (e);
+            throw new AssertionError(e);
         }
         assertEquals(200, response.code());
         return response.body();
@@ -123,7 +123,7 @@ public class SpendApiClient {
             response = spendApi.getCategories(username, isArchived)
                     .execute();
         } catch (IOException e) {
-            throw new AssertionError (e);
+            throw new AssertionError(e);
         }
         assertEquals(200, response.code());
         return response.body();
