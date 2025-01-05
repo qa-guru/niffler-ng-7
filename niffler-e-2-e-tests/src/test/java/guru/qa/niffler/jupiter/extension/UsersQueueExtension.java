@@ -62,16 +62,10 @@ public class UsersQueueExtension implements
                             StopWatch sw = StopWatch.createStarted();
 
                             while (user.isEmpty() && sw.getTime(TimeUnit.SECONDS) < 10) {
-                                user = switch (ut.value()) {
-                                    case EMPTY -> Optional.ofNullable(EMPTY_USERS.poll());
-                                    case WITH_FRIEND -> Optional.ofNullable(WITH_FRIEND_USERS.poll());
-                                    case WITH_INCOME_REQUEST -> Optional.ofNullable(WITH_INCOME_REQUEST_USERS.poll());
-                                    case WITH_OUTCOME_REQUEST -> Optional.ofNullable(WITH_OUTCOME_REQUEST_USERS.poll());
-                                };
+
+                                user = Optional.ofNullable(getQueueOfUserType(ut.value()).poll());
+
                             }
-                            Allure.getLifecycle().updateTestCase(testCase -> {
-                                testCase.setStart(new Date().getTime());
-                            });
                             user.ifPresentOrElse(
                                     u -> {
                                         ((Map<UserType, StaticUser>)context.getStore(NAMESPACE)
@@ -84,6 +78,9 @@ public class UsersQueueExtension implements
                             );
                         }
                 );
+        Allure.getLifecycle().updateTestCase(testCase -> {
+            testCase.setStart(new Date().getTime());
+        });
     }
 
     @Override
@@ -92,12 +89,8 @@ public class UsersQueueExtension implements
 
         for(Map.Entry<UserType, StaticUser> e : map.entrySet()) {
 
-            switch (e.getKey().value()) {
-                case EMPTY -> EMPTY_USERS.add(e.getValue());
-                case WITH_FRIEND -> WITH_FRIEND_USERS.add(e.getValue());
-                case WITH_INCOME_REQUEST -> WITH_INCOME_REQUEST_USERS.add(e.getValue());
-                case WITH_OUTCOME_REQUEST -> WITH_OUTCOME_REQUEST_USERS.add(e.getValue());
-            }
+            getQueueOfUserType(e.getKey().value()).add(e.getValue());
+
         }
     }
 
@@ -115,4 +108,15 @@ public class UsersQueueExtension implements
                 .get(extensionContext.getUniqueId(), Map.class))
                 .get(ut);
     }
+
+    private Queue<StaticUser> getQueueOfUserType(UserType.Type value) {
+        switch (value) {
+            case EMPTY -> {return EMPTY_USERS;}
+            case WITH_FRIEND -> {return WITH_FRIEND_USERS;}
+            case WITH_INCOME_REQUEST -> { return WITH_INCOME_REQUEST_USERS;}
+            case WITH_OUTCOME_REQUEST -> { return WITH_OUTCOME_REQUEST_USERS;}
+        }
+        throw new IllegalArgumentException(value.name());
+    }
+
 }
