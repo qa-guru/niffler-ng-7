@@ -6,33 +6,47 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 public class RegisterPage {
+    private final SelenideElement pageName = $("h1.header");
+    private final SelenideElement usernameInput = $("input[name='username']");
+    private final SelenideElement passwordInput = $("input[name='password']");
+    private final SelenideElement submitPasswordInput = $("input[name='passwordSubmit']");
+    private final SelenideElement submitBtn = $("button[type='submit']");
+    private final SelenideElement loginBtn = $("a.form_sign-in");
+    private final SelenideElement successMsg = $("p.form__paragraph_success");
+    private final SelenideElement errorMsg = $("span.form__error");
 
-  private final SelenideElement usernameInput = $("input[name='username']");
-  private final SelenideElement passwordInput = $("input[name='password']");
-  private final SelenideElement passwordSubmitInput = $("input[name='passwordSubmit']");
-  private final SelenideElement submitButton = $("button[type='submit']");
-  private final SelenideElement proceedLoginButton = $(".form_sign-in");
-  private final SelenideElement errorContainer = $(".form__error");
+    public RegisterPage setUserName(String userName) {
+        pageName.shouldHave(text("Sign up"));
+        usernameInput.setValue(userName);
+        return this;
+    }
 
-  public RegisterPage fillRegisterPage(String login, String password, String passwordSubmit) {
-    usernameInput.setValue(login);
-    passwordInput.setValue(password);
-    passwordSubmitInput.setValue(passwordSubmit);
-    return this;
-  }
+    public RegisterPage setPassword(String password) {
+        passwordInput.setValue(password);
+        return this;
+    }
 
-  public LoginPage successSubmit() {
-    submit();
-    proceedLoginButton.click();
-    return new LoginPage();
-  }
+    public RegisterPage setPasswordSubmit(String passwordSubmit) {
+        submitPasswordInput.setValue(passwordSubmit);
+        return this;
+    }
 
-  public void submit() {
-    submitButton.click();
-  }
+    public RegisterPage submitRegistration() {
+        submitBtn.click();
+        return this;
+    }
 
-  public RegisterPage checkAlertMessage(String errorMessage) {
-    errorContainer.shouldHave(text(errorMessage));
-    return this;
-  }
+    public RegisterPage checkThatSuccessMsgContains(String messageText) {
+        successMsg.shouldHave(text(messageText));
+        return this;
+    }
+
+    public LoginPage openLoginPage() {
+        loginBtn.click();
+        return new LoginPage();
+    }
+
+    public void checkThatErrorMessageContainsText(String msgText) {
+        errorMsg.shouldHave(text(msgText));
+    }
 }

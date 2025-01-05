@@ -2,77 +2,75 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import org.openqa.selenium.By;
 
-import static com.codeborne.selenide.Condition.attributeMatching;
-import static com.codeborne.selenide.Condition.disabled;
 import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.value;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 public class ProfilePage {
+    //Toolbar
+    private final SelenideElement profileBtn = $("button div.MuiAvatar-root");
+    //Profile
+    private final SelenideElement profileHeader = $(By.xpath("//h2[text()='Profile']"));
+    private final SelenideElement profileImg = $("div.MuiContainer-root img]");
+    private final SelenideElement uploadImgBtn =$("span[role='button']");
+    private final SelenideElement usernameField = $("input#username");
+    private final SelenideElement nameField = $("input#name");
+    private final SelenideElement saveChangesBtn = $("button[type='submit']");
+    //Categories
+    private final SelenideElement categoriesHeader = $(By.xpath("//h2[text()='Categories']"));
+    private final SelenideElement showArchivedToggle = $("input[type='checkbox']");
+    private final SelenideElement newCategoryInput = $("input#category");
+    private final ElementsCollection activeCategoryRows =
+            $$(By.xpath("//div[contains(@class, 'MuiGrid-item')][.//button[@aria-label = 'Archive category']]"));
+    private final ElementsCollection archivedCategoryRows =
+            $$(By.xpath("//div[contains(@class, 'MuiGrid-item')][.//button[@aria-label = 'Unarchive category']]"));
+    private final By archiveBtn = By.cssSelector("button[aria-label='Archive category']");
+    private final By unArchiveBtn = By.cssSelector("button[aria-label='Unarchive category']");
+    //Archive category pop up
+    private final SelenideElement popUpArchiveBtn = $(By.xpath("//button[text() = 'Archive']"));
+    private final SelenideElement popUpUnArchiveBtn = $(By.xpath("//button[text() = 'Unarchive']"));
 
-  private final SelenideElement avatar = $("#image__input").parent().$("img");
-  private final SelenideElement userName = $("#username");
-  private final SelenideElement nameInput = $("#name");
-  private final SelenideElement photoInput = $("input[type='file']");
-  private final SelenideElement submitButton = $("button[type='submit']");
-  private final SelenideElement categoryInput = $("input[name='category']");
-  private final SelenideElement archivedSwitcher = $(".MuiSwitch-input");
-  private final ElementsCollection bubbles = $$(".MuiChip-filled.MuiChip-colorPrimary");
-  private final ElementsCollection bubblesArchived = $$(".MuiChip-filled.MuiChip-colorDefault");
+    public ProfilePage profilePageIsOpened() {
+        profileHeader.shouldBe(visible);
+        categoriesHeader.shouldBe(visible);
+        return this;
+    }
 
+    public ProfilePage checkThatArchivedCategoryIsPresented(String name) {
+        archivedCategoryRows.find(text(name)).shouldBe(visible);
+        return this;
+    }
 
-  public ProfilePage setName(String name) {
-    nameInput.clear();
-    nameInput.setValue(name);
-    return this;
-  }
+    public ProfilePage checkThatActiveCategoryIsPresented(String name) {
+        activeCategoryRows.find(text(name)).shouldBe(visible);
+        return this;
+    }
 
-  public ProfilePage uploadPhotoFromClasspath(String path) {
-    photoInput.uploadFromClasspath(path);
-    return this;
-  }
+    public ProfilePage archiveCategory(String name) {
+        activeCategoryRows
+                .find(text(name))
+                .shouldBe(visible)
+                .findElement(archiveBtn)
+                .click();
+        popUpArchiveBtn.shouldBe(visible).click();
+        return this;
+    }
 
-  public ProfilePage addCategory(String category) {
-    categoryInput.setValue(category).pressEnter();
-    return this;
-  }
+    public ProfilePage showArchivedCategories() {
+        showArchivedToggle.click();
+        return this;
+    }
 
-  public ProfilePage checkCategoryExists(String category) {
-    bubbles.find(text(category)).shouldBe(visible);
-    return this;
-  }
-
-  public ProfilePage checkArchivedCategoryExists(String category) {
-    archivedSwitcher.click();
-    bubblesArchived.find(text(category)).shouldBe(visible);
-    return this;
-  }
-
-  public ProfilePage checkUsername(String username) {
-    this.userName.should(value(username));
-    return this;
-  }
-
-  public ProfilePage checkName(String name) {
-    nameInput.shouldHave(value(name));
-    return this;
-  }
-
-  public ProfilePage checkPhotoExist() {
-    avatar.should(attributeMatching("src", "data:image.*"));
-    return this;
-  }
-
-  public ProfilePage checkThatCategoryInputDisabled() {
-    categoryInput.should(disabled);
-    return this;
-  }
-
-  public ProfilePage submitProfile() {
-    submitButton.click();
-    return this;
-  }
+    public ProfilePage unArchiveCategory(String name) {
+        archivedCategoryRows
+                .find(text(name))
+                .shouldBe(visible)
+                .findElement(unArchiveBtn)
+                .click();
+        popUpUnArchiveBtn.shouldBe(visible).click();
+        return this;
+    }
 }

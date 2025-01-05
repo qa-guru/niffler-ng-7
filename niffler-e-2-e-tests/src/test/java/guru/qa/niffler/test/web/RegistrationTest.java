@@ -3,49 +3,81 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.page.LoginPage;
+import jupiter.BrowserExtension;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@WebTest
+@ExtendWith(BrowserExtension.class)
 public class RegistrationTest {
 
-  private static final Config CFG = Config.getInstance();
-  private static final Faker faker = new Faker();
+    private static final Config CFG = Config.getInstance();
+    private static final Faker faker = new Faker();
+    private static final String SUCCESS_REGISTRATION_MSG_TEXT = "Congratulations! You've registered!";
+    private static final String USERNAME_ALREADY_EXISTS_ERROR_MSG_TEXT = "Username `%s` already exists";
+    private static final String PW_SHOULD_BE_EQUAL_ERROR_MSG_TEXT = "Passwords should be equal";
+    private static final String INCORRECT_PW_LENGTH_ERROR_MSG_TEXT = "Allowed password length should be from 3 to 12 characters";
 
-  @Test
-  void shouldRegisterNewUser() {
-    String newUsername = faker.name().username();
-    String password = "12345";
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .doRegister()
-        .fillRegisterPage(newUsername, password, password)
-        .successSubmit()
-        .successLogin(newUsername, password)
-        .checkThatPageLoaded();
-  }
+    @Test
+    public void shouldRegisterNewUser() {
+        String username = faker.name().username();
+        String pw = faker.internet().password(3, 12);
 
-  @Test
-  void shouldNotRegisterUserWithExistingUsername() {
-    String existingUsername = "duck";
-    String password = "12345";
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .openSignUpPage()
+                .setUserName(username)
+                .setPassword(pw)
+                .setPasswordSubmit(pw)
+                .submitRegistration()
+                .checkThatSuccessMsgContains(SUCCESS_REGISTRATION_MSG_TEXT)
+                .openLoginPage()
+                .doLogin(username, pw)
+                .checkIsLoaded();
+    }
 
-    LoginPage loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class);
-    loginPage.doRegister()
-        .fillRegisterPage(existingUsername, password, password)
-        .submit();
-    loginPage.checkError("Username `" + existingUsername + "` already exists");
-  }
+    @Test
+    public void shouldNotRegisterUserWithExistingUsername() {
+        String username = "duck";
+        String pw = faker.internet().password(3, 12);
 
-  @Test
-  void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual() {
-    String newUsername = faker.name().username();
-    String password = "12345";
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .openSignUpPage()
+                .setUserName(username)
+                .setPassword(pw)
+                .setPasswordSubmit(pw)
+                .submitRegistration()
+                .checkThatErrorMessageContainsText(String.format(USERNAME_ALREADY_EXISTS_ERROR_MSG_TEXT, username));
+    }
 
-    LoginPage loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class);
-    loginPage.doRegister()
-        .fillRegisterPage(newUsername, password, "bad password submit")
-        .submit();
-    loginPage.checkError("Passwords should be equal");
-  }
+    @Test
+    public void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual() {
+        String username = faker.name().username();
+        String pw = faker.internet().password(3, 12);
+        String pwSubmit = faker.internet().password(3, 12);
+
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .openSignUpPage()
+                .setUserName(username)
+                .setPassword(pw)
+                .setPasswordSubmit(pwSubmit)
+                .submitRegistration()
+                .checkThatErrorMessageContainsText(PW_SHOULD_BE_EQUAL_ERROR_MSG_TEXT);
+    }
+
+    @Test
+    public void shouldShowErrorIfPasswordLengthIsNotCorrect() {
+        String username = faker.name().username();
+        String pw = faker.internet().password(13, 20);
+        String pwSubmit = faker.internet().password(13, 20);
+
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .openSignUpPage()
+                .setUserName(username)
+                .setPassword(pw)
+                .setPasswordSubmit(pwSubmit)
+                .submitRegistration()
+                .checkThatErrorMessageContainsText(INCORRECT_PW_LENGTH_ERROR_MSG_TEXT);
+    }
+
 }
+
