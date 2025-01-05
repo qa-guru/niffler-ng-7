@@ -20,4 +20,5 @@ public record SpendJson(
     String description,
     @JsonProperty("username")
     String username) {
+
 }
