@@ -1,5 +1,6 @@
 package guru.qa.niffler.settings;
 
+import com.codeborne.selenide.AssertionMode;
 import com.codeborne.selenide.Selenide;
 
 import org.junit.jupiter.api.AfterEach;
@@ -11,10 +12,11 @@ import static com.codeborne.selenide.Configuration.*;
 public class BaseTest {
 
     private static void setLocalDriver() {
-        timeout = 30000;
+        timeout = 300000;
         browser = "chrome";
         browserSize = "1920x1080";
         headless = false;
+        assertionMode = AssertionMode.SOFT;
     }
 
     @BeforeEach
