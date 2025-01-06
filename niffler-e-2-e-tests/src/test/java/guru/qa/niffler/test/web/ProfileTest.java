@@ -3,6 +3,7 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
@@ -11,9 +12,11 @@ import org.junit.jupiter.api.Test;
 public class ProfileTest {
     private static final Config CFG = Config.getInstance();
 
-    @Category(
+    @User(
             username = "taty",
-            archived = false
+            categories = @Category(
+                    archived = false
+            )
     )
     @Test
     void archivedCategoryShouldBePresentedInList(CategoryJson categoryJson) {
@@ -27,9 +30,11 @@ public class ProfileTest {
                 .checkCategoryInList(categoryJson.name());
     }
 
-    @Category(
+    @User(
             username = "taty",
-            archived = true
+            categories = @Category(
+                    archived = true
+            )
     )
     @Test
     void unArchivedCategoryShouldBePresentedInList(CategoryJson categoryJson) {
