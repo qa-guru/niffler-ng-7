@@ -2,7 +2,8 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.annotation.Spend;
+import guru.qa.niffler.jupiter.annotation.Spending;
+import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
@@ -15,12 +16,16 @@ public class SpendingWebTest {
 
     private static final Config CFG = Config.getInstance();
 
-    @Spend(
-            category = "Food",
-            description = "Tuna salad",
-            username = "ivan",
-            amount = 2000,
-            currency = CurrencyValues.RUB
+    @User(
+         username = "ivan",
+         spendings = {
+                 @Spending(
+                         category = "Food",
+                         description = "Tuna salad",
+                         amount = 2000,
+                         currency = CurrencyValues.RUB
+                 )
+         }
     )
     @Test
     public void categoryDescriptionShouldBeEditedByTableAction(SpendJson spend) {
