@@ -1,15 +1,18 @@
 package guru.qa.niffler.test;
 
-import guru.qa.niffler.data.FriendsPageData;
-import guru.qa.niffler.data.LoginPageData;
-import guru.qa.niffler.data.UserData;
-import guru.qa.niffler.helpers.dataGeneration.FioGeneration;
+import guru.qa.niffler.data.*;
+
 import guru.qa.niffler.helpers.dataGeneration.NewAccountDataGeneration;
+import guru.qa.niffler.helpers.dataGeneration.RandomDataUtils;
 import guru.qa.niffler.helpers.jupiter.annotation.Category;
+import guru.qa.niffler.helpers.jupiter.annotation.CreatingSpend;
+import guru.qa.niffler.helpers.jupiter.annotation.User;
 import guru.qa.niffler.helpers.jupiter.annotation.UserType;
 import guru.qa.niffler.helpers.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.helpers.jupiter.extension.UserQueueExtension;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.CurrencyValues;
+import guru.qa.niffler.model.SpendingJson;
 import guru.qa.niffler.page.*;
 import io.qameta.allure.Owner;
 import io.qameta.allure.Severity;
@@ -31,58 +34,66 @@ public class WebTest {
     ProfilePage profilePage = new ProfilePage();
     FriendsPage friendsPage = new FriendsPage();
 
-//    @CreatingSpend(
-//            spendName = "stady",
-//            description = "hello",
-//            amount = 1000,
-//            currency = CurrencyValues.RUB,
-//            spendCategory = "stady"
-//    )
-//    @Test
-//    @DisplayName("Проверка возможности изменить Description траты")
-//    @Owner("Казанцев Иван")
-//    @Severity(SeverityLevel.CRITICAL)
-//    void editSpendingDescriptionCheck() {
-//        loginPage.openAuthorizationPage(new LoginPageData().getUrl())
-//                .setAuthorizationInput(new UserData().getLogin(), "login")
-//                .setAuthorizationInput(new UserData().getPassword(), "password")
-//                .loginButtonClick();
-//        mainPage.historyOfSpendingTextCheck(new MainPageData().getHistoryOfSpendingText())
-//                .searchSpend("123")
-//                .editButtonClick();
-//        editSpendingPage.pageOenCheck(new EditSpendingPageData().getPageTitle())
-//                .setDescription(SpendData.spend.DESCRIPTION.getValue())
-//                .saveButtonClick();
-//        mainPage.historyOfSpendingTextCheck(new MainPageData().getHistoryOfSpendingText())
-//                .searchSpend(SpendData.spend.DESCRIPTION.getValue())
-//                .resultTableCheck(SpendData.spend.values());
-//    }
-//
-//    @CreatingSpend(
-//            spendName = "stady",
-//            description = "Тест удаления",
-//            amount = 1000,
-//            currency = CurrencyValues.RUB,
-//            spendCategory = "stady"
-//    )
-//    @Test
-//    @DisplayName("Проверка возможности удалить траты")
-//    @Owner("Казанцев Иван")
-//    @Severity(SeverityLevel.CRITICAL)
-//    void deleteSpendingDescriptionCheck(@NotNull SpendingJson spendingJson) {
-//        loginPage.openAuthorizationPage(new LoginPageData().getUrl())
-//                .setAuthorizationInput(new UserData().getLogin(), "login")
-//                .setAuthorizationInput(new UserData().getPassword(), "password")
-//                .loginButtonClick();
-//        mainPage.historyOfSpendingTextCheck(new MainPageData().getHistoryOfSpendingText())
-//                .searchSpend(spendingJson.description())
-//                .chooseSpend()
-//                .delButtonClick()
-//                .acceptDelButtonClick()
-//                .searchSpend(spendingJson.description())
-//                .resultTableShouldBeNotVisibleCheck();
-//
-//    }
+
+    @User(
+            username = "ivan",
+            spendings = @CreatingSpend(
+                    spendName = "stady",
+                    description = "hello",
+                    amount = 1000,
+                    currency = CurrencyValues.RUB,
+                    spendCategory = "stady"
+            )
+    )
+    @Test
+    @DisplayName("Проверка возможности изменить Description траты")
+    @Owner("Казанцев Иван")
+    @Severity(SeverityLevel.CRITICAL)
+    void editSpendingDescriptionCheck(@NotNull SpendingJson spendingJson) {
+        loginPage.openAuthorizationPage(new LoginPageData().getUrl())
+                .setAuthorizationInput(new UserData().getLogin(), "login")
+                .setAuthorizationInput(new UserData().getPassword(), "password")
+                .loginButtonClick();
+        mainPage.historyOfSpendingTextCheck(new MainPageData().getHistoryOfSpendingText())
+                .searchSpend(spendingJson.description())
+                .editButtonClick();
+        editSpendingPage.pageOenCheck(new EditSpendingPageData().getPageTitle())
+                .setDescription(SpendData.spend.DESCRIPTION.getValue())
+                .saveButtonClick();
+        mainPage.historyOfSpendingTextCheck(new MainPageData().getHistoryOfSpendingText())
+                .searchSpend(SpendData.spend.DESCRIPTION.getValue())
+                .resultTableCheck(SpendData.spend.values());
+    }
+
+
+    @User(
+            username = "ivan",
+            spendings = @CreatingSpend(
+                    spendName = "stady",
+                    description = "Тест удаления",
+                    amount = 1000,
+                    currency = CurrencyValues.RUB,
+                    spendCategory = "stady"
+            )
+    )
+    @Test
+    @DisplayName("Проверка возможности удалить траты")
+    @Owner("Казанцев Иван")
+    @Severity(SeverityLevel.CRITICAL)
+    void deleteSpendingDescriptionCheck(@NotNull SpendingJson spendingJson) {
+        loginPage.openAuthorizationPage(new LoginPageData().getUrl())
+                .setAuthorizationInput(new UserData().getLogin(), "login")
+                .setAuthorizationInput(new UserData().getPassword(), "password")
+                .loginButtonClick();
+        mainPage.historyOfSpendingTextCheck(new MainPageData().getHistoryOfSpendingText())
+                .searchSpend(spendingJson.description())
+                .chooseSpend()
+                .delButtonClick()
+                .acceptDelButtonClick()
+                .searchSpend(spendingJson.description())
+                .resultTableShouldBeNotVisibleCheck();
+
+    }
 
     @Test
     @DisplayName("Проверка регистрации нового пользователя")
@@ -91,7 +102,7 @@ public class WebTest {
     void registrationNewAccountCheck() {
         loginPage.openAuthorizationPage(new LoginPageData().getUrl())
                 .createNewAccountButtonClick()
-                .setUserName(new FioGeneration().getUserName())
+                .setUserName(RandomDataUtils.getUserName())
                 .setPassword(newAccountDataGeneration.getRandomPassword())
                 .setPasswordSubmit(newAccountDataGeneration.getRandomPassword())
                 .submitButtonClick()
@@ -123,7 +134,7 @@ public class WebTest {
     void registrationIfPasswordAndConfirmPasswordAreNotEquals() {
         loginPage.openAuthorizationPage(new LoginPageData().getUrl())
                 .createNewAccountButtonClick()
-                .setUserName(new FioGeneration().getUserName())
+                .setUserName(RandomDataUtils.getUserName())
                 .setPassword(newAccountDataGeneration.getRandomPassword())
                 .setPasswordSubmit(new NewAccountDataGeneration().getRandomPassword())
                 .submitButtonClick()
@@ -159,9 +170,11 @@ public class WebTest {
                 .loginErrorCheck(new LoginPageData().getBadCredentialsText());
     }
 
-    @Category(
+    @User(
             username = "ivan",
-            archived = false
+            categories = @Category(
+                    archived = false
+            )
     )
     @Test
     @DisplayName("Проверка отображения активной категории")
@@ -178,9 +191,11 @@ public class WebTest {
                 .archivedCategoryDoNotVisibleInActiveCategoryTableCheck(categoryJson.name());
     }
 
-    @Category(
+    @User(
             username = "ivan",
-            archived = true
+            categories = @Category(
+                    archived = true
+            )
     )
     @Test
     @DisplayName("Проверка отображения архивной категории")

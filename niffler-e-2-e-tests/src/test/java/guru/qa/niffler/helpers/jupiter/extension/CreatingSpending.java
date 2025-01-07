@@ -2,6 +2,7 @@ package guru.qa.niffler.helpers.jupiter.extension;
 
 import guru.qa.niffler.helpers.api.SpendApiClient;
 import guru.qa.niffler.helpers.jupiter.annotation.CreatingSpend;
+import guru.qa.niffler.helpers.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendingJson;
 import org.jetbrains.annotations.NotNull;
@@ -16,21 +17,21 @@ public class CreatingSpending implements BeforeEachCallback, ParameterResolver {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CreatingSpending.class);
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        CreatingSpend creatingSpend = context.getRequiredTestMethod().getAnnotation(CreatingSpend.class);
-        if (creatingSpend != null) {
+        User user = context.getRequiredTestMethod().getAnnotation(User.class);
+        if (user != null) {
             SpendingJson spendingJson = new SpendingJson(
                     null,
                     new Date(),
                     new CategoryJson(
                             null,
-                            creatingSpend.spendName(),
-                            "ivan",
+                            user.spendings()[0].spendName(),
+                            user.username(),
                             false
                     ),
-                    creatingSpend.currency(),
-                    creatingSpend.amount(),
-                    creatingSpend.description(),
-                    "ivan"
+                    user.spendings()[0].currency(),
+                    user.spendings()[0].amount(),
+                    user.spendings()[0].description(),
+                    user.username()
             );
 
             var response = spendApiClient.createSpend(spendingJson);
@@ -40,8 +41,6 @@ public class CreatingSpending implements BeforeEachCallback, ParameterResolver {
                     response
             );
             context.getStore(NAMESPACE).put(CreatingSpend.class, spendingJson);
-
-            System.out.println("Я ТЕБЯ ВИЖУ");
         }
     }
 

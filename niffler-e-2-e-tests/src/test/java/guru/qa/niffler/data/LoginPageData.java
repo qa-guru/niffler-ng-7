@@ -1,7 +1,8 @@
 package guru.qa.niffler.data;
 
-import guru.qa.niffler.helpers.dataGeneration.FioGeneration;
+
 import guru.qa.niffler.helpers.dataGeneration.NewAccountDataGeneration;
+import guru.qa.niffler.helpers.dataGeneration.RandomDataUtils;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,9 @@ public class LoginPageData {
     public enum invalidUserData {
         INVALID_PASSWORD_DATA("Вводим не валидный пароль",new NewAccountDataGeneration().getRandomPassword(),
                 new UserData().getLogin()),
-        INVALID_USER_NAME_DATA("Вводим не валидный логин",new UserData().getPassword(),new FioGeneration().getUserName()),
+        INVALID_USER_NAME_DATA("Вводим не валидный логин",new UserData().getPassword(),RandomDataUtils.getUserName()),
         INVALID_USER_NAME_AND_PASSWORD("Вводим не валидный логин и пароль",
-                new NewAccountDataGeneration().getRandomPassword(),new FioGeneration().getUserName());
+                new NewAccountDataGeneration().getRandomPassword(),RandomDataUtils.getUserName());
 
         private String name;
         private String passwordValue;
