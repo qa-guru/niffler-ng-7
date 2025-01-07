@@ -1,7 +1,6 @@
 package guru.qa.niffler.test;
 
 import guru.qa.niffler.data.*;
-
 import guru.qa.niffler.helpers.dataGeneration.NewAccountDataGeneration;
 import guru.qa.niffler.helpers.dataGeneration.RandomDataUtils;
 import guru.qa.niffler.helpers.jupiter.annotation.Category;
