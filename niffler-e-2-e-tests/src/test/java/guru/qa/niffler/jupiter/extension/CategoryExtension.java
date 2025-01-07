@@ -53,9 +53,8 @@ public class CategoryExtension implements
 
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
-        Category[] categories = context.getRequiredTestMethod().getAnnotation(User.class).categories();
-        if (categories.length > 0) {
-            CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
+         CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
+        if (category != null) {
             if (!category.archived()) {
                 category = new CategoryJson(
                         category.id(),

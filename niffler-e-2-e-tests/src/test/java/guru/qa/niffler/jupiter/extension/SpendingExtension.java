@@ -22,7 +22,6 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
     public void beforeEach(ExtensionContext context) throws Exception {
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
                 .ifPresent(anno -> {
-                    Category[] categories = anno.categories();
                     Spending[] spendings = anno.spendings();
                     if (spendings.length > 0) {
                         SpendJson spendJson = new SpendJson(
