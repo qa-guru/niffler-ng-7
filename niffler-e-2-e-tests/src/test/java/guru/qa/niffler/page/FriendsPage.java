@@ -1,17 +1,16 @@
 package guru.qa.niffler.page;
 
-import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 
 import static com.codeborne.selenide.CollectionCondition.texts;
 import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.$;
 
 public class FriendsPage {
 
     private final SelenideElement
-            noFriendsTextElement = $("#simple-tabpanel-friends .MuiTypography-root"),
-            userInFriendTableElement = $x("//table/tbody[@id='friends']//td//p[1]");
+            noFriendsTextElement = $("#simple-tabpanel-friends .MuiTypography-root");
 
     public FriendsPage checkFriendsIsEmpty() {
         noFriendsTextElement.shouldHave(text("There are no users yet"));
@@ -19,13 +18,12 @@ public class FriendsPage {
     }
 
     public FriendsPage checkUserInUserFriendsList(String username) {
-        userInFriendTableElement.shouldHave(text(username));
+        $("#friends").$$("tr").find(text(username)).should(visible);
         return this;
     }
 
     public FriendsPage checkIncomeRequest(String username) {
-        ElementsCollection buttons = $$x(String.format("//tbody[@id='requests']/tr[td[1]//p[contains(text(), '%s')]]/td[2]//button", username));
-        buttons.shouldHave(texts("Accept", "Decline"));
+        $("#requests").$$("tr").find(text(username)).$$("button").shouldHave(texts("Accept", "Decline"));
         return this;
     }
 }

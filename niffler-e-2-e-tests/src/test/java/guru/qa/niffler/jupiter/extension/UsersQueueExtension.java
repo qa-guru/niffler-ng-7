@@ -69,7 +69,7 @@ public class UsersQueueExtension implements
         Map<UserType, StaticUser> usersMap = new HashMap<>();
 
         Arrays.stream(context.getRequiredTestMethod().getParameters())
-                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
+                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class) && p.getType().isAssignableFrom(StaticUser.class))
                 .forEach(parameter -> {
                     UserType userType = parameter.getAnnotation(UserType.class);
                     Queue<StaticUser> queue = userType.value().getQueue();
@@ -95,11 +95,14 @@ public class UsersQueueExtension implements
     public void afterEach(ExtensionContext context) throws Exception {
         Map<UserType, StaticUser> map = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
 
-        for (Map.Entry<UserType, StaticUser> entry : map.entrySet()) {
-            StaticUser user = entry.getValue();
-            UserType userType = entry.getKey();
-            Queue<StaticUser> queue = userType.value().getQueue();
-            queue.add(user);
+        if (map != null) {
+
+            for (Map.Entry<UserType, StaticUser> entry : map.entrySet()) {
+                StaticUser user = entry.getValue();
+                UserType userType = entry.getKey();
+                Queue<StaticUser> queue = userType.value().getQueue();
+                queue.add(user);
+            }
         }
     }
 

@@ -12,8 +12,8 @@ public class RegisterWebTest {
 
     @Test
     void shouldBeRegisterNewUser() {
-        String userName = DataUtils.generateNewUserName();
-        String password = DataUtils.generatePassword();
+        String userName = DataUtils.randomUserName();
+        String password = DataUtils.randomPassword();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickOnRegisterButton()
                 .fillRegisterForm(userName, password, password)
@@ -22,8 +22,8 @@ public class RegisterWebTest {
 
     @Test
     void shouldNotRegisterUserWithExistingUsername() {
-        String userName = DataUtils.generateNewUserName();
-        String password = DataUtils.generatePassword();
+        String userName = DataUtils.randomUserName();
+        String password = DataUtils.randomPassword();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickOnRegisterButton()
                 .fillRegisterForm(userName, password, password)
@@ -36,9 +36,9 @@ public class RegisterWebTest {
 
     @Test
     void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual(){
-        String userName = DataUtils.generateNewUserName();
-        String password = DataUtils.generatePassword();
-        String submitPassword = DataUtils.generatePassword();
+        String userName = DataUtils.randomUserName();
+        String password = DataUtils.randomPassword();
+        String submitPassword = DataUtils.randomPassword();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickOnRegisterButton()
                 .fillRegisterForm(userName, password, submitPassword)
