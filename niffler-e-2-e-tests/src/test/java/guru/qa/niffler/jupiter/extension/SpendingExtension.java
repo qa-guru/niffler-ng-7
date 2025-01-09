@@ -6,14 +6,9 @@ import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.ParameterResolver;
+import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import java.util.Arrays;
 import java.util.Date;
 
 public class SpendingExtension implements BeforeEachCallback, ParameterResolver {
@@ -27,7 +22,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
         .ifPresent(anno -> {
             if (anno.spendings().length>0) {
-                Spending spending = Arrays.stream(anno.spendings()).findFirst().get();
+                Spending spending = anno.spendings()[0];
                 SpendJson spend = new SpendJson(
                         null,
                         new Date(),

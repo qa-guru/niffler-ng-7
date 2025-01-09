@@ -7,7 +7,6 @@ import guru.qa.niffler.model.CategoryJson;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import java.util.Arrays;
 import static guru.qa.niffler.utils.DataUtils.randomCategoryName;
 
 public class CategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
@@ -20,7 +19,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
                 .ifPresent(anno -> {
                     if (anno.categories().length > 0) {
-                        Category category = Arrays.stream(anno.categories()).findFirst().get();
+                        Category category = anno.categories()[0];
                         CategoryJson categoryJson = new CategoryJson(
                                 null,
                                 randomCategoryName(),
@@ -35,7 +34,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                                     createdCategory.username(),
                                     true
                             );
-                            categoriesApiClient.updateCategory(categoryToBeArchived);
+                            createdCategory = categoriesApiClient.updateCategory(categoryToBeArchived);
                         }
                         context.getStore(NAMESPACE).put(context.getUniqueId(), createdCategory);
                     }
