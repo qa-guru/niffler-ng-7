@@ -9,6 +9,7 @@ import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 
 @WebTest
@@ -29,7 +30,7 @@ public class SpendingWebTest {
     )
     @Test
     public void categoryDescriptionShouldBeEditedByTableAction(SpendJson spend) {
-        final String newSpendingDescription = "Super Food";
+        final String newSpendingDescription = RandomDataUtils.randomCategoryName();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin("ivan", "12345")
                 .editSpending(spend.description())
