@@ -10,7 +10,6 @@ import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.Date;
-import java.util.Optional;
 
 public class SpendingExtension implements BeforeEachCallback, ParameterResolver {
 
@@ -29,44 +28,29 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
 
                     if (spendings.length > 0) {
                         //Проверяем существует ли категория из предусловия
-                        Optional<CategoryJson> categoryJson = categoryDbClient
+                        //Если такая категория уже есть, то сеттим ее поля в SpendJson
+                        CategoryJson category = categoryDbClient
                                 .findCategoryByUsernameAndCategoryName(
                                         anno.username(),
                                         spendings[0].category()
+                                )
+                                .orElse(new CategoryJson(
+                                        null,
+                                        spendings[0].category(),
+                                        anno.username(),
+                                        false
+                                        )
                                 );
-                        //Если такая категория уже есть, то сеттим ее поля в SpendJson
-                        if (categoryJson.isPresent()) {
-                            CategoryJson existingCategory = categoryJson.get();
-                            spendJson = new SpendJson(
-                                    null,
-                                    new Date(),
-                                    new CategoryJson(
-                                            existingCategory.id(),
-                                            existingCategory.name(),
-                                            existingCategory.username(),
-                                            existingCategory.archived()
-                                    ),
-                                    spendings[0].currency(),
-                                    spendings[0].amount(),
-                                    spendings[0].description(),
-                                    anno.username()
-                            );
-                        } else {
-                            spendJson = new SpendJson(
-                                    null,
-                                    new Date(),
-                                    new CategoryJson(
-                                            null,
-                                            spendings[0].category(),
-                                            anno.username(),
-                                            false
-                                    ),
-                                    spendings[0].currency(),
-                                    spendings[0].amount(),
-                                    spendings[0].description(),
-                                    anno.username()
-                            );
-                        }
+
+                        spendJson = new SpendJson(
+                                null,
+                                new Date(),
+                                category,
+                                spendings[0].currency(),
+                                spendings[0].amount(),
+                                spendings[0].description(),
+                                anno.username()
+                        );
 
                         SpendJson createdSpend = spendDbClient.createSpend(spendJson);
 
