@@ -23,21 +23,10 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                                 null,
                                 RandomDataUtils.randomCategoryName(),
                                 anno.username(),
-                                false
+                                anno.categories()[0].archived()
                         );
 
                         CategoryJson createCategory = spendDbClient.createCategory(categoryJson);
-
-                        if (anno.categories()[0].archived()) {
-                            CategoryJson archivedCategory = new CategoryJson(
-                                    createCategory.id(),
-                                    createCategory.name(),
-                                    createCategory.username(),
-                                    true
-                            );
-                            spendDbClient.updateCategory(archivedCategory);
-                            createCategory = archivedCategory;
-                        }
 
                         context.getStore(CategoryExtension.CATEGORY_NAMESPACE).put(context.getUniqueId(), createCategory);
                     }
@@ -58,14 +47,8 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     @Override
     public void afterTestExecution(ExtensionContext context) {
         CategoryJson categoryJson = context.getStore(CategoryExtension.CATEGORY_NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
-        if (categoryJson !=null && !categoryJson.archived()) {
-            CategoryJson archivedJson = new CategoryJson(
-                    categoryJson.id(),
-                    categoryJson.name(),
-                    categoryJson.username(),
-                    true
-            );
-            spendDbClient.updateCategory(archivedJson);
+        if (categoryJson != null) {
+            spendDbClient.deleteCategory(categoryJson);
         }
 
     }
