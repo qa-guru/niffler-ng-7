@@ -47,7 +47,7 @@ public class CategoryDaoJdbc implements CategoryDao {
     }
 
     @Override
-    public void update(CategoryEntity category) {
+    public void updateArchivedStatusFromCategory(CategoryEntity category) {
         try (Connection connection = Databases.connection(config.spendJdbcUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "UPDATE category SET archived = ? WHERE id = ?"

@@ -10,7 +10,7 @@ public interface CategoryDao {
 
     CategoryEntity create(CategoryEntity category);
 
-    void update(CategoryEntity category);
+    void updateArchivedStatusFromCategory(CategoryEntity category);
 
     Optional<CategoryEntity> findCategoryById(UUID id);
 
