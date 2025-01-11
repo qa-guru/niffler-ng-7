@@ -1,39 +1,38 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.DisableByIssue;
+import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.annotation.Spending;
-import guru.qa.niffler.jupiter.annotation.User;
-import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
-import org.junit.jupiter.api.Test;
 
-@WebTest
+@ExtendWith(BrowserExtension.class)
 public class SpendingWebTest {
 
-  private static final Config CFG = Config.getInstance();
+    private static final Config CFG = Config.getInstance();
 
-  @User(
-      username = "duck",
-      spendings = @Spending(
-          category = "Обучение",
-          description = "Обучение Advanced 2.0",
-          amount = 79990
-      )
-  )
-  @Test
-  void categoryDescriptionShouldBeChangedFromTable(SpendJson spend) {
-    final String newDescription = "Обучение Niffler Next Generation";
+    @Spending(
+            username = "filkot",
+            category = "Обучение",
+            description = "Обучение Advanced 2.0",
+            amount = 79990
+    )
+    @Test
+    @DisableByIssue("3")
+    void categoryDescriptionShouldBeChangedFromTable(SpendJson spend) {
+        final String newDescription = "Обучение Niffler Next Generation";
 
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin("duck", "12345")
-        .editSpending(spend.description())
-        .setNewSpendingDescription(newDescription)
-        .save();
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login("filkot", "12345")
+                .editSpending(spend.description())
+                .setNewSpendingDescription(newDescription)
+                .save();
 
-    new MainPage().checkThatTableContainsSpending(newDescription);
-  }
+        new MainPage().checkThatTableContainsSpending(newDescription);
+    }
 }
-
