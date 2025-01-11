@@ -4,9 +4,11 @@ import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.Test;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.helper.UserDataHelper;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 
+@WebTest
 public class LoginWebTest {
 
     private static final Config CFG = Config.getInstance();

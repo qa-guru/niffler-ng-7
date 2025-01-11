@@ -1,11 +1,13 @@
 package guru.qa.niffler.test.web;
 
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import org.junit.jupiter.api.Test;
 import guru.qa.niffler.helper.UserDataHelper;
 import guru.qa.niffler.model.UserJson;
 
 import static guru.qa.niffler.page.RegisterPage.register;
 
+@WebTest
 public class RegistrationWebTest {
 
     @Test
