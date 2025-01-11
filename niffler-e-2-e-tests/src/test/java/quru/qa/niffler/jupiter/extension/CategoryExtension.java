@@ -1,10 +1,11 @@
-package quru.qa.niffler.jupiter.category;
+package quru.qa.niffler.jupiter.extension;
 
 
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 import quru.qa.niffler.api.category.CategoryApiClient;
 import quru.qa.niffler.helper.UserDataHelper;
+import quru.qa.niffler.jupiter.annotation.Category;
 import quru.qa.niffler.model.CategoryJson;
 
 public class CategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {

@@ -4,8 +4,9 @@ import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import quru.qa.niffler.config.Config;
-import quru.qa.niffler.jupiter.BrowserExtension;
-import quru.qa.niffler.jupiter.spend.Spending;
+import quru.qa.niffler.jupiter.annotation.DisableByIssue;
+import quru.qa.niffler.jupiter.extension.BrowserExtension;
+import quru.qa.niffler.jupiter.annotation.Spending;
 import quru.qa.niffler.model.SpendJson;
 import quru.qa.niffler.page.LoginPage;
 import quru.qa.niffler.page.MainPage;
@@ -22,6 +23,7 @@ public class SpendingWebTest {
             amount = 79990
     )
     @Test
+    @DisableByIssue("3")
     void categoryDescriptionShouldBeChangedFromTable(SpendJson spend) {
         final String newDescription = "Обучение Niffler Next Generation";
 
