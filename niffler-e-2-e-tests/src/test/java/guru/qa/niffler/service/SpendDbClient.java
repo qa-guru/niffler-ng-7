@@ -1,7 +1,7 @@
 package guru.qa.niffler.service;
 
-import guru.qa.niffler.data.dao.CategoryDao;
-import guru.qa.niffler.data.dao.SpendDao;
+import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.Databases;
 import guru.qa.niffler.data.dao.impl.CategoryDaoJdbc;
 import guru.qa.niffler.data.dao.impl.SpendDaoJdbc;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
@@ -11,27 +11,42 @@ import guru.qa.niffler.model.SpendJson;
 
 public class SpendDbClient {
 
-    private final SpendDao spendDao = new SpendDaoJdbc();
-
-    private final CategoryDao categoryDao = new CategoryDaoJdbc();
+    private static final Config config = Config.getInstance();
 
     public SpendJson createSpend(SpendJson spendJson) {
-        SpendEntity spendEntity = SpendEntity.fromJson(spendJson);
-        if (spendEntity.getCategory().getId() == null) {
-            CategoryEntity categoryEntity = categoryDao.create(spendEntity.getCategory());
-            spendEntity.setCategory(categoryEntity);
-        }
-        return SpendJson.fromEntity(spendDao.create(spendEntity));
+
+        return Databases.transaction(
+                connection -> {
+                    SpendEntity spendEntity = SpendEntity.fromJson(spendJson);
+                    if (spendEntity.getCategory().getId() == null) {
+                        CategoryEntity categoryEntity = new CategoryDaoJdbc(connection).create(spendEntity.getCategory());
+                        spendEntity.setCategory(categoryEntity);
+                    }
+                    return SpendJson.fromEntity(new SpendDaoJdbc(connection).create(spendEntity));
+                },
+                config.spendJdbcUrl()
+        );
+
     }
 
-    public CategoryJson createCategory(CategoryJson categoryJson){
-        CategoryEntity categoryEntity = CategoryEntity.fromJson(categoryJson);
-        return CategoryJson.fromEntity(categoryDao.create(categoryEntity));
+    public CategoryJson createCategory(CategoryJson categoryJson) {
+        return Databases.transaction(
+                connection -> {
+                    CategoryEntity categoryEntity = CategoryEntity.fromJson(categoryJson);
+                    return CategoryJson.fromEntity(new CategoryDaoJdbc(connection).create(categoryEntity));
+                },
+                config.spendJdbcUrl()
+        );
     }
 
-    public void deleteCategory(CategoryJson categoryJson){
-        CategoryEntity categoryEntity = CategoryEntity.fromJson(categoryJson);
-        categoryDao.deleteCategory(categoryEntity);
+    public void deleteCategory(CategoryJson categoryJson) {
+        Databases.transaction(
+                connection -> {
+                    CategoryEntity categoryEntity = CategoryEntity.fromJson(categoryJson);
+                    new CategoryDaoJdbc(connection).deleteCategory(categoryEntity);
+                },
+                config.spendJdbcUrl()
+        );
     }
 
 }
