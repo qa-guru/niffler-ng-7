@@ -2,6 +2,8 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
 
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class RegisterPage {
@@ -9,6 +11,9 @@ public class RegisterPage {
     private final SelenideElement passwordInput = $("input[name='password']");
     private final SelenideElement passwordSubmitInput = $("input[name='passwordSubmit']");
     private final SelenideElement submitButton = $("button[type='submit']");
+    private final SelenideElement errorElement = $(".form__error");
+
+    private final SelenideElement formSignInHref = $("a.form_sign-in");
 
     public RegisterPage setUsernameInput(String username) {
         usernameInput.clear();
@@ -28,26 +33,38 @@ public class RegisterPage {
         return this;
     }
 
-    public LoginPage submitRegistration() {
-        submitButton.click();
+    public LoginPage submitRegistrationSuccess() {
+        submitRegistration();
+        formSignInHref.should(visible);
+        formSignInHref.click();
         return new LoginPage();
     }
 
-    private LoginPage register(String username, String password, String passwordSubmit) {
+    public RegisterPage submitRegistration() {
+        submitButton.click();
+        return this;
+    }
+
+    public LoginPage register(String username, String password, String passwordSubmit) {
         usernameInput.setValue(username);
         passwordInput.setValue(password);
         passwordSubmitInput.setValue(passwordSubmit);
 
-        submitButton.click();
+        submitRegistrationSuccess();
         return new LoginPage();
     }
 
-    private LoginPage register(String username, String password) {
+    public LoginPage register(String username, String password) {
         usernameInput.setValue(username);
         passwordInput.setValue(password);
         passwordSubmitInput.setValue(password);
 
-        submitButton.click();
+        submitRegistrationSuccess();
         return new LoginPage();
+    }
+
+    public RegisterPage checkErrorMessage(String message) {
+        errorElement.shouldHave(text(message));
+        return this;
     }
 }
