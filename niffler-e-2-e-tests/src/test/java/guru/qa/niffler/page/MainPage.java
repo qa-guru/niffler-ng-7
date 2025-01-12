@@ -30,4 +30,10 @@ public class MainPage {
     spendingElement.should(visible);
     return this;
   }
+
+  public MainPage checkLoadPage() {
+    checkThatHaveStatistics();
+    checkThatHaveSpendings();
+    return this;
+  }
 }
