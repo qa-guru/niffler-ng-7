@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UseDataDao {
+
     UserEntity createUser(UserEntity user);
 
     Optional<UserEntity> findById(UUID id);
@@ -13,4 +14,5 @@ public interface UseDataDao {
     Optional<UserEntity> findByUsername(String username);
 
     void delete(UserEntity user);
+
 }

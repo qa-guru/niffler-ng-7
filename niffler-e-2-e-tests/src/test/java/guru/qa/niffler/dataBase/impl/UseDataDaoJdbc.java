@@ -12,11 +12,16 @@ import java.util.UUID;
 
 
 public class UseDataDaoJdbc implements UseDataDao {
+
     private static final Config CFG = Config.getInstance();
+    private final Connection connection;
+
+    public UseDataDaoJdbc(Connection connection) {
+        this.connection = connection;
+    }
 
     @Override
     public UserEntity createUser(UserEntity user) {
-        try (Connection connection = DataBases.connection(CFG.userdataJDBCUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO \"user\" (username, currency, firstname, surname, photo, photo_small, full_name) " +
                             "VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -39,7 +44,6 @@ public class UseDataDaoJdbc implements UseDataDao {
                     } else {
                         throw new SQLException("Запрос не нашел ключи в БД");
                     }
-                }
                 user.setId(generatedKey);
                 return user;
             }
@@ -51,7 +55,6 @@ public class UseDataDaoJdbc implements UseDataDao {
 
     @Override
     public Optional<UserEntity> findById(UUID id) {
-        try (Connection connection = DataBases.connection(CFG.userdataJDBCUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "SELECT * FROM \"user\" WHERE id = ?"
             )) {
@@ -73,7 +76,6 @@ public class UseDataDaoJdbc implements UseDataDao {
                     } else {
                         return Optional.empty();
                     }
-                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -82,7 +84,6 @@ public class UseDataDaoJdbc implements UseDataDao {
 
     @Override
     public Optional<UserEntity> findByUsername(String username) {
-        try (Connection connection = DataBases.connection(CFG.userdataJDBCUrl())) {
             try (PreparedStatement ps = connection.prepareStatement(
                     "SELECT * FROM \"user\" WHERE username = ?"
             )) {
@@ -104,7 +105,6 @@ public class UseDataDaoJdbc implements UseDataDao {
                     } else {
                         return Optional.empty();
                     }
-                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -1,6 +1,10 @@
 package guru.qa.niffler.test;
 
 import guru.qa.niffler.data.*;
+import guru.qa.niffler.dataBase.entity.AuthUserEntity;
+import guru.qa.niffler.dataBase.entity.Authority;
+import guru.qa.niffler.dataBase.entity.AuthorityEntity;
+import guru.qa.niffler.dataBase.service.UserDbClient;
 import guru.qa.niffler.helpers.dataGeneration.NewAccountDataGeneration;
 import guru.qa.niffler.helpers.dataGeneration.RandomDataUtils;
 import guru.qa.niffler.helpers.jupiter.annotation.Category;
@@ -9,9 +13,7 @@ import guru.qa.niffler.helpers.jupiter.annotation.User;
 import guru.qa.niffler.helpers.jupiter.annotation.UserType;
 import guru.qa.niffler.helpers.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.helpers.jupiter.extension.UserQueueExtension;
-import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendingJson;
+import guru.qa.niffler.model.*;
 import guru.qa.niffler.page.*;
 import io.qameta.allure.Owner;
 import io.qameta.allure.Severity;
@@ -22,6 +24,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @ExtendWith(BrowserExtension.class)
 public class WebTest {
@@ -266,5 +275,66 @@ public class WebTest {
         mainPage.moveToFriendsPage();
         friendsPage.switchForAllPeopleTable()
                 .tableCheck(user.sendRequest(), UserType.Type.WITH_GET_REQUEST);
+    }
+
+    @Test
+    @DisplayName("Успешное добавление данных в БД таблица niffler-auth и niffler-userdata")
+    void successesExTransaction(){
+        UserDbClient userDbClient = new UserDbClient();
+        var userName = RandomDataUtils.getUserName();
+        var userID = UUID.randomUUID();
+        System.out.println(userName);
+        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        System.out.println(userDbClient.createUser(
+                new AuthUserJson(
+                        userID,
+                        userName,
+                        passwordEncoder.encode("123"),
+                        true,
+                        true,
+                        true,
+                        true,
+                        new ArrayList<>()
+                        ),
+               new UserJson(
+                        UUID.randomUUID(),
+                        userName,
+                        RandomDataUtils.getName(),
+                        RandomDataUtils.getSurname(),
+                        "Ivankov123",
+                        CurrencyValues.USD,
+                        null,
+                        null)));
+
+
+    }
+
+    @Test
+    @DisplayName("Неуспешное добавление данных в БД таблица niffler-auth и niffler-userdata")
+    void notAccurateExTransaction(){
+        UserDbClient userDbClient = new UserDbClient();
+        var userName = RandomDataUtils.getUserName();
+        System.out.println(userName);
+        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        System.out.println(userDbClient.createUser(
+                new AuthUserJson(
+                        UUID.randomUUID(),
+                        null,
+                        passwordEncoder.encode("123"),
+                        true,
+                        true,
+                        true,
+                        true,
+                        new ArrayList<>()),
+                new UserJson(
+                        UUID.randomUUID(),
+                        userName,
+                        RandomDataUtils.getName(),
+                        RandomDataUtils.getSurname(),
+                        "Ivankov123",
+                        CurrencyValues.USD,
+                        null,
+                        null)));
+
     }
 }
