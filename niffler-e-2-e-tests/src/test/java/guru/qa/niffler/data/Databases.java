@@ -181,6 +181,7 @@ public class Databases {
                         connection.close();
                     }
                 } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
 
             }
