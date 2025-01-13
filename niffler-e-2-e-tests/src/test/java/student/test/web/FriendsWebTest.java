@@ -19,24 +19,47 @@ public class FriendsWebTest {
     @Test
     @ExtendWith(UsersQueueExtension.class)
     void friendShouldBePresentInFriendsTable(@UserType(WITH_FRIEND) StaticUser user) {
-        Selenide.open(CFG.frontUrl(), LoginPage.class).enterWithLoginAndPassword(user.userName(), user.password()).clickProfileIcon().clickFriendCategory().choseFriends().findAcceptedFriendRequestByName(user.friend());
+        Selenide
+                .open(CFG.frontUrl(), LoginPage.class)
+                .enterWithLoginAndPassword(user.userName(), user.password())
+                .clickProfileIcon()
+                .clickFriendCategory()
+                .choseFriends()
+                .friendShouldBePresentInFriendsByUserName(user.friend());
     }
 
     @Test
     @ExtendWith(UsersQueueExtension.class)
     void friendsTableShouldBeEmptyForNewUser(@UserType(EMPTY) StaticUser user) {
-        Selenide.open(CFG.frontUrl(), LoginPage.class).enterWithLoginAndPassword(user.userName(), user.password()).clickProfileIcon().clickFriendCategory().checkNoFriendsText();
+        Selenide
+                .open(CFG.frontUrl(), LoginPage.class)
+                .enterWithLoginAndPassword(user.userName(), user.password())
+                .clickProfileIcon()
+                .clickFriendCategory()
+                .checkNoFriendsText();
     }
 
     @Test
     @ExtendWith(UsersQueueExtension.class)
     void incomeInvitationBePresentInFriendsTable(@UserType(WITH_INCOME_REQUEST) StaticUser user) {
-        Selenide.open(CFG.frontUrl(), LoginPage.class).enterWithLoginAndPassword(user.userName(), user.password()).clickProfileIcon().clickFriendCategory().choseFriends().findFriendRequestByName(user.income());
+        Selenide
+                .open(CFG.frontUrl(), LoginPage.class)
+                .enterWithLoginAndPassword(user.userName(), user.password())
+                .clickProfileIcon()
+                .clickFriendCategory()
+                .choseFriends()
+                .incomeInvitationBePresentByUserName(user.income());
     }
 
     @Test
     @ExtendWith(UsersQueueExtension.class)
     void outcomeInvitationBePresentInAllPeoplesTable(@UserType(WITH_OUTCOME_REQUEST) StaticUser user) {
-        Selenide.open(CFG.frontUrl(), LoginPage.class).enterWithLoginAndPassword(user.userName(), user.password()).clickProfileIcon().clickFriendCategory().choseAllPeople().findFriendByName(user.outcome());
+        Selenide
+                .open(CFG.frontUrl(), LoginPage.class)
+                .enterWithLoginAndPassword(user.userName(), user.password())
+                .clickProfileIcon()
+                .clickFriendCategory()
+                .choseAllPeople()
+                .outcomeInvitationBePresentByUserName(user.outcome());
     }
 }

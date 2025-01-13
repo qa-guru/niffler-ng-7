@@ -30,17 +30,17 @@ public class FriendsPage {
         return this;
     }
 
-    public FriendsPage findFriendByName(String userName) {
+    public FriendsPage outcomeInvitationBePresentByUserName(String userName) {
         allUsersList.find(text(userName)).shouldHave(text("Waiting..."));
         return this;
     }
 
-    public FriendsPage findFriendRequestByName(String userName) {
+    public FriendsPage incomeInvitationBePresentByUserName(String userName) {
         allUsersList.find(text(userName)).shouldHave(text("Accept"));
         return this;
     }
 
-    public FriendsPage findAcceptedFriendRequestByName(String userName) {
+    public FriendsPage friendShouldBePresentInFriendsByUserName(String userName) {
         allUsersList.find(text(userName)).shouldHave(text("Unfriend"));
         return this;
     }
