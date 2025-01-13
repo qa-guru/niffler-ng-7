@@ -8,6 +8,8 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class MainPage {
+  public HeaderComponent header = new HeaderComponent();
+
   private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
   private final SelenideElement statisticsElement = $("#stat");
   private final SelenideElement spendingElement = $("#spendings");

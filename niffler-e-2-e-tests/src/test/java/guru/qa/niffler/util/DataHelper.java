@@ -8,4 +8,8 @@ public class DataHelper {
     public static String randomUserName() {
         return faker.name().username();
     }
+
+    public static String randomCategory() {
+        return "Category " + faker.funnyName().name();
+    }
 }
