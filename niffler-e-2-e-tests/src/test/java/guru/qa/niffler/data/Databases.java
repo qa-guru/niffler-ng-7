@@ -110,7 +110,6 @@ public class Databases {
             ut.begin();
             for (XaConsumer action : actions) {
                 try (Connection connection = connection(action.jdbcUrl)) {
-                    connection.setAutoCommit(false);
 //                    connection.setTransactionIsolation(isolationLevel); не понял куда вставить
                     action.function.accept(connection);
                 } catch (SQLException e) {

@@ -23,7 +23,7 @@ public class AuthAuthorityJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public void createUser(AuthAuthorityEntity... authAuthorityEntities) {
+    public void createAuthority(AuthAuthorityEntity... authAuthorityEntities) {
 
         try (
                 PreparedStatement ps = connection.prepareStatement(
