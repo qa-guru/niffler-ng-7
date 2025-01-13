@@ -60,11 +60,10 @@ public class Databases {
             ut.begin();
             T result = null;
             for (XaFunction<T> action : actions)
-                try (Connection connection = connection(action.jdbcUrl)) {
-                    connection.setAutoCommit(false);
-                    connection.setTransactionIsolation(isolationLevel);
+                try {
+                    Connection connection = connection(action.jdbcUrl);
+//                    connection.setTransactionIsolation(isolationLevel); не понял куда вставить
                     result = action.function.apply(connection);
-                    connection.commit();
                 } catch (SQLException e) {
                     throw new SQLException(e);
                 }
@@ -77,6 +76,8 @@ public class Databases {
                 throw new RuntimeException(ex);
             }
             throw new RuntimeException(e);
+        } finally {
+            closeAllConnection();
         }
     }
 
@@ -110,9 +111,8 @@ public class Databases {
             for (XaConsumer action : actions) {
                 try (Connection connection = connection(action.jdbcUrl)) {
                     connection.setAutoCommit(false);
-                    connection.setTransactionIsolation(isolationLevel);
+//                    connection.setTransactionIsolation(isolationLevel); не понял куда вставить
                     action.function.accept(connection);
-                    connection.commit();
                 } catch (SQLException e) {
                     throw new SQLException("Error in XA action", e);
                 }
@@ -125,6 +125,8 @@ public class Databases {
                 throw new RuntimeException(ex);
             }
             throw new RuntimeException(e);
+        } finally {
+            closeAllConnection();
         }
     }
 
