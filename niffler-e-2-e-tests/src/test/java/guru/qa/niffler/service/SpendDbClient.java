@@ -14,7 +14,7 @@ public class SpendDbClient {
     private static final Config CFG = Config.getInstance();
 
     public SpendJson createSpend(SpendJson spend) {
-        return transaction(connection -> {
+        return transaction(1, connection -> {
                     SpendEntity spendEntity = SpendEntity.fromJson(spend);
 
                     if (spendEntity.getCategory().getId() == null) {

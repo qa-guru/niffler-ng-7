@@ -15,7 +15,7 @@ public class CategoryDbClient {
     private static final Config CFG = Config.getInstance();
 
     public Optional<CategoryJson> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
-        return transaction(connection -> {
+        return transaction(1, connection -> {
                     Optional<CategoryEntity> category = new CategoryDAOJdbc(connection)
                             .findCategoryByUsernameAndCategoryName(username, categoryName);
                     return category.map(CategoryJson::fromEntity);
@@ -25,7 +25,7 @@ public class CategoryDbClient {
     }
 
     public CategoryJson createCategory(CategoryJson categoryJson) {
-        return transaction(connection -> {
+        return transaction(1, connection -> {
                     CategoryEntity category = new CategoryDAOJdbc(connection).createCategory(
                             CategoryEntity.fromJson(categoryJson)
                     );
@@ -37,7 +37,7 @@ public class CategoryDbClient {
     }
 
     public CategoryJson updateCategory(CategoryJson categoryJson) {
-        return transaction(connection -> {
+        return transaction(1, connection -> {
                     CategoryEntity categoryEntity = CategoryEntity.fromJson(categoryJson);
                     return CategoryJson.fromEntity(new CategoryDAOJdbc(connection).updateCategory(categoryEntity));
                 },

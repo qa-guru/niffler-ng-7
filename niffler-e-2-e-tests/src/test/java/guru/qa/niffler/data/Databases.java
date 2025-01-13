@@ -27,17 +27,14 @@ public class Databases {
     public record XAFunction<T>(Function<Connection, T> function, String jdbcUrl) {
     }
 
-    ;
-
     public record XAConsumer(Consumer<Connection> consumer, String jdbcUrl) {
     }
 
-    ;
-
-    public static <T> T transaction(Function<Connection, T> function, String jdbcUrl) {
+    public static <T> T transaction(int isolationLevel, Function<Connection, T> function, String jdbcUrl) {
         Connection connection = null;
         try {
             connection = connection(jdbcUrl);
+            connection.setTransactionIsolation(isolationLevel);
             connection.setAutoCommit(false);
             T result = function.apply(connection);
             connection.commit();
@@ -56,10 +53,11 @@ public class Databases {
         }
     }
 
-    public static void transaction(Consumer<Connection> consumer, String jdbcUrl) {
+    public static void transaction(int isolationLevel, Consumer<Connection> consumer, String jdbcUrl) {
         Connection connection = null;
         try {
             connection = connection(jdbcUrl);
+            connection.setTransactionIsolation(isolationLevel);
             connection.setAutoCommit(false);
             consumer.accept(connection);
             connection.commit();
@@ -138,7 +136,7 @@ public class Databases {
         );
     }
 
-    public static Connection connection(String jdbcUrl) throws SQLException {
+    private static Connection connection(String jdbcUrl) throws SQLException {
         return threadConnections.computeIfAbsent(
                 Thread.currentThread().threadId(),
                 key -> {
