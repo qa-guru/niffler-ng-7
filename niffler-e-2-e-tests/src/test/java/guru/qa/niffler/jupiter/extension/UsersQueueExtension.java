@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 import static guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType.Type.EMPTY;
 
 public class UsersQueueExtension implements
-        BeforeEachCallback,
-        AfterEachCallback,
+        BeforeTestExecutionCallback,
+        AfterTestExecutionCallback,
         ParameterResolver {
 
     private static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UsersQueueExtension.class);
@@ -55,11 +55,12 @@ public class UsersQueueExtension implements
         }
     }
 
+
     @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
+    public void beforeTestExecution(ExtensionContext context) throws Exception {
         Map<UserType, StaticUser> userMap = new HashMap<>();
         List<UserType> list = Arrays.stream(context.getRequiredTestMethod().getParameters())
-                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
+                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class) && p.getType().isAssignableFrom(StaticUser.class))
                 .map(p -> p.getAnnotation(UserType.class))
                 .toList();
         for (UserType ut : list) {
@@ -79,10 +80,17 @@ public class UsersQueueExtension implements
     }
 
     @Override
-    public void afterEach(ExtensionContext context) throws Exception {
-        Map<UserType, StaticUser> userMap = context.getStore(NAMESPACE).get(context.getUniqueId(), Map.class);
-        for (UserType userTypeKey : userMap.keySet()) {
-            getQueueByUserType(userTypeKey.value()).add(userMap.get(userTypeKey));
+    @SuppressWarnings("unchecked")
+    public void afterTestExecution(ExtensionContext context) throws Exception {
+        Map<UserType, StaticUser> userMap = context.getStore(NAMESPACE).get(
+                context.getUniqueId(),
+                Map.class
+        );
+
+        if (userMap != null) {
+            for (UserType userTypeKey : userMap.keySet()) {
+                getQueueByUserType(userTypeKey.value()).add(userMap.get(userTypeKey));
+            }
         }
     }
 
@@ -94,6 +102,7 @@ public class UsersQueueExtension implements
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public StaticUser resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws
             ParameterResolutionException {
         Map<UserType, StaticUser> map = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), Map.class);
