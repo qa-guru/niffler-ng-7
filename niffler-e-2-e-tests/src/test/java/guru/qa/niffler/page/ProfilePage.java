@@ -58,6 +58,11 @@ public class ProfilePage {
         return this;
     }
 
+    public ProfilePage showArchived() {
+        showArchivedCheckbox.click();
+        return this;
+    }
+
     public ProfilePage checkCategoryShouldBeActive(String category) {
         activeItemGrid.find(text(category)).should(visible);
         return this;

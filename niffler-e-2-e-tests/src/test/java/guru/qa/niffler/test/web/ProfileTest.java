@@ -19,10 +19,12 @@ public class ProfileTest {
     )
     @Test
     void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
+        System.out.println(category);
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .loginSuccess(CFG.username(), CFG.password())
                 .header.menuClick()
                 .profileClick()
+                .showArchived()
                 .checkCategoryShouldBeArchived(category.name());
     }
 
