@@ -2,7 +2,7 @@ package guru.qa.niffler.jupiter.extension;
 
 
 import guru.qa.niffler.api.category.CategoryApiClient;
-import guru.qa.niffler.helper.UserDataHelper;
+import guru.qa.niffler.utils.RandomDataUtils;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
@@ -13,7 +13,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
 
-    private final CategoryApiClient CategoryApiClient = new CategoryApiClient();
+    private final CategoryApiClient categoryApiClient = new CategoryApiClient();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
@@ -22,13 +22,13 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                             if (userAnno.categories().length > 0) {
                                 Category anno = userAnno.categories()[0];
 
-                                CategoryJson Category = new CategoryJson(
+                                CategoryJson category = new CategoryJson(
                                         null,
-                                        UserDataHelper.getRandomCategory(),
+                                        RandomDataUtils.getRandomCategory(),
                                         userAnno.username(),
                                         false
                                 );
-                                CategoryJson createdCategory = CategoryApiClient.createCategory(Category);
+                                CategoryJson createdCategory = categoryApiClient.createCategory(category);
 
                                 if (anno.archived()) {
                                     CategoryJson archivedCategory = new CategoryJson(
@@ -37,7 +37,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                                             createdCategory.username(),
                                             true
                                     );
-                                    createdCategory = CategoryApiClient.updateCategory(archivedCategory);
+                                    createdCategory = categoryApiClient.updateCategory(archivedCategory);
                                 }
 
                                 context.getStore(NAMESPACE).put(context.getUniqueId(), createdCategory);
@@ -67,7 +67,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
                     category.username(),
                     true
             );
-            CategoryApiClient.updateCategory(archivedCategory);
+            categoryApiClient.updateCategory(archivedCategory);
         }
     }
 }

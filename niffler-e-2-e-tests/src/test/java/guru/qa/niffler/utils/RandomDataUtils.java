@@ -1,9 +1,9 @@
-package guru.qa.niffler.helper;
+package guru.qa.niffler.utils;
 
 import com.github.javafaker.Faker;
 import guru.qa.niffler.model.UserJson;
 
-public class UserDataHelper {
+public class RandomDataUtils {
 
     private static final Faker faker = new Faker();
 
