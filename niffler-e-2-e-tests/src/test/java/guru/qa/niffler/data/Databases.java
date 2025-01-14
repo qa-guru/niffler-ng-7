@@ -31,9 +31,14 @@ public class Databases {
     }
 
     public static <T> T transaction(Function<Connection, T> function, String jdbcUrl) {
+        return transaction(Connection.TRANSACTION_READ_COMMITTED, function, jdbcUrl);
+    }
+
+    public static <T> T transaction(int isolationLevel, Function<Connection, T> function, String jdbcUrl) {
         Connection connection = null;
         try {
             connection = connection(jdbcUrl);
+            connection.setTransactionIsolation(isolationLevel);
             connection.setAutoCommit(false);
             T result;
             result = function.apply(connection);
@@ -54,8 +59,13 @@ public class Databases {
     }
 
     public static <T> T xaTransaction(XaFunction<T>... actions) {
+        return xaTransaction(Connection.TRANSACTION_READ_COMMITTED, actions);
+    }
+
+    public static <T> T xaTransaction(int isolationLevel, XaFunction<T>... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
+            ut.setTransactionTimeout(isolationLevel);
             ut.begin();
             T result = null;
             for (XaFunction<T> action : actions) {
@@ -74,9 +84,14 @@ public class Databases {
     }
 
     public static void transaction(Consumer<Connection> consumer, String jdbcUrl) {
+        transaction(Connection.TRANSACTION_READ_COMMITTED, consumer, jdbcUrl);
+    }
+
+    public static void transaction(int isolationLevel, Consumer<Connection> consumer, String jdbcUrl) {
         Connection connection = null;
         try {
             connection = connection(jdbcUrl);
+            connection.setTransactionIsolation(isolationLevel);
             connection.setAutoCommit(false);
             consumer.accept(connection);
             connection.commit();
@@ -95,8 +110,13 @@ public class Databases {
     }
 
     public static void xaTransaction(XaConsumer... actions) {
+        xaTransaction(Connection.TRANSACTION_READ_COMMITTED, actions);
+    }
+
+    public static void xaTransaction(int isolationLevel, XaConsumer... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
+            ut.setTransactionTimeout(isolationLevel);
             ut.begin();
             for (XaConsumer action : actions) {
                 action.function.accept(connection(action.jdbcUrl));

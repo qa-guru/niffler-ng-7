@@ -19,11 +19,10 @@ public class UserdataUserDaoJdbc implements UserdataUserDao {
         this.connection = connection;
     }
 
-
     @Override
     public UserEntity create(UserEntity user) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO \"user\" (username, currency, firstname, surname, fullname, photo, photoSmall)" +
+                "INSERT INTO \"user\" (username, currency, firstname, surname, full_name, photo, photo_small)" +
                         "VALUES(?, ?, ?, ?, ?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         )) {
