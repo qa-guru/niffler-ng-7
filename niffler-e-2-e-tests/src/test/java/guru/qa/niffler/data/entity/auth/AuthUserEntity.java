@@ -36,16 +36,4 @@ public class AuthUserEntity implements Serializable {
   public AuthUserEntity() {
   }
 
-  public void addAuthorities(AuthAuthorityEntity... authorities) {
-    for (AuthAuthorityEntity authority : authorities) {
-      this.authorities.add(authority);
-      authority.setUser(this);
-    }
-  }
-
-  public void removeAuthority(AuthAuthorityEntity authority) {
-    this.authorities.remove(authority);
-    authority.setUser(null);
-  }
-
 }
