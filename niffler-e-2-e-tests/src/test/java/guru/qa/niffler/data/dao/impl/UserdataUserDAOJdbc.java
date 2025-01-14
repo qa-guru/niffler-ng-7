@@ -6,6 +6,8 @@ import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.CurrencyValues;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -63,16 +65,7 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
 
             try (ResultSet rs = ps.getResultSet()) {
                 if (rs.next()) {
-                    UserEntity ue = new UserEntity();
-                    ue.setId(rs.getObject("id", UUID.class));
-                    ue.setUsername(rs.getString("username"));
-                    ue.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
-                    ue.setFirstname(rs.getString("firstname"));
-                    ue.setSurname(rs.getString("surname"));
-                    ue.setPhoto(rs.getBytes("photo"));
-                    ue.setPhotoSmall(rs.getBytes("photo_small"));
-                    ue.setFullname(rs.getString("full_name"));
-                    return Optional.of(ue);
+                    return Optional.of(mapperUserEntity(rs));
                 } else {
                     return Optional.empty();
                 }
@@ -92,19 +85,30 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
 
             try (ResultSet rs = ps.getResultSet()) {
                 if (rs.next()) {
-                    UserEntity ue = new UserEntity();
-                    ue.setId(rs.getObject("id", UUID.class));
-                    ue.setUsername(rs.getString("username"));
-                    ue.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
-                    ue.setFirstname(rs.getString("firstname"));
-                    ue.setSurname(rs.getString("surname"));
-                    ue.setPhoto(rs.getBytes("photo"));
-                    ue.setPhotoSmall(rs.getBytes("photo_small"));
-                    ue.setFullname(rs.getString("full_name"));
-                    return Optional.of(ue);
+                    return Optional.of(mapperUserEntity(rs));
                 } else {
                     return Optional.empty();
                 }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<UserEntity> findAllUsers() {
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM \"user\""
+        )) {
+            ps.execute();
+            try (ResultSet rs = ps.getResultSet()) {
+
+                List<UserEntity> userEntityList = new ArrayList<>();
+
+                while (rs.next()) {
+                    userEntityList.add(mapperUserEntity(rs));
+                }
+                return userEntityList;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -122,6 +126,19 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private UserEntity mapperUserEntity(ResultSet rs) throws SQLException {
+        UserEntity result = new UserEntity();
+        result.setId(rs.getObject("id", UUID.class));
+        result.setUsername(rs.getString("username"));
+        result.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+        result.setFirstname(rs.getString("firstname"));
+        result.setSurname(rs.getString("surname"));
+        result.setPhoto(rs.getBytes("photo"));
+        result.setPhotoSmall(rs.getBytes("photo_small"));
+        result.setFullname(rs.getString("full_name"));
+        return result;
     }
 
 }

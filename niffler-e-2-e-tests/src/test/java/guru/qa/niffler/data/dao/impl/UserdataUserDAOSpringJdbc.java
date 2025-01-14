@@ -10,6 +10,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -65,11 +66,31 @@ public class UserdataUserDAOSpringJdbc implements UserdataUserDAO {
 
     @Override
     public Optional<UserEntity> findByUsername(String username) {
-        return Optional.empty();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(
+                        "SELECT * FROM \"user\" WHERE username = ?",
+                        UserdataUserEntityRowMapper.instance,
+                        username
+                )
+        );
+    }
+
+
+    public List<UserEntity> findAllUsers() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return jdbcTemplate.query(
+                "SELECT * FROM \"user\"",
+                UserdataUserEntityRowMapper.instance
+        );
     }
 
     @Override
     public void delete(UserEntity user) {
-
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.update(
+                "DELETE FROM \"user\" WHERE id = ?",
+                user.getId()
+        );
     }
 }
