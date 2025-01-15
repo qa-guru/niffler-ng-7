@@ -8,6 +8,7 @@ import guru.qa.niffler.model.CategoryJson;
 import java.util.Optional;
 
 import static guru.qa.niffler.data.Databases.transaction;
+import static java.sql.Connection.TRANSACTION_READ_UNCOMMITTED;
 
 
 public class CategoryDbClient {
@@ -15,7 +16,7 @@ public class CategoryDbClient {
     private static final Config CFG = Config.getInstance();
 
     public Optional<CategoryJson> findCategoryByUsernameAndCategoryName(String username, String categoryName) {
-        return transaction(1, connection -> {
+        return transaction(TRANSACTION_READ_UNCOMMITTED, connection -> {
                     Optional<CategoryEntity> category = new CategoryDAOJdbc(connection)
                             .findCategoryByUsernameAndCategoryName(username, categoryName);
                     return category.map(CategoryJson::fromEntity);
@@ -25,7 +26,7 @@ public class CategoryDbClient {
     }
 
     public CategoryJson createCategory(CategoryJson categoryJson) {
-        return transaction(1, connection -> {
+        return transaction(TRANSACTION_READ_UNCOMMITTED, connection -> {
                     CategoryEntity category = new CategoryDAOJdbc(connection).createCategory(
                             CategoryEntity.fromJson(categoryJson)
                     );
@@ -37,7 +38,7 @@ public class CategoryDbClient {
     }
 
     public CategoryJson updateCategory(CategoryJson categoryJson) {
-        return transaction(1, connection -> {
+        return transaction(TRANSACTION_READ_UNCOMMITTED, connection -> {
                     CategoryEntity categoryEntity = CategoryEntity.fromJson(categoryJson);
                     return CategoryJson.fromEntity(new CategoryDAOJdbc(connection).updateCategory(categoryEntity));
                 },

@@ -8,13 +8,14 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.model.SpendJson;
 
 import static guru.qa.niffler.data.Databases.transaction;
+import static java.sql.Connection.TRANSACTION_READ_UNCOMMITTED;
 
 public class SpendDbClient {
 
     private static final Config CFG = Config.getInstance();
 
     public SpendJson createSpend(SpendJson spend) {
-        return transaction(1, connection -> {
+        return transaction(TRANSACTION_READ_UNCOMMITTED, connection -> {
                     SpendEntity spendEntity = SpendEntity.fromJson(spend);
 
                     if (spendEntity.getCategory().getId() == null) {

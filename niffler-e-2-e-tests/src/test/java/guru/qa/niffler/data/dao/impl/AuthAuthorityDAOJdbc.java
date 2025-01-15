@@ -6,11 +6,8 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class AuthAuthorityDAOJdbc implements AuthAuthorityDAO {
 
@@ -21,37 +18,26 @@ public class AuthAuthorityDAOJdbc implements AuthAuthorityDAO {
     }
 
     @Override
-    public List<AuthorityEntity> createUser(AuthUserEntity authUser) {
-        List<AuthorityEntity> created = new ArrayList<>();
+    public void createAuthorities(AuthUserEntity authUser) {
         List<AuthorityEntity> userAuthorities = authUser.getAuthorities();
 
-        for (AuthorityEntity authority : userAuthorities) {
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO authority (user_id, authority) " +
-                            "VALUES (?, ?)",
-                    PreparedStatement.RETURN_GENERATED_KEYS
-            )) {
-                ps.setObject(1, authority.getUser().getId());
-                ps.setString(2, authority.getAuthority().name());
-                ps.executeUpdate();
+        try (PreparedStatement ps = connection.prepareStatement(
+                "INSERT INTO authority (user_id, authority) " +
+                        "VALUES (?, ?)",
+                PreparedStatement.RETURN_GENERATED_KEYS
+        )) {
+            ps.setObject(1, userAuthorities.getFirst().getUser().getId());
+            ps.setString(2, userAuthorities.getFirst().getAuthority().name());
+            ps.addBatch();
 
-                final UUID generatedKey;
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        generatedKey = rs.getObject("id", UUID.class);
-                    } else {
-                        throw new SQLException("Can't find user id in ResultSet");
-                    }
-                }
+            ps.setObject(1, userAuthorities.getLast().getUser().getId());
+            ps.setString(2, userAuthorities.getLast().getAuthority().name());
+            ps.addBatch();
+            ps.executeBatch();
 
-                authority.setId(generatedKey);
-                created.add(authority);
-
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
-        return created;
     }
 }

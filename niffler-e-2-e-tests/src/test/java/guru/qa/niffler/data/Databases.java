@@ -75,13 +75,14 @@ public class Databases {
         }
     }
 
-    public static <T> T xaTransaction(XAFunction<T>... actions) {
+    public static <T> T xaTransaction(int isolationLevel, XAFunction<T>... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
             ut.begin();
 
             T result = null;
             for (XAFunction<T> action : actions) {
+                connection(action.jdbcUrl).setTransactionIsolation(isolationLevel);
                 result = action.function.apply(connection(action.jdbcUrl));
             }
 
@@ -97,12 +98,13 @@ public class Databases {
         }
     }
 
-    public static void xaTransaction(XAConsumer... actions) {
+    public static void xaTransaction(int isolationLevel, XAConsumer... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
             ut.begin();
 
             for (XAConsumer action : actions) {
+                connection(action.jdbcUrl).setTransactionIsolation(isolationLevel);
                 action.consumer.accept(connection(action.jdbcUrl));
             }
 
