@@ -106,5 +106,38 @@ public class JdbcTest {
 
 
     }
+
+
+    @Test
+    void springJdbcTest() {
+        UserDbClient userDbClient = new UserDbClient();
+        String username = RandomDataUtils.randomUsername();
+        String pw = "12345";
+
+        UserJson user = userDbClient.createUserSpringJdbc(
+                new UserJson(
+                        null,
+                        username,
+                        "First Name",
+                        "Surname",
+                        "Full Name",
+                        CurrencyValues.RUB,
+                        null,
+                        null,
+                        new AuthUserJson(
+                                null,
+                                username,
+                                pw,
+                                true,
+                                true,
+                                true,
+                                true,
+                                null
+                        )
+                )
+        );
+
+        assertEquals(username, user.username());
+    }
 }
 

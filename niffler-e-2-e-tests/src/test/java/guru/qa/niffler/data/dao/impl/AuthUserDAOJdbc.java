@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -53,5 +54,10 @@ public class AuthUserDAOJdbc implements AuthUserDAO {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @Override
+    public Optional<AuthUserEntity> findById(UUID id) {
+        return Optional.empty();
     }
 }
