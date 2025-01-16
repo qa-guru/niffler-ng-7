@@ -1,6 +1,8 @@
 package guru.qa.niffler.service;
 
+
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.Databases;
 import guru.qa.niffler.data.dao.impl.*;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
@@ -8,8 +10,10 @@ import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.AuthUserJson;
 import guru.qa.niffler.model.Authority;
 import guru.qa.niffler.model.UserJson;
+import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
 
@@ -21,7 +25,14 @@ public class UserDbClient {
 
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
+    private final TransactionTemplate transactionTemplate = new TransactionTemplate(
+            new JdbcTransactionManager(
+                    Databases.dataSource(CFG.authJdbcUrl())
+            )
+    );
+
     public UserJson createUserSpringJdbc(UserJson userJson){
+        transactionTemplate.execute(status -> {
         AuthUserEntity auth = new AuthUserEntity();
         auth.setUsername(userJson.username());
         auth.setPassword(pe.encode("123"));
@@ -32,7 +43,6 @@ public class UserDbClient {
 
          AuthUserEntity result = new AuthUserDaoSpringJbc(dataSource(CFG.authJdbcUrl()))
                 .createUser(auth);
-
 
         AuthorityEntity[] useAuthorities = Arrays.stream(Authority.values()).map(
                 e -> {
@@ -45,6 +55,9 @@ public class UserDbClient {
 
         new AuthAuthorityDaoSpringJdbc(dataSource(CFG.authJdbcUrl()))
                 .createAuthority(useAuthorities);
+
+            return null;
+        });
 
 
 
