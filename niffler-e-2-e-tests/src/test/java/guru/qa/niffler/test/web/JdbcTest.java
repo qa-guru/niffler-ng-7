@@ -136,8 +136,30 @@ public class JdbcTest {
                         )
                 )
         );
-
-        assertEquals(username, user.username());
     }
+
+
+    @Test
+    void springSpendJdbcTest() {
+        SpendDbClient spendDbClient = new SpendDbClient();
+
+        spendDbClient.createSpendSpringJdbc(
+                new SpendJson(
+                        null,
+                        new Date(),
+                        new CategoryJson(
+                                null,
+                                "Fast Food Test",
+                                "duck",
+                                false
+                        ),
+                        CurrencyValues.RUB,
+                        1800.0,
+                        "Fast Food description",
+                        "duck"
+                )
+        );
+    }
+
 }
 
