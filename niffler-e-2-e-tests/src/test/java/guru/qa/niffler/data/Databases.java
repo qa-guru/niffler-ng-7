@@ -65,10 +65,10 @@ public class Databases {
     public static <T> T xaTransaction(int isolationLevel, XaFunction<T>... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
-            ut.setTransactionTimeout(isolationLevel);
             ut.begin();
             T result = null;
             for (XaFunction<T> action : actions) {
+                connection(action.jdbcUrl).setTransactionIsolation(isolationLevel);
                 result = action.function.apply(connection(action.jdbcUrl));
             }
             ut.commit();
@@ -115,10 +115,12 @@ public class Databases {
 
     public static void xaTransaction(int isolationLevel, XaConsumer... actions) {
         UserTransaction ut = new UserTransactionImp();
+        Connection connection = null;
         try {
-            ut.setTransactionTimeout(isolationLevel);
+            connection.setTransactionIsolation(isolationLevel);
             ut.begin();
             for (XaConsumer action : actions) {
+                connection(action.jdbcUrl).setTransactionIsolation(isolationLevel);
                 action.function.accept(connection(action.jdbcUrl));
             }
             ut.commit();
