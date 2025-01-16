@@ -20,6 +20,10 @@ public class DataUtils {
         return faker.name().name();
     }
 
+    public static String randomSurname() {
+        return faker.name().lastName();
+    }
+
     public static String randomCategoryName() {
         return "Category_" + random.nextInt(1000);
     }
