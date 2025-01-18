@@ -108,6 +108,9 @@ dependencies {
     testImplementation "p6spy:p6spy:${p6spyVersion}"
     testImplementation "org.hibernate:hibernate-core:${hibernateVersion}"
     testImplementation "org.springframework.security:spring-security-crypto:${springCryptoVersion}"
+    testImplementation 'com.atomikos:transactions-jta:6.0.0:jakarta'
+    testImplementation 'com.atomikos:transactions-hibernate4:6.0.0:jakarta'
+    testImplementation 'com.atomikos:transactions-jdbc:6.0.0'
     // Allure
     testImplementation "io.qameta.allure:allure-attachments:${allureVersion}"
     testImplementation("io.qameta.allure:allure-junit5:${allureVersion}") {

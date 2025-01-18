@@ -1,5 +1,7 @@
 package guru.qa.niffler.config;
 
+import org.apache.kafka.common.protocol.types.Field;
+
 public interface Config {
     static Config getInstance() {
         return LocalConfig.INSTANCE;
@@ -22,4 +24,6 @@ public interface Config {
     String currencyJBDCUrl();
 
     String ghUrl();
+
+    String authJDBCUrl();
 }
