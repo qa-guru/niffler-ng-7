@@ -9,7 +9,6 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,6 +18,7 @@ import static guru.qa.niffler.data.Databases.transaction;
 
 public class SpendDbClient {
     private static final Config CFG = Config.getInstance();
+
 
     public Optional<SpendJson> findSpendById(UUID id) {
         return transaction(connection -> {
@@ -32,7 +32,7 @@ public class SpendDbClient {
     public List<SpendJson> findAllByUsername(String username) {
         return transaction(connection -> {
                     List<SpendEntity> allByUsername = new SpendDaoJdbc(connection).findAllByUsername(username);
-                    return allByUsername.stream().map(SpendJson::fromEntity).collect(Collectors.toCollection(ArrayList::new));
+                    return allByUsername.stream().map(SpendJson::fromEntity).collect(Collectors.toList());
                 },
                 CFG.spendJdbcUrl(),
                 Connection.TRANSACTION_SERIALIZABLE

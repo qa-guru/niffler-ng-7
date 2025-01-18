@@ -20,8 +20,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     @Override
     public AuthorityUserEntity createUser(AuthorityUserEntity user) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO user (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired)" +
-                        "VALUES (?, ?, ?, ?, ?, ?, )",
+                "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired)" +
+                        "VALUES (?, ?, ?, ?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS
         )) {
             ps.setString(1, user.getUsername());
