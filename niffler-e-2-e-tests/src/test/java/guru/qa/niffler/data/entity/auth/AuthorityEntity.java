@@ -13,6 +13,6 @@ public class AuthorityEntity implements Serializable {
 
     private Authority authority;
 
-    private UUID userId;
+    private AuthorityUserEntity user;
 
 }

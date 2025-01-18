@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.utils.RandomDataUtils;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 
 @WebTest
@@ -23,9 +24,10 @@ public class LoginWebTest {
 
     @Test
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
+        UserJson randomUser = RandomDataUtils.getRandomUser();
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .login(RandomDataUtils.getRandomUsername(),
-                        RandomDataUtils.getRandomPassword());
+                .login(randomUser.username(),
+                        randomUser.password());
         new LoginPage().shouldSeeErrorWithBadCredentialsText();
     }
 

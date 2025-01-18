@@ -1,15 +1,11 @@
 package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.data.dao.AuthUserDao;
-import guru.qa.niffler.data.entity.auth.AuthUserEntity;
-import org.jetbrains.annotations.NotNull;
+import guru.qa.niffler.data.entity.auth.AuthorityUserEntity;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public class AuthUserDaoJdbc implements AuthUserDao {
@@ -22,7 +18,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
-    public AuthUserEntity createUser(AuthUserEntity user) {
+    public AuthorityUserEntity createUser(AuthorityUserEntity user) {
         try (PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired)" +
                         "VALUES (?, ?, ?, ?, ?, ?)",
@@ -51,60 +47,6 @@ public class AuthUserDaoJdbc implements AuthUserDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public Optional<AuthUserEntity> findId(UUID id) {
-        try (PreparedStatement ps = connection.prepareStatement(
-                "SELECT * FROM \"user\" WHERE id = ?"
-        )) {
-            ps.setObject(1, id);
-            ps.execute();
-
-            try (ResultSet rs = ps.getResultSet()) {
-                if (rs.next()) {
-                    AuthUserEntity userEntity = getAuthUserEntity(rs);
-                    return Optional.of(userEntity);
-                } else {
-                    return Optional.empty();
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public List<AuthUserEntity> findAll() {
-        List<AuthUserEntity> userEntities = new ArrayList<>();
-        try (PreparedStatement ps = connection.prepareStatement(
-                "SELECT * FROM \"user\""
-        )) {
-            ps.execute();
-
-            try (ResultSet rs = ps.getResultSet()) {
-                while (rs.next()) {
-                    AuthUserEntity userEntity = getAuthUserEntity(rs);
-                    userEntities.add(userEntity);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return userEntities;
-    }
-
-    @NotNull
-    private static AuthUserEntity getAuthUserEntity(ResultSet rs) throws SQLException {
-        AuthUserEntity userEntity = new AuthUserEntity();
-        userEntity.setId(rs.getObject("id", UUID.class));
-        userEntity.setUsername(rs.getString("username"));
-        userEntity.setPassword(rs.getString("password"));
-        userEntity.setEnabled(rs.getBoolean("enabled"));
-        userEntity.setAccountNonExpired(rs.getBoolean("account_non_expired"));
-        userEntity.setAccountNonLocked(rs.getBoolean("account_non_locked"));
-        userEntity.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
-        return userEntity;
     }
 
 }

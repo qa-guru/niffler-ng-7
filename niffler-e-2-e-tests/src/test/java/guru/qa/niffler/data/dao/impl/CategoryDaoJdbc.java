@@ -2,7 +2,6 @@ package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
-import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -55,9 +54,15 @@ public class CategoryDaoJdbc implements CategoryDao {
             ps.setObject(1, id);
             ps.execute();
 
+
             try (ResultSet rs = ps.getResultSet()) {
                 if (rs.next()) {
-                    CategoryEntity categoryEntity = getCategoryEntity(rs);
+                    CategoryEntity categoryEntity = new CategoryEntity();
+                    categoryEntity.setId(rs.getObject("id", UUID.class));
+                    categoryEntity.setUsername(rs.getString("username"));
+                    categoryEntity.setName(rs.getString("name"));
+                    categoryEntity.setArchived(rs.getBoolean("archived"));
+
                     return Optional.of(categoryEntity);
                 } else {
                     return Optional.empty();
@@ -79,7 +84,12 @@ public class CategoryDaoJdbc implements CategoryDao {
 
             try (ResultSet rs = ps.getResultSet()) {
                 if (rs.next()) {
-                    CategoryEntity categoryEntity = getCategoryEntity(rs);
+                    CategoryEntity categoryEntity = new CategoryEntity();
+                    categoryEntity.setId(rs.getObject("id", UUID.class));
+                    categoryEntity.setUsername(rs.getString("username"));
+                    categoryEntity.setName(rs.getString("name"));
+                    categoryEntity.setArchived(rs.getBoolean("archived"));
+
                     return Optional.of(categoryEntity);
                 } else {
                     return Optional.empty();
@@ -101,27 +111,12 @@ public class CategoryDaoJdbc implements CategoryDao {
             List<CategoryEntity> list = new ArrayList<>();
             try (ResultSet rs = ps.getResultSet()) {
                 while (rs.next()) {
-                    CategoryEntity categoryEntity = getCategoryEntity(rs);
-                    list.add(categoryEntity);
-                }
-            }
-            return list;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+                    CategoryEntity categoryEntity = new CategoryEntity();
+                    categoryEntity.setId(rs.getObject("id", UUID.class));
+                    categoryEntity.setUsername(rs.getString("username"));
+                    categoryEntity.setName(rs.getString("name"));
+                    categoryEntity.setArchived(rs.getBoolean("archived"));
 
-    @Override
-    public List<CategoryEntity> findAll() {
-        try (PreparedStatement ps = connection.prepareStatement(
-                "SELECT * FROM category"
-        )) {
-            ps.execute();
-
-            List<CategoryEntity> list = new ArrayList<>();
-            try (ResultSet rs = ps.getResultSet()) {
-                while (rs.next()) {
-                    CategoryEntity categoryEntity = getCategoryEntity(rs);
                     list.add(categoryEntity);
                 }
             }
@@ -141,15 +136,5 @@ public class CategoryDaoJdbc implements CategoryDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @NotNull
-    private static CategoryEntity getCategoryEntity(ResultSet rs) throws SQLException {
-        CategoryEntity categoryEntity = new CategoryEntity();
-        categoryEntity.setId(rs.getObject("id", UUID.class));
-        categoryEntity.setUsername(rs.getString("username"));
-        categoryEntity.setName(rs.getString("name"));
-        categoryEntity.setArchived(rs.getBoolean("archived"));
-        return categoryEntity;
     }
 }
