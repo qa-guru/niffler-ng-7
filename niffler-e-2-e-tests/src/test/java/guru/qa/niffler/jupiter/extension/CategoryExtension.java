@@ -49,7 +49,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     @Override
     public void afterTestExecution(ExtensionContext context) throws Exception {
         CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
-        if (category != null && !category.archived()) {
+        if (category != null) {
             spendDbClient.deleteCategory(category);
         }
     }
