@@ -1,15 +1,17 @@
 type Category {
   id: ID!
 
-  category: String!
+  name: String!
 
   username: String!
 
   archived: Boolean!
 }
 
-input CreateCategoryInput {
-  category: String!
+input CategoryInput {
+  id: ID!
+
+  name: String!
 
   archived: Boolean!
 }
@@ -43,7 +45,23 @@ enum FilterPeriod {
   MONTH
 }
 
-enum FriendState {
+enum FriendshipAction {
+  ADD
+
+  ACCEPT
+
+  REJECT
+
+  DELETE
+}
+
+input FriendshipInput {
+  username: String!
+
+  action: FriendshipAction!
+}
+
+enum FriendshipStatus {
   INVITE_SENT
 
   INVITE_RECEIVED
@@ -52,35 +70,47 @@ enum FriendState {
 }
 
 type Mutation {
-  createCategory(input: CreateCategoryInput!): Category!
+  user(input: UserInput!): User!
 
-  updateUser(input: UpdateUserInfoInput!): User!
+  category(input: CategoryInput!): Category!
 
-  addSpend(spend: SpendInput!): Spend!
+  spend(input: SpendInput!): Spend!
 
-  updateSpend(spend: UpdateSpendInput!): Spend!
+  deleteSpend(ids: [ID!]!): [ID!]!
 
-  deleteSpends(ids: [String]): [String!]!
+  friendship(input: FriendshipInput!): User!
+}
 
-  acceptInvitation(friendUsername: String!): User!
+type PageInfo {
+  hasPreviousPage: Boolean!
 
-  declineInvitation(friendUsername: String!): User!
+  hasNextPage: Boolean!
 
-  addFriend(friendUsername: String!): User!
+  startCursor: String
 
-  removeFriend(friendUsername: String!): User!
+  endCursor: String
 }
 
 type Query {
-  categories: [Category!]!
+  session: Session!
 
-  currencies: [Currency!]!
+  spend(id: ID!): Spend!
 
-  users: [User!]!
+  spendForm: SpendForm!
 
   user: User!
 
-  spends(filterPeriod: FilterPeriod, filterCurrency: CurrencyValues): [Spend!]!
+  spends(page: Int, size: Int, searchQuery: String, filterPeriod: FilterPeriod, filterCurrency: CurrencyValues): SpendConnection
+
+  stat(filterPeriod: FilterPeriod, filterCurrency: CurrencyValues, statCurrency: CurrencyValues): Statistic!
+}
+
+type Session {
+  username: String
+
+  issuedAt: Date
+
+  expiresAt: Date
 }
 
 type Spend {
@@ -88,7 +118,7 @@ type Spend {
 
   spendDate: Date!
 
-  category: String!
+  category: Category!
 
   currency: CurrencyValues!
 
@@ -99,20 +129,26 @@ type Spend {
   username: String
 }
 
+type SpendConnection {
+  edges: [SpendEdge]!
+
+  pageInfo: PageInfo!
+}
+
+type SpendEdge {
+  cursor: String!
+
+  node: Spend!
+}
+
+type SpendForm {
+  currencies: [Currency!]!
+
+  categories: [Category!]!
+}
+
 input SpendInput {
-  spendDate: Date!
-
-  category: String!
-
-  currency: CurrencyValues
-
-  amount: Float!
-
-  description: String
-}
-
-input UpdateSpendInput {
-  id: ID!
+  id: ID
 
   spendDate: Date!
 
@@ -125,16 +161,24 @@ input UpdateSpendInput {
   description: String
 }
 
-input UpdateUserInfoInput {
-  firstname: String
-
-  surname: String
-
-  fullname: String
+type Statistic {
+  total: Float!
 
   currency: CurrencyValues!
 
-  photo: String
+  statByCategories: [SumByCategory!]!
+}
+
+type SumByCategory {
+  categoryName: String!
+
+  currency: CurrencyValues!
+
+  sum: Float!
+
+  firstSpendDate: Date!
+
+  lastSpendDate: Date!
 }
 
 type User {
@@ -142,21 +186,37 @@ type User {
 
   username: String!
 
-  firstname: String
-
-  surname: String
-
   fullname: String
-
-  currency: CurrencyValues!
 
   photo: String
 
   photoSmall: String
 
-  friendState: FriendState
+  friendshipStatus: FriendshipStatus
 
-  friends: [User]
+  categories: [Category!]!
+
+  friends(page: Int, size: Int, searchQuery: String): UserConnection
+
+  allPeople(page: Int, size: Int, searchQuery: String): UserConnection
+}
+
+type UserConnection {
+  edges: [UserEdge]!
+
+  pageInfo: PageInfo!
+}
+
+type UserEdge {
+  cursor: String!
+
+  node: User!
+}
+
+input UserInput {
+  fullname: String
+
+  photo: String
 }
 
 type __Directive {

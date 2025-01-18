@@ -19,7 +19,7 @@ public class CategoryApiClient {
 
     private final Retrofit retrofit = new Retrofit.Builder()
             .client(okHttpClient)
-            .baseUrl(Config.getInstance().categoryUrl())
+            .baseUrl(Config.getInstance().spendUrl())
             .addConverterFactory(JacksonConverterFactory.create())
             .build();
 

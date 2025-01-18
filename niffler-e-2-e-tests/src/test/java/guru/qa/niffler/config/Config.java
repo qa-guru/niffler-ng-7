@@ -11,13 +11,19 @@ public interface Config {
 
     String authUrl();
 
+    String authJdbcUrl();
+
     String gatewayUrl();
 
     String userdataUrl();
 
+    String userdataJdbcUrl();
+
     String spendUrl();
 
-    String categoryUrl();
+    String spendJdbcUrl();
+
+    String currencyJdbcUrl();
 
     String ghUrl();
 }
