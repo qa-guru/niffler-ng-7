@@ -1,17 +1,16 @@
 package guru.qa.niffler.dataBase.entity;
 
 import guru.qa.niffler.model.AuthUserJson;
-import guru.qa.niffler.model.SpendingJson;
+
 import lombok.Getter;
 import lombok.Setter;
 
 
 import java.io.Serializable;
-import java.sql.Connection;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
+
 
 @Getter
 @Setter
@@ -37,4 +36,5 @@ public class AuthUserEntity implements Serializable {
         ce.setAuthorities(authUserJson.authorities());
         return ce;
     }
+
 }

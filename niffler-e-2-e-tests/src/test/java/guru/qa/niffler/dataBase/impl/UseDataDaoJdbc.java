@@ -3,10 +3,13 @@ package guru.qa.niffler.dataBase.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.dataBase.dao.UseDataDao;
 import guru.qa.niffler.dataBase.dbConnection.DataBases;
+import guru.qa.niffler.dataBase.entity.AuthUserEntity;
 import guru.qa.niffler.dataBase.entity.UserEntity;
 import guru.qa.niffler.model.CurrencyValues;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -121,6 +124,34 @@ public class UseDataDaoJdbc implements UseDataDao {
             ps.execute();
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        List<UserEntity> userEntities = new ArrayList<>();
+        try (Connection connection = DataBases.connection(CFG.userdataJDBCUrl());
+             PreparedStatement ps = connection.prepareStatement(
+                     "SELECT * FROM \"user\""
+             )) {
+            ps.execute();
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    UserEntity user = new UserEntity();
+                    user.setId(rs.getObject("id", UUID.class));
+                    user.setUsername(rs.getString("username"));
+                    user.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+                    user.setFirstname(rs.getString("firstname"));
+                    user.setSurname(rs.getString("surname"));
+                    user.setPhoto(rs.getBytes("photo"));
+                    user.setPhotoSmall(rs.getBytes("photoSmall"));
+                    user.setFullname(rs.getString("full_name"));
+                    userEntities.add(user);
+                }
+                return userEntities;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching data", e);
         }
     }
 }

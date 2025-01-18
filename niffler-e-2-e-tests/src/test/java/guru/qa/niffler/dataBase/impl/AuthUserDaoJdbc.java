@@ -1,12 +1,20 @@
 package guru.qa.niffler.dataBase.impl;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.dataBase.dao.AuthUserDao;
+import guru.qa.niffler.dataBase.dbConnection.DataBases;
 import guru.qa.niffler.dataBase.entity.AuthUserEntity;
+import guru.qa.niffler.dataBase.entity.Authority;
+import guru.qa.niffler.dataBase.entity.AuthorityEntity;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class AuthUserDaoJdbc implements AuthUserDao {
+    private static final Config CFG = Config.getInstance();
 
     private final Connection connection;
 
@@ -43,6 +51,37 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Optional<AuthUserEntity> findById(UUID id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<AuthUserEntity> findAll() {
+        List<AuthUserEntity> authUserEntities = new ArrayList<>();
+        try (Connection connection = DataBases.connection(CFG.authJDBCUrl());
+             PreparedStatement ps = connection.prepareStatement(
+                     "SELECT * FROM \"user\""
+             )) {
+            ps.execute();
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    AuthUserEntity authUserEntity = new AuthUserEntity();
+                    authUserEntity.setId(rs.getObject("id", UUID.class));
+                    authUserEntity.setPassword(rs.getString("password"));
+                    authUserEntity.setEnabled(rs.getBoolean("enabled"));
+                    authUserEntity.setAccountNonExpired(rs.getBoolean("account_non_expired"));
+                    authUserEntity.setAccountNonLocked(rs.getBoolean("account_non_locked"));
+                    authUserEntity.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
+                    authUserEntities.add(authUserEntity);
+                }
+                return authUserEntities;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching data", e);
         }
     }
 }

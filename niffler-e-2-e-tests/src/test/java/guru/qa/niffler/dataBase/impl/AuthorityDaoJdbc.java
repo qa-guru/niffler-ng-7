@@ -1,18 +1,27 @@
 package guru.qa.niffler.dataBase.impl;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.dataBase.dao.AuthorityDao;
+import guru.qa.niffler.dataBase.dbConnection.DataBases;
+import guru.qa.niffler.dataBase.entity.Authority;
 import guru.qa.niffler.dataBase.entity.AuthorityEntity;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class AuthorityDaoJdbc implements AuthorityDao {
+
+    private static final Config CFG = Config.getInstance();
+
 
     private final Connection connection;
 
     public AuthorityDaoJdbc(Connection connection) {
         this.connection = connection;
     }
+
     @Override
     public AuthorityEntity createUser(AuthorityEntity authority) {
         try (PreparedStatement ps = connection.prepareStatement(
@@ -38,6 +47,28 @@ public class AuthorityDaoJdbc implements AuthorityDao {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<AuthorityEntity> findAll() {
+        List<AuthorityEntity> authorityEntities = new ArrayList<>();
+        try (Connection connection = DataBases.connection(CFG.authJDBCUrl());
+             PreparedStatement ps = connection.prepareStatement(
+                     "SELECT * FROM authority"
+             )) {
+            ps.execute();
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    AuthorityEntity authority = new AuthorityEntity();
+                    authority.setId(rs.getObject("id", UUID.class));
+                    authority.setAuthority(Authority.valueOf(rs.getString("authority")));
+                    authorityEntities.add(authority);
+                }
+                return authorityEntities;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching data", e);
         }
     }
 }
