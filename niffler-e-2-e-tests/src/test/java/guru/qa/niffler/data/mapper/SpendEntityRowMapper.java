@@ -9,11 +9,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public class SpandEntityRowMapper implements RowMapper<SpendEntity> {
+public class SpendEntityRowMapper implements RowMapper<SpendEntity> {
 
-    public static final SpandEntityRowMapper instance = new SpandEntityRowMapper();
+    public static final SpendEntityRowMapper instance = new SpendEntityRowMapper();
 
-    private SpandEntityRowMapper() {
+    private SpendEntityRowMapper() {
     }
 
 

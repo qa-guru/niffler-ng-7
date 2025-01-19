@@ -96,7 +96,7 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
     }
 
     @Override
-    public List<UserEntity> findAllUsers() {
+    public List<UserEntity> findAll() {
         try (PreparedStatement ps = connection.prepareStatement(
                 "SELECT * FROM \"user\""
         )) {

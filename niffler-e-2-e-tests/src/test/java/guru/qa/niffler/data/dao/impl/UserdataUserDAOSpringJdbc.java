@@ -77,7 +77,7 @@ public class UserdataUserDAOSpringJdbc implements UserdataUserDAO {
     }
 
 
-    public List<UserEntity> findAllUsers() {
+    public List<UserEntity> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return jdbcTemplate.query(
                 "SELECT * FROM \"user\"",

@@ -2,7 +2,7 @@ package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.data.dao.SpendDao;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
-import guru.qa.niffler.data.mapper.SpandEntityRowMapper;
+import guru.qa.niffler.data.mapper.SpendEntityRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -57,7 +57,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
                         "SELECT * FROM spend WHERE id = ?",
-                        SpandEntityRowMapper.instance,
+                        SpendEntityRowMapper.instance,
                         id
                 )
         );
@@ -68,7 +68,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return jdbcTemplate.query(
                 "SELECT * FROM spend WHERE username = ?",
-                SpandEntityRowMapper.instance,
+                SpendEntityRowMapper.instance,
                 username
         );
     }
@@ -78,7 +78,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return jdbcTemplate.query(
                 "SELECT * FROM spend WHERE username = ?",
-                SpandEntityRowMapper.instance
+                SpendEntityRowMapper.instance
         );
     }
 
