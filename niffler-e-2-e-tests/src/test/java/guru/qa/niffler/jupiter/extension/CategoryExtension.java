@@ -1,15 +1,16 @@
-package guru.qa.niffler.jupiter;
+package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.api.CategoryApiClient;
+import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.model.CategoryJson;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import static guru.qa.niffler.util.DataGenerator.getRandomCategoryName;
 
-public class CreateCategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
+public class CategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace
-            .create(CreateCategoryExtension.class);
+            .create(CategoryExtension.class);
 
     private final CategoryApiClient categoryApi = new CategoryApiClient();
 
@@ -21,11 +22,9 @@ public class CreateCategoryExtension implements BeforeEachCallback, ParameterRes
                             null,
                             getRandomCategoryName(),
                             anno.username(),
-                            anno.archived()
+                            false
                     );
-
                     CategoryJson createdCategory = categoryApi.addCategory(categoryJson);
-
                     if(anno.archived()) {
                         CategoryJson archiveCategory = new CategoryJson(
                           createdCategory.id(),
@@ -50,7 +49,7 @@ public class CreateCategoryExtension implements BeforeEachCallback, ParameterRes
     @Override
     public CategoryJson resolveParameter(ParameterContext parameterContext,
                                          ExtensionContext extensionContext) throws ParameterResolutionException {
-        return extensionContext.getStore(CreateCategoryExtension.NAMESPACE).get(extensionContext.getUniqueId(), CategoryJson.class);
+        return extensionContext.getStore(CategoryExtension.NAMESPACE).get(extensionContext.getUniqueId(), CategoryJson.class);
     }
 
     @Override

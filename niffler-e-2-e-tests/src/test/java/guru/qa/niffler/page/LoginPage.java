@@ -20,14 +20,14 @@ public class LoginPage {
   private final SelenideElement errorMessage = $x(".//*[contains(@class, 'form__error-container')]");
 
 
-  public LoginPage setUsernameField(String username) {
+  public LoginPage setUsername(String username) {
     setFieldAndCheck(usernameInput, username);
-    return getLoginPage();
+    return this;
   }
 
-  public LoginPage setPasswordField(String password) {
+  public LoginPage setPassword(String password) {
     setFieldAndCheck(passwordInput, password);
-    return getLoginPage();
+    return this;
   }
 
   public RegisterPage clickRegisterButton() {
@@ -42,8 +42,8 @@ public class LoginPage {
   }
 
   public MainPage login(String username, String password) {
-    setUsernameField(username)
-            .setPasswordField(password);
+    setUsername(username)
+            .setPassword(password);
     submitButton.shouldBe(visible).click();
     return new MainPage();
   }

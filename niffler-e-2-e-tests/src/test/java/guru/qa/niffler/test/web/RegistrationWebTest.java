@@ -3,7 +3,7 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.config.Constants;
-import guru.qa.niffler.jupiter.BrowserExtension;
+import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,9 +26,9 @@ public class RegistrationWebTest {
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickRegisterButton()
-                .setUsernameField(username)
-                .setPasswordField(password)
-                .setPasswordSubmitField(password)
+                .setUsername(username)
+                .setPassword(password)
+                .setPasswordSubmit(password)
                 .clickSubmitButton()
                 .clickSubmitRegistration()
                 .login(username, password)
@@ -39,22 +39,22 @@ public class RegistrationWebTest {
     void shouldNotRegisterUserWithExistingUsername() {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickRegisterButton()
-                .setUsernameField(Constants.userName)
-                .setPasswordField(Constants.password)
-                .setPasswordSubmitField(Constants.password)
+                .setUsername(Constants.userName)
+                .setPassword(Constants.password)
+                .setPasswordSubmit(Constants.password)
                 .clickSubmitButton()
-                .checkErrorMessageFieldUsername(format("Username `%s` already exists", Constants.userName));
+                .checkErrorMessageUsername(format("Username `%s` already exists", Constants.userName));
     }
 
     @Test
     void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual() {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickRegisterButton()
-                .setUsernameField(getRandomUsername())
-                .setPasswordField(getRandomPassword())
-                .setPasswordSubmitField(getRandomPassword())
+                .setUsername(getRandomUsername())
+                .setPassword(getRandomPassword())
+                .setPasswordSubmit(getRandomPassword())
                 .clickSubmitButton()
-                .checkErrorMessageFieldPassword("Passwords should be equal");
+                .checkErrorMessagePassword("Passwords should be equal");
     }
 
     @Test

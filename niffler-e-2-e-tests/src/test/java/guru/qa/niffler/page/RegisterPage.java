@@ -27,17 +27,17 @@ public class RegisterPage {
         return INSTANCE.get();
     }
 
-    public RegisterPage setUsernameField(String username) {
+    public RegisterPage setUsername(String username) {
         setValueField(usernameInput, username);
         return this;
     }
 
-    public RegisterPage setPasswordField(String password) {
+    public RegisterPage setPassword(String password) {
         setValueField(passwordInput, password);
         return this;
     }
 
-    public RegisterPage setPasswordSubmitField(String password) {
+    public RegisterPage setPasswordSubmit(String password) {
         setValueField(retryPasswordInput, password);
         return this;
     }
@@ -52,14 +52,14 @@ public class RegisterPage {
         return getLoginPage();
     }
 
-    public RegisterPage checkErrorMessageFieldPassword(String message) {
+    public RegisterPage checkErrorMessagePassword(String message) {
         SelenideElement passwordFieldBlock = passwordInput.parent().$x(".//span[@class='form__error']");
         passwordFieldBlock.shouldHave(text(message).because(format(
                 "Вместо текста %s содержится текст %s", message, passwordFieldBlock.getText())));
         return this;
     }
 
-    public RegisterPage checkErrorMessageFieldUsername(String message) {
+    public RegisterPage checkErrorMessageUsername(String message) {
         SelenideElement passwordFieldBlock = usernameInput.parent().$x(".//span[@class='form__error']");
         passwordFieldBlock.shouldHave(text(message).because(format(
                 "Вместо текста %s содержится текст %s", message, passwordFieldBlock.getText())));

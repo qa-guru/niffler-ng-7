@@ -8,12 +8,13 @@ import retrofit2.Response;
 import java.io.IOException;
 import java.util.List;
 
+import static guru.qa.niffler.api.ApiClient.SPEND_API;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SpendApiClient {
 
-  private final SpendApi spendApi = ApiClient.getINSTANCE().create(SpendApi.class);
+  private final SpendApi spendApi = SPEND_API.getINSTANCE().create(SpendApi.class);
 
   public SpendJson createSpend(SpendJson spend) {
     final Response<SpendJson> response;
