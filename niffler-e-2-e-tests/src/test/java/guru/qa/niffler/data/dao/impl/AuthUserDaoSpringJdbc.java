@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -47,7 +48,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
                 }, keyHolder
         );
 
-        final UUID generatedKey = (UUID) keyHolder.getKeys().get("id");
+        final UUID generatedKey = (UUID) Objects.requireNonNull(keyHolder.getKeys()).get("id");
 
         authUserEntity.setId(generatedKey);
 
@@ -69,11 +70,23 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
-        return Optional.empty();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(
+                        "SELECT * FROM \"user\" WHERE username = ?",
+                        AuthUserEntityRowMapper.instance,
+                        username
+                )
+        );
     }
 
     @Override
     public List<AuthUserEntity> findAll() {
-        return List.of();
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return jdbcTemplate.query(
+                "SELECT * FROM \"user\"",
+                AuthUserEntityRowMapper.instance
+        );
+
     }
 }
