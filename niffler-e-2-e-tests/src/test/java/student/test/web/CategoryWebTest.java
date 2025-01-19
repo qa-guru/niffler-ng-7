@@ -2,24 +2,24 @@ package student.test.web;
 
 import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import student.config.Config;
 import student.jupiter.annotaion.Category;
-import student.jupiter.extension.browser.BrowserExtension;
+import student.jupiter.annotaion.meta.User;
+import student.jupiter.annotaion.meta.WebTest;
 import student.model.CategoryJson;
 import student.pages.LoginPage;
 import student.util.DataGenerator;
 
-@ExtendWith(BrowserExtension.class)
+@WebTest
 public class CategoryWebTest {
 
     private static final Config CFG = Config.getInstance();
     @Test
-    @Category(
+    @User(
             username = DataGenerator.userName,
-            archived = true
+            categories = @Category(archived = true)
     )
-    void archivedCategoryShouldBePresentedInCategoriesList(CategoryJson category) {
+    void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .setUserName(DataGenerator.userName)
                 .setPassword(DataGenerator.userPassword)
@@ -31,9 +31,9 @@ public class CategoryWebTest {
     }
 
     @Test
-    @Category(
+    @User(
             username = DataGenerator.userName,
-            archived = false
+            categories = @Category(archived = false)
     )
     void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
