@@ -91,6 +91,15 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
     }
 
     @Override
+    public List<CategoryEntity> findAll() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return jdbcTemplate.query(
+                "SELECT * FROM category",
+                CategoryEntityRowMapper.instance
+        );
+    }
+
+    @Override
     public void deleteCategory(CategoryEntity category) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.update(
