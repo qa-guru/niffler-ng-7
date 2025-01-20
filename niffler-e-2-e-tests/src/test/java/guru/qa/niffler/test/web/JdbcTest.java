@@ -106,5 +106,60 @@ public class JdbcTest {
 
 
     }
+
+
+    @Test
+    void springJdbcTest() {
+        UserDbClient userDbClient = new UserDbClient();
+        String username = RandomDataUtils.randomUsername();
+        String pw = "12345";
+
+        UserJson user = userDbClient.createUserSpringJdbc(
+                new UserJson(
+                        null,
+                        username,
+                        "First Name",
+                        "Surname",
+                        "Full Name",
+                        CurrencyValues.RUB,
+                        null,
+                        null,
+                        new AuthUserJson(
+                                null,
+                                username,
+                                pw,
+                                true,
+                                true,
+                                true,
+                                true,
+                                null
+                        )
+                )
+        );
+    }
+
+
+    @Test
+    void springSpendJdbcTest() {
+        SpendDbClient spendDbClient = new SpendDbClient();
+
+        spendDbClient.createSpendSpringJdbc(
+                new SpendJson(
+                        null,
+                        new Date(),
+                        new CategoryJson(
+                                null,
+                                "Fast Food Test",
+                                "duck",
+                                false
+                        ),
+                        CurrencyValues.RUB,
+                        1800.0,
+                        "Fast Food description",
+                        "duck"
+                )
+        );
+    }
+
 }
 

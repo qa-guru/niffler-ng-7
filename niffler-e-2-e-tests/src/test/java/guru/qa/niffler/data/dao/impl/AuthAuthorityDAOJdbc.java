@@ -7,6 +7,7 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 
 public class AuthAuthorityDAOJdbc implements AuthAuthorityDAO {
@@ -18,8 +19,8 @@ public class AuthAuthorityDAOJdbc implements AuthAuthorityDAO {
     }
 
     @Override
-    public void createAuthorities(AuthUserEntity authUser) {
-        List<AuthorityEntity> userAuthorities = authUser.getAuthorities();
+    public void createAuthorities(AuthorityEntity... authority) {
+        List<AuthorityEntity> userAuthorities = Arrays.stream(authority).toList();
 
         try (PreparedStatement ps = connection.prepareStatement(
                 "INSERT INTO authority (user_id, authority) " +
