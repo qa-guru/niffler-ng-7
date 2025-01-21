@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class AuthorityUserEntity implements Serializable {
+public class AuthUserEntity implements Serializable {
     private UUID id;
 
     private String username;
