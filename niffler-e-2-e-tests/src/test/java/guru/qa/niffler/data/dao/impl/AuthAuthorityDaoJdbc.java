@@ -10,22 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static guru.qa.niffler.data.tpl.Connections.holder;
+
 
 public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
 
     private static final Config config = Config.getInstance();
 
-    private final Connection connection;
-
-    public AuthAuthorityDaoJdbc(Connection connection) {
-        this.connection = connection;
-    }
-
     @Override
     public void createAuthority(AuthAuthorityEntity... authAuthorityEntities) {
 
         try (
-                PreparedStatement ps = connection.prepareStatement(
+                PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
                         "INSERT INTO authority (user_id, authority) " +
                                 "VALUES (?, ?)",
                         Statement.RETURN_GENERATED_KEYS
@@ -47,7 +43,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
 
     @Override
     public List<AuthAuthorityEntity> findAll() {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM authority")) {
             ps.execute();
             List<AuthAuthorityEntity> result = new ArrayList<>();
@@ -64,7 +60,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
 
     @Override
     public List<AuthAuthorityEntity> findAllByUserId(UUID userId) {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM authority where user_id = ?")) {
             ps.setObject(1, userId);
             ps.execute();

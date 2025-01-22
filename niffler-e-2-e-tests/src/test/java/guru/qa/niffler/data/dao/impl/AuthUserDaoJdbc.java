@@ -12,22 +12,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static guru.qa.niffler.data.tpl.Connections.holder;
+
 public class AuthUserDaoJdbc implements AuthUserDao {
 
     private static final Config config = Config.getInstance();
 
-    private final Connection connection;
-
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
-
-    public AuthUserDaoJdbc(Connection connection) {
-        this.connection = connection;
-    }
 
     @Override
     public AuthUserEntity createUser(AuthUserEntity authUserEntity) {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO \"user\" (username, \"password\", enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
                         "VALUES (?, ?, ?, ?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS
@@ -59,7 +54,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\" WHERE id = ?"
         )) {
             ps.setObject(1, id);
@@ -81,7 +76,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\" WHERE username = ?"
         )) {
             ps.setString(1, username);
@@ -103,7 +98,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
     @Override
     public List<AuthUserEntity> findAll() {
-        try (PreparedStatement ps = connection.prepareStatement(
+        try (PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\""
         )) {
             ps.execute();
