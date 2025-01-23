@@ -21,7 +21,7 @@ public class JdbcTest {
                         new Date(),
                         new CategoryJson(
                                 null,
-                                "cat-name-tx",
+                                "cat-name-trr",
                                 "taty",
                                 false
                         ),
@@ -41,17 +41,7 @@ public class JdbcTest {
         UUID userID = UUID.randomUUID();
         String name = DataUtils.randomName();
         String surname = DataUtils.randomSurname();
-        Record user = userDbClient.createUser(
-                new AuthUserJson(
-                        userID,
-                        userName,
-                        "123",
-                        true,
-                        true,
-                        true,
-                        true,
-                        new ArrayList<>()
-                ),
+        UserJson user = userDbClient.createUserSpringJdbc(
                 new UserJson(
                         userID,
                         userName,
@@ -72,17 +62,7 @@ public class JdbcTest {
         String userName = DataUtils.randomUserName();
         String name = DataUtils.randomName();
         String surname = DataUtils.randomSurname();
-        Record user = userDbClient.createUser(
-                new AuthUserJson(
-                        UUID.randomUUID(),
-                        userName,
-                        "123",
-                        true,
-                        true,
-                        true,
-                        true,
-                        new ArrayList<>()
-                ),
+        Record user = userDbClient.createUserSpringJdbc(
                 new UserJson(
                         UUID.randomUUID(),
                         "taty",
@@ -102,7 +82,7 @@ public class JdbcTest {
         UserJson user = uc.createUserSpringJdbc(
                 new UserJson(
                         null,
-                        "dd1",
+                        "dd5",
                         null,
                         null,
                         null,

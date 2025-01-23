@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.FriendState;
+import guru.qa.niffler.model.FriendshipStatus;
 import guru.qa.niffler.model.UserJson;
 import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.Size;
@@ -35,8 +35,8 @@ public record UserJsonGQL(
     @JsonProperty("photoSmall")
     String photoSmall,
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("friendState")
-    FriendState friendState,
+    @JsonProperty("friendshipStatus")
+    FriendshipStatus friendshipStatus,
     @JsonProperty("friends")
     List<UserJsonGQL> friends) {
 
@@ -50,7 +50,7 @@ public record UserJsonGQL(
         userJson.currency(),
         userJson.photo(),
         userJson.photoSmall(),
-        userJson.friendState(),
+        userJson.friendshipStatus(),
         new ArrayList<>()
     );
   }

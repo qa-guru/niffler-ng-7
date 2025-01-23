@@ -2,12 +2,15 @@ package guru.qa.niffler.service;
 
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.Databases;
+import guru.qa.niffler.data.dao.AuthAuthorityDao;
+import guru.qa.niffler.data.dao.AuthUserDao;
+import guru.qa.niffler.data.dao.UserdataUserDao;
 import guru.qa.niffler.data.dao.impl.*;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
-import guru.qa.niffler.model.AuthUserJson;
+import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.Authority;
 import guru.qa.niffler.model.UserJson;
 import org.springframework.jdbc.support.JdbcTransactionManager;
@@ -17,86 +20,56 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
 
-import static guru.qa.niffler.data.Databases.*;
 
 public class UserDbClient {
 
     private static final Config CFG = Config.getInstance();
-
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private final AuthUserDao authUserDao = new AuthUserDaoJdbc();
+    private final AuthAuthorityDao authAuthorityDao = new AuthAuthorityDaoJdbc();
+    private final UserdataUserDao userdataUserDao = new UserdataUserDaoJdbc();
 
-    private final TransactionTemplate transactionTemplate = new TransactionTemplate(
+    private final TransactionTemplate txTemplate = new TransactionTemplate(
             new JdbcTransactionManager(
-                    Databases.dataSource(CFG.authJdbcUrl())
+                    DataSources.dataSource(CFG.authJdbcUrl())
             )
     );
 
-    public UserJson createUserSpringJdbc(UserJson userJson){
-        transactionTemplate.execute(status -> {
-        AuthUserEntity auth = new AuthUserEntity();
-        auth.setUsername(userJson.username());
-        auth.setPassword(pe.encode("123"));
-        auth.setEnabled(true);
-        auth.setAccountNonExpired(true);
-        auth.setAccountNonLocked(true);
-        auth.setCredentialsNonExpired(true);
+    private final XaTransactionTemplate xaTxTemplate = new XaTransactionTemplate(
+            CFG.authJdbcUrl(),
+            CFG.authJdbcUrl()
+    );
 
-         AuthUserEntity result = new AuthUserDaoSpringJbc(dataSource(CFG.authJdbcUrl()))
-                .createUser(auth);
+    public UserJson createUserSpringJdbc(UserJson userJson) {
+        return xaTxTemplate.execute(() -> {
+                    AuthUserEntity auth = new AuthUserEntity();
+                    auth.setUsername(userJson.username());
+                    auth.setPassword(pe.encode("123"));
+                    auth.setEnabled(true);
+                    auth.setAccountNonExpired(true);
+                    auth.setAccountNonLocked(true);
+                    auth.setCredentialsNonExpired(true);
 
-        AuthorityEntity[] useAuthorities = Arrays.stream(Authority.values()).map(
-                e -> {
-                    AuthorityEntity ae = new AuthorityEntity();
-                    ae.setUserId(result.getId());
-                    ae.setAuthority(e);
-                    return ae;
+                    AuthUserEntity result = authUserDao.createUser(auth);
+
+                    AuthorityEntity[] useAuthorities = Arrays.stream(Authority.values()).map(
+                            e -> {
+                                AuthorityEntity ae = new AuthorityEntity();
+                                ae.setUserId(result.getId());
+                                ae.setAuthority(e);
+                                return ae;
+                            }
+                    ).toArray(AuthorityEntity[]::new);
+
+                    authAuthorityDao.createAuthority(useAuthorities);
+                    return UserJson.fromEntity(
+                            userdataUserDao.create(
+                                    UserEntity.fromJson(userJson)
+                            )
+                    );
                 }
-        ).toArray(AuthorityEntity[]::new);
-
-        new AuthAuthorityDaoSpringJdbc(dataSource(CFG.authJdbcUrl()))
-                .createAuthority(useAuthorities);
-
-            return null;
-        });
-
-
-
-        return UserJson.fromEntity(
-                new UserdataUserDaoSpringJdbc(dataSource(CFG.userDataJdbcUrl()))
-                        .create(
-                                UserEntity.fromJson(
-                                        userJson
-                                )
-                        ));
-    }
-
-    public Record createUser(AuthUserJson authUser, UserJson userJson) {
-        return xaTransaction(
-                new XaFunction<>(
-                        connection -> {
-                            AuthUserEntity auth = AuthUserEntity.fromJson(authUser);
-                            AuthUserJson.fromEntity(
-                                    new AuthUserDaoJdbc(connection).createUser(auth));
-                            new AuthAuthorityDaoJdbc(connection).createAuthority(
-                                    Arrays.stream(Authority.values())
-                                            .map(a -> {
-                                                        AuthorityEntity ae = new AuthorityEntity();
-                                                        ae.setId(auth.getId());
-                                                        ae.setAuthority(a);
-                                                        return ae;
-                                                    }
-                                            ).toArray(AuthorityEntity[]::new));
-                            return null;
-
-                        },
-                        CFG.authJdbcUrl()),
-                new XaFunction<>(
-                        connection -> {
-                            UserEntity user = UserEntity.fromJson(userJson);
-                            return UserJson.fromEntity(
-                                    new UserdataUserDaoJdbc(connection).create(user));
-                        },
-                        CFG.userDataJdbcUrl())
         );
+
     }
+
 }
