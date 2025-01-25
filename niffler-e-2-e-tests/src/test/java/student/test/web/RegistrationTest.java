@@ -4,11 +4,12 @@ import com.codeborne.selenide.Selenide;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import student.config.Config;
+import student.jupiter.annotaion.meta.WebTest;
 import student.jupiter.extension.browser.BrowserExtension;
 import student.pages.LoginPage;
 import student.util.DataGenerator;
 
-@ExtendWith(BrowserExtension.class)
+@WebTest
 public class RegistrationTest {
 
     private static final Config CFG = Config.getInstance();
