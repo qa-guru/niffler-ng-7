@@ -1,22 +1,23 @@
 package student.jupiter.extension.spending;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
-import student.api.SpendApiClient;
 import student.jupiter.annotaion.meta.User;
 import student.model.CategoryJson;
-import student.model.Currency;
+import student.model.CurrencyValues;
 import student.model.SpendJson;
+import student.service.SpendDbClient;
 
 import java.util.Date;
 
-public class CreateSpendingExtension implements BeforeEachCallback {
+import static student.util.CategoryHelper.randomCategoryName;
+
+public class CreateSpendingExtension implements BeforeEachCallback, ParameterResolver {
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CreateSpendingExtension.class);
 
-    private final SpendApiClient spendApiClient = new SpendApiClient();
+    SpendDbClient spendDbClient = new SpendDbClient();
 
     @Override
     public void beforeEach(ExtensionContext context) {
@@ -26,26 +27,36 @@ public class CreateSpendingExtension implements BeforeEachCallback {
                     if (ArrayUtils.isNotEmpty(annotation.spendings())) {
                         var spending = annotation.spendings()[0];
                         var category = annotation.categories()[0];
-                        SpendJson spend = new SpendJson(
+                        var categoryJson = new CategoryJson(
+                                null,
+                                randomCategoryName(),
+                                annotation.username(),
+                                category.archived()
+                        );
+                        SpendJson spendJson = new SpendJson(
                                 null,
                                 new Date(),
-                                new CategoryJson(
-                                        null,
-                                        spending.category(),
-                                        annotation.username(),
-                                        category.archived()
-                                ),
-                                Currency.RUB,
+                                categoryJson,
+                                CurrencyValues.RUB,
                                 spending.amount(),
                                 spending.description(),
                                 annotation.username()
                         );
                         context.getStore(NAMESPACE).put(
                                 context.getUniqueId(),
-                                spendApiClient.createSpend(spend)
+                                spendDbClient.createSpend(spendJson)
                         );
                     }
-
                 });
+    }
+
+    @Override
+    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        return parameterContext.getParameter().getType().isAssignableFrom(SpendJson.class);
+    }
+
+    @Override
+    public SpendJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+        return extensionContext.getStore(CreateSpendingExtension.NAMESPACE).get(extensionContext.getUniqueId(), SpendJson.class);
     }
 }

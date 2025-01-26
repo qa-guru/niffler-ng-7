@@ -1,7 +1,7 @@
 package student.api;
 
 import retrofit2.Response;
-import student.model.Currency;
+import student.model.CurrencyValues;
 import student.model.Period;
 import student.model.SpendJson;
 
@@ -54,7 +54,7 @@ public class SpendApiClient {
         return response.body();
     }
 
-    public List<SpendJson> getSpends(Currency currency, Period period) {
+    public List<SpendJson> getSpends(CurrencyValues currency, Period period) {
         final Response<List<SpendJson>> response;
         try {
             response = spendApi.getSpends(currency, period)

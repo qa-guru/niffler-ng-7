@@ -15,4 +15,12 @@ public interface Config {
     String gatewayUrl();
 
     String userdataUrl();
+
+    String authJdbcUrl();
+
+    String spendJdbcUrl();
+
+    String userdataJdbcUrl();
+
+    String currencyJdbcUrl();
 }
