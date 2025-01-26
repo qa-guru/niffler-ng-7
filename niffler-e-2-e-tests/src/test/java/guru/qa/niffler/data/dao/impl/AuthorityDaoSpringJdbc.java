@@ -1,8 +1,8 @@
 package guru.qa.niffler.data.dao.impl;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.AuthAuthorityDao;
-import guru.qa.niffler.data.entity.auth.AuthAuthorityEntity;
+import guru.qa.niffler.data.dao.AuthorityDao;
+import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.AuthAuthorityEntityRowMapper;
 import guru.qa.niffler.data.tpl.DataSources;
 import org.jetbrains.annotations.NotNull;
@@ -14,33 +14,33 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
-public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
+public class AuthorityDaoSpringJdbc implements AuthorityDao {
 
 
     private static final Config config = Config.getInstance();
 
     @Override
-    public void createAuthority(AuthAuthorityEntity... authAuthorityEntity) {
+    public void createAuthority(AuthorityEntity... authorityEntity) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.authJdbcUrl()));
         jdbcTemplate.batchUpdate(
                 "INSERT INTO authority (user_id, authority) VALUES (?, ?)",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(@NotNull PreparedStatement ps, int i) throws SQLException {
-                        ps.setObject(1, authAuthorityEntity[i].getUser_id());
-                        ps.setObject(2, authAuthorityEntity[i].getAuthority().name());
+                        ps.setObject(1, authorityEntity[i].getUser().getId());
+                        ps.setObject(2, authorityEntity[i].getAuthority().name());
                     }
 
                     @Override
                     public int getBatchSize() {
-                        return authAuthorityEntity.length;
+                        return authorityEntity.length;
                     }
                 }
         );
     }
 
     @Override
-    public List<AuthAuthorityEntity> findAll() {
+    public List<AuthorityEntity> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.authJdbcUrl()));
         return jdbcTemplate.query(
                 "SELECT * FROM authority",
@@ -49,7 +49,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
     }
 
     @Override
-    public List<AuthAuthorityEntity> findAllByUserId(UUID userId) {
+    public List<AuthorityEntity> findAllByUserId(UUID userId) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.authJdbcUrl()));
         return jdbcTemplate.query(
                 "SELECT * FROM authority where user_id = ?",
