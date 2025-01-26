@@ -8,7 +8,6 @@ import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.Objects;
 import java.util.UUID;
 

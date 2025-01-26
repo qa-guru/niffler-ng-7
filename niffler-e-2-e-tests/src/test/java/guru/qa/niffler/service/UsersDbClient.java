@@ -64,7 +64,7 @@ public class UsersDbClient {
                     AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
                             e -> {
                                 AuthorityEntity ae = new AuthorityEntity();
-                                ae.setUser_id(createdAuthUser.getId());
+                                ae.getUser().setId(createdAuthUser.getId());
                                 ae.setAuthority(e);
                                 return ae;
                             }
@@ -94,7 +94,7 @@ public class UsersDbClient {
         ).map(
                 e -> {
                     AuthorityEntity ae = new AuthorityEntity();
-                    ae.setUser_id(createdAuthUser.getId());
+                    ae.getUser().setId(createdAuthUser.getId());
                     ae.setAuthority(e);
                     return ae;
                 }
@@ -121,7 +121,7 @@ public class UsersDbClient {
                     AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
                             e -> {
                                 AuthorityEntity ae = new AuthorityEntity();
-                                ae.setUser_id(createdAuthUser.getId());
+                                ae.getUser().setId(createdAuthUser.getId());
                                 ae.setAuthority(e);
                                 return ae;
                             }
@@ -149,7 +149,7 @@ public class UsersDbClient {
         AuthorityEntity[] authorityEntities = Arrays.stream(Authority.values()).map(
                 e -> {
                     AuthorityEntity ae = new AuthorityEntity();
-                    ae.setUser_id(createdAuthUser.getId());
+                    ae.getUser().setId(createdAuthUser.getId());
                     ae.setAuthority(e);
                     return ae;
                 }
