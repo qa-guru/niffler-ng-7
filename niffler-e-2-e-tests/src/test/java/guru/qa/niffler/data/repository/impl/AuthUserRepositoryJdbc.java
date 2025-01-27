@@ -72,7 +72,17 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         try (PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
-                "SELECT * FROM \"user\" u JOIN authority a ON u.id = a.user_id WHERE u.id = ?"
+                "SELECT a.id as authority_id,\n" +
+                        "authority,\n" +
+                        "user_id as id,\n" +
+                        "u.username,\n" +
+                        "u.password,\n" +
+                        "u.enabled,\n" +
+                        "u.account_non_expired,\n" +
+                        "u.account_non_locked,\n" +
+                        "u.credentials_non_expired\n" +
+                        "FROM \"user\" u join public. authority a on u.id = a.user_id\n" +
+                        "WHERE u.id = ?"
         )) {
             ps.setObject(1, id);
             ps.execute();
@@ -87,7 +97,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
 
                     AuthorityEntity ae = new AuthorityEntity();
                     ae.setUser(user);
-                    ae.setId(rs.getObject("a.id", UUID.class));
+                    ae.setId(rs.getObject("authority_id", UUID.class));
                     ae.setAuthority(Authority.valueOf(rs.getString("authority")));
                     authorityEntities.add(ae);
                 }
@@ -106,7 +116,17 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
         try (PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
-                "SELECT * FROM \"user\" u JOIN authority a ON u.id = a.user_id WHERE u.username = ?"
+                "SELECT a.id as authority_id,\n" +
+                        "authority,\n" +
+                        "user_id as id,\n" +
+                        "u.username,\n" +
+                        "u.password,\n" +
+                        "u.enabled,\n" +
+                        "u.account_non_expired,\n" +
+                        "u.account_non_locked,\n" +
+                        "u.credentials_non_expired\n" +
+                        "FROM \"user\" u join public. authority a on u.id = a.user_id\n" +
+                        "WHERE u.username = ?"
         )) {
             ps.setObject(1, username);
             ps.execute();
@@ -121,7 +141,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
 
                     AuthorityEntity ae = new AuthorityEntity();
                     ae.setUser(user);
-                    ae.setId(rs.getObject("a.id", UUID.class));
+                    ae.setId(rs.getObject("authority_id", UUID.class));
                     ae.setAuthority(Authority.valueOf(rs.getString("authority")));
                     authorityEntities.add(ae);
                 }
@@ -141,33 +161,41 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     public List<AuthUserEntity> findAll() {
         List<AuthUserEntity> users = new ArrayList<>();
         try (PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
-                "SELECT * FROM \"user\" u JOIN authority a ON u.id = a.user_id"
+                "SELECT a.id as authority_id,\n" +
+                        "authority,\n" +
+                        "user_id as id,\n" +
+                        "u.username,\n" +
+                        "u.password,\n" +
+                        "u.enabled,\n" +
+                        "u.account_non_expired,\n" +
+                        "u.account_non_locked,\n" +
+                        "u.credentials_non_expired\n" +
+                        "FROM \"user\" u join public. authority a on u.id = a.user_id"
         )) {
             ps.execute();
-            try (ResultSet rs = ps.executeQuery()) {
-                AuthUserEntity currentUser = null;
+            try (ResultSet rs = ps.getResultSet()) {
+                AuthUserEntity currentUser;
                 while (rs.next()) {
-                    UUID userId = rs.getObject("u.id", UUID.class);
-                    if (currentUser == null || !currentUser.getId().equals(userId)) {
-                        if (currentUser != null) {
-                            users.add(currentUser);
-                        }
+                    UUID userId = rs.getObject("id", UUID.class);
+                    Optional<AuthUserEntity> existingUser = users.stream().filter(user ->
+                            user.getId().equals(userId)).findFirst();
+                    if (existingUser.isPresent()) {
+                        currentUser = existingUser.get();
+                    } else {
                         currentUser = AuthUserEntityRowMapper.instance.mapRow(rs, 1);
                         currentUser.setAuthorities(new ArrayList<>());
+                        users.add(currentUser);
                     }
                     AuthorityEntity ae = new AuthorityEntity();
                     ae.setUser(currentUser);
-                    ae.setId(rs.getObject("a.id", UUID.class));
+                    ae.setId(rs.getObject("authority_id", UUID.class));
                     ae.setAuthority(Authority.valueOf(rs.getString("authority")));
 
                     currentUser.getAuthorities().add(ae);
-
-                    users.add(currentUser);
                 }
             }
-
-
-        } catch (SQLException e) {
+        } catch (
+                SQLException e) {
             throw new RuntimeException(e);
         }
         return users;
