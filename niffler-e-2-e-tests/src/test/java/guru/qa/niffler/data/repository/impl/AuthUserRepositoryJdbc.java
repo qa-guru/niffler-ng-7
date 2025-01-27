@@ -26,6 +26,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
 
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
+
     @Override
     public AuthUserEntity createUser(AuthUserEntity authUserEntity) {
         try (PreparedStatement userPs = holder(config.authJdbcUrl()).connection().prepareStatement(
@@ -100,5 +101,75 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Optional<AuthUserEntity> findByUsername(String username) {
+        try (PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
+                "SELECT * FROM \"user\" u JOIN authority a ON u.id = a.user_id WHERE u.username = ?"
+        )) {
+            ps.setObject(1, username);
+            ps.execute();
+
+            try (ResultSet rs = ps.getResultSet()) {
+                AuthUserEntity user = null;
+                List<AuthorityEntity> authorityEntities = new ArrayList<>();
+                while (rs.next()) {
+                    if (user == null) {
+                        user = AuthUserEntityRowMapper.instance.mapRow(rs, 1);
+                    }
+
+                    AuthorityEntity ae = new AuthorityEntity();
+                    ae.setUser(user);
+                    ae.setId(rs.getObject("a.id", UUID.class));
+                    ae.setAuthority(Authority.valueOf(rs.getString("authority")));
+                    authorityEntities.add(ae);
+                }
+                if (user == null) {
+                    return Optional.empty();
+                } else {
+                    user.setAuthorities(authorityEntities);
+                    return Optional.of(user);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<AuthUserEntity> findAll() {
+        List<AuthUserEntity> users = new ArrayList<>();
+        try (PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
+                "SELECT * FROM \"user\" u JOIN authority a ON u.id = a.user_id"
+        )) {
+            ps.execute();
+            try (ResultSet rs = ps.executeQuery()) {
+                AuthUserEntity currentUser = null;
+                while (rs.next()) {
+                    UUID userId = rs.getObject("u.id", UUID.class);
+                    if (currentUser == null || !currentUser.getId().equals(userId)) {
+                        if (currentUser != null) {
+                            users.add(currentUser);
+                        }
+                        currentUser = AuthUserEntityRowMapper.instance.mapRow(rs, 1);
+                        currentUser.setAuthorities(new ArrayList<>());
+                    }
+                    AuthorityEntity ae = new AuthorityEntity();
+                    ae.setUser(currentUser);
+                    ae.setId(rs.getObject("a.id", UUID.class));
+                    ae.setAuthority(Authority.valueOf(rs.getString("authority")));
+
+                    currentUser.getAuthorities().add(ae);
+
+                    users.add(currentUser);
+                }
+            }
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return users;
     }
 }
