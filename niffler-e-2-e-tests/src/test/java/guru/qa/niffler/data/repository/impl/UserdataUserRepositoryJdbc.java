@@ -55,7 +55,7 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
     }
 
     @Override
-    public UserEntity update(UserEntity user) {
+    public void update(UserEntity user) {
         {
             try (PreparedStatement usersPs = holder(config.userdataJdbcUrl()).connection().prepareStatement(
                     "UPDATE \"user\" " +
@@ -88,7 +88,6 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            return user;
         }
     }
 
