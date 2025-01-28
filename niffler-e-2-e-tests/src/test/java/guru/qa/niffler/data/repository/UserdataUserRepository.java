@@ -9,11 +9,11 @@ public interface UserdataUserRepository {
 
     UserEntity createUser(UserEntity user);
 
+    void update(UserEntity user);
+
     Optional<UserEntity> findById(UUID id);
 
     Optional<UserEntity> findByUsername(String username);
-
-    void update(UserEntity user);
 
     void addFriendshipRequest(UserEntity requester, UserEntity addressee);
 

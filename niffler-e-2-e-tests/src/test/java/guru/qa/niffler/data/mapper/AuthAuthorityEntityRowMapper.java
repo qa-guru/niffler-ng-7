@@ -24,4 +24,6 @@ public class AuthAuthorityEntityRowMapper implements RowMapper<AuthorityEntity> 
         result.setAuthority(Authority.valueOf(rs.getString("authority")));
         return result;
     }
+
+
 }
