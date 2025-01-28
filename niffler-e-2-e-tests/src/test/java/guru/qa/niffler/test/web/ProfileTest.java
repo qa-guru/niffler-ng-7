@@ -22,13 +22,13 @@ public class ProfileTest {
       )
   )
   @Test
-  void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
+  void archivedCategoryShouldPresentInCategoriesList(CategoryJson[] category) {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .successLogin("duck", "12345")
         .checkThatPageLoaded();
 
     Selenide.open(CFG.frontUrl() + "profile", ProfilePage.class)
-        .checkArchivedCategoryExists(category.name());
+        .checkArchivedCategoryExists(category[0].name());
   }
 
   @User(
