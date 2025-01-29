@@ -5,11 +5,14 @@ import guru.qa.niffler.data.dao.UserdataUserDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.mapper.UserDataEntityRowMapper;
 import guru.qa.niffler.data.tpl.DataSources;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
@@ -83,5 +86,46 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
         return jdbcTemplate.query(
                 "SELECT * FROM \"user\"",
                 UserDataEntityRowMapper.instance);
+    }
+
+    public UserEntity update(UserEntity user) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userDataJdbcUrl()));
+        jdbcTemplate.update("""
+                          UPDATE "user"
+                            SET currency    = ?,
+                                firstname   = ?,
+                                surname     = ?,
+                                photo       = ?,
+                                photo_small = ?
+                            WHERE id = ?
+            """,
+                user.getCurrency().name(),
+                user.getFirstname(),
+                user.getSurname(),
+                user.getPhoto(),
+                user.getPhotoSmall(),
+                user.getId());
+
+        jdbcTemplate.batchUpdate("""
+                             INSERT INTO friendship (requester_id, addressee_id, status)
+                             VALUES (?, ?, ?)
+                             ON CONFLICT (requester_id, addressee_id)
+                                 DO UPDATE SET status = ?
+            """,
+                new BatchPreparedStatementSetter() {
+                    @Override
+                    public void setValues(@Nonnull PreparedStatement ps, int i) throws SQLException {
+                        ps.setObject(1, user.getId());
+                        ps.setObject(2, user.getFriendshipRequests().get(i).getAddressee().getId());
+                        ps.setString(3, user.getFriendshipRequests().get(i).getStatus().name());
+                        ps.setString(4, user.getFriendshipRequests().get(i).getStatus().name());
+                    }
+
+                    @Override
+                    public int getBatchSize() {
+                        return user.getFriendshipRequests().size();
+                    }
+                });
+        return user;
     }
 }
