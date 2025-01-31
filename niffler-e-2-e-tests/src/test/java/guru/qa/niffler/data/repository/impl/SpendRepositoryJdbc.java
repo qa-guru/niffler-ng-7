@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 public class SpendRepositoryJdbc implements SpendRepository {
 
@@ -26,7 +26,6 @@ public class SpendRepositoryJdbc implements SpendRepository {
 
     private final SpendDao spendDao = new SpendDaoJdbc();
     private final CategoryDao categoryDao = new CategoryDaoJdbc();
-
 
     @Override
     public SpendEntity createSpend(SpendEntity spendEntity) {
@@ -41,31 +40,19 @@ public class SpendRepositoryJdbc implements SpendRepository {
 
     @Override
     public SpendEntity update(SpendEntity spend) {
-        try (PreparedStatement ps = holder(config.spendJdbcUrl()).connection().prepareStatement(
-                """
-                          UPDATE "spend"
-                            SET spend_date  = ?,
-                                currency    = ?,
-                                amount      = ?,
-                                description = ?
-                            WHERE id = ?
-                        """)
-        ) {
-            ps.setDate(1, new java.sql.Date(spend.getSpendDate().getTime()));
-            ps.setString(2, spend.getCurrency().name());
-            ps.setDouble(3, spend.getAmount());
-            ps.setString(4, spend.getDescription());
-            ps.setObject(5, spend.getId());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        spendDao.update(spend);
+        categoryDao.update(spend.getCategory());
         return spend;
     }
 
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         return categoryDao.create(category);
+    }
+
+    @Override
+    public CategoryEntity updateCategory(CategoryEntity categoryEntity) {
+        return null;
     }
 
     @Override
@@ -133,12 +120,12 @@ public class SpendRepositoryJdbc implements SpendRepository {
     }
 
     @Override
-    public void deleteSpend(SpendEntity spendEntity) {
+    public void remove(SpendEntity spendEntity) {
         spendDao.deleteSpend(spendEntity);
     }
 
     @Override
-    public void deleteCategory(CategoryEntity category) {
+    public void removeCategory(CategoryEntity category) {
         categoryDao.deleteCategory(category);
     }
 }

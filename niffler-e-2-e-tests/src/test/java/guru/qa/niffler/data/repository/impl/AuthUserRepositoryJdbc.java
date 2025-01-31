@@ -16,7 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 public class AuthUserRepositoryJdbc implements AuthUserRepository {
 
@@ -28,6 +28,15 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     @Override
     public AuthUserEntity createUser(AuthUserEntity authUserEntity) {
         authUserDao.createUser(authUserEntity);
+        authAuthorityDao.createAuthority(authUserEntity.
+                getAuthorities().toArray(new AuthorityEntity[0]));
+        return authUserEntity;
+    }
+
+    @Override
+    public AuthUserEntity update(AuthUserEntity authUserEntity) {
+        authUserDao.update(authUserEntity);
+        authAuthorityDao.remove(authUserEntity.getAuthorities().getFirst());
         authAuthorityDao.createAuthority(authUserEntity.
                 getAuthorities().toArray(new AuthorityEntity[0]));
         return authUserEntity;
@@ -47,7 +56,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
                         u.account_non_locked,
                         u.credentials_non_expired
                         FROM "user" u
-                        JOIN public. authority a
+                        JOIN public.authority a
                         ON u.id = a.user_id
                         WHERE u.id = ?"""
         )) {
@@ -94,7 +103,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
                         u.account_non_locked,
                         u.credentials_non_expired
                         FROM "user" u
-                        JOIN public. authority a
+                        JOIN public.authority a
                         ON u.id = a.user_id
                         WHERE u.username = ?"""
         )) {
@@ -142,7 +151,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
                         u.account_non_locked,
                         u.credentials_non_expired
                         FROM "user" u
-                        JOIN public. authority a
+                        JOIN public.authority a
                         ON u.id = a.user_id"""
         )) {
             ps.execute();
@@ -172,5 +181,11 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
             throw new RuntimeException(e);
         }
         return users;
+    }
+
+    @Override
+    public void remove(AuthUserEntity user) {
+        authAuthorityDao.remove(user.getAuthorities().getFirst());
+        authUserDao.remove(user);
     }
 }

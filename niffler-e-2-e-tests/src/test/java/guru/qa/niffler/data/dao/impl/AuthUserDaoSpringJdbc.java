@@ -4,23 +4,20 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
-import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.jdbc.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
 public class AuthUserDaoSpringJdbc implements AuthUserDao {
-
-    private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     private static final Config config = Config.getInstance();
 
@@ -36,7 +33,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
                             Statement.RETURN_GENERATED_KEYS
                     );
                     ps.setString(1, authUserEntity.getUsername());
-                    ps.setString(2, pe.encode(authUserEntity.getPassword()));
+                    ps.setString(2, authUserEntity.getPassword());
                     ps.setBoolean(3, authUserEntity.getEnabled());
                     ps.setBoolean(4, authUserEntity.getAccountNonExpired());
                     ps.setBoolean(5, authUserEntity.getAccountNonLocked());
@@ -51,6 +48,30 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
         return authUserEntity;
 
+    }
+
+    @Override
+    public AuthUserEntity update(AuthUserEntity authUserEntity) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.authJdbcUrl()));
+        int affectedRows = jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(
+                    "UPDATE \"user\" " +
+                            "SET username = ?, password = ?, enabled = ?, account_non_expired = ?, " +
+                            "account_non_locked = ?, credentials_non_expired = ? " +
+                            "WHERE id = ?");
+            ps.setString(1, authUserEntity.getUsername());
+            ps.setString(2, authUserEntity.getPassword());
+            ps.setBoolean(3, authUserEntity.getEnabled());
+            ps.setBoolean(4, authUserEntity.getAccountNonExpired());
+            ps.setBoolean(5, authUserEntity.getAccountNonLocked());
+            ps.setBoolean(6, authUserEntity.getCredentialsNonExpired());
+            ps.setObject(7, authUserEntity.getId(), Types.OTHER);
+            return ps;
+        });
+        if (affectedRows == 0) {
+            throw new RuntimeException("Updating user failed, no rows affected.");
+        }
+        return authUserEntity;
     }
 
     @Override
@@ -86,4 +107,19 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
         );
 
     }
+
+    @Override
+    public void remove(AuthUserEntity user) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.authJdbcUrl()));
+        int affectedRows = jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM \"user\" WHERE id = ?");
+            ps.setObject(1, user.getId(), Types.OTHER);
+            return ps;
+        });
+
+        if (affectedRows == 0) {
+            throw new RuntimeException("Deleting user failed, no rows affected.");
+        }
+    }
+
 }
