@@ -1,5 +1,7 @@
 package guru.qa.niffler.test.web;
 
+import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
@@ -10,6 +12,7 @@ import guru.qa.niffler.utils.DataUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class JdbcTest {
@@ -95,5 +98,36 @@ public class JdbcTest {
                 )
         );
         System.out.println(user);
+    }
+
+    @Test
+    void jbcChainedTest() {
+        UserDbClient uc = new UserDbClient();
+        UserJson user = uc.createUserWithChainTx(
+                new UserJson(
+                        null,
+                        "UserChained",
+                        null,
+                        null,
+                        null,
+                        CurrencyValues.RUB,
+                        null,
+                        null
+
+                )
+        );
+        System.out.println(user);
+    }
+    //Тест не прошел, но пользователь создался
+
+    @Test
+    void checkUserInList() {
+        UserDbClient uc = new UserDbClient();
+        List<AuthUserEntity> users = uc.findAllUsers();
+        List<String> userNames = new ArrayList<>();
+        for (AuthUserEntity user : users) {
+            userNames.add(user.getUsername());
+        }
+        System.out.println(userNames);
     }
 }
