@@ -5,7 +5,9 @@ import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.model.Authority;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,11 +22,9 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     public void createAuthority(AuthorityEntity... authority) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO authority (user_id, authority)" +
-                        "VALUES(?, ?)",
-                Statement.RETURN_GENERATED_KEYS
-        )) {
+                        "VALUES(?, ?)")) {
             for (AuthorityEntity a : authority) {
-                ps.setObject(1, a.getUserId());
+                ps.setObject(1, a.getUser().getId());
                 ps.setString(2, a.getAuthority().name());
                 ps.addBatch();
                 ps.clearParameters();
@@ -47,7 +47,6 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
                 while (rs.next()) {
                     AuthorityEntity authority = new AuthorityEntity();
                     authority.setId(rs.getObject("id", UUID.class));
-                    authority.setUserId(rs.getObject("user_id", UUID.class));
                     authority.setAuthority(Authority.valueOf(rs.getString("authority")));
                     authorityEntities.add(authority);
                 }

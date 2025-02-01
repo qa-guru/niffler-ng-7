@@ -1,6 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
@@ -10,7 +11,6 @@ import guru.qa.niffler.service.UserDbClient;
 import guru.qa.niffler.utils.DataUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -26,13 +26,13 @@ public class JdbcTest {
                         new Date(),
                         new CategoryJson(
                                 null,
-                                "cat-name-trr",
+                                "cat-name-trrr",
                                 "taty",
                                 false
                         ),
                         CurrencyValues.RUB,
                         1000.0,
-                        "spend-name-tx",
+                        "spend-name-txt",
                         "taty"
                 )
         );
@@ -87,7 +87,7 @@ public class JdbcTest {
         UserJson user = uc.createUserSpringJdbc(
                 new UserJson(
                         null,
-                        "dd5",
+                        "dd8",
                         null,
                         null,
                         null,
