@@ -5,7 +5,6 @@ import student.jupiter.annotaion.Category;
 import student.jupiter.annotaion.Spending;
 import student.jupiter.extension.category.CreateCategoryExtension;
 import student.jupiter.extension.spending.CreateSpendingExtension;
-import student.jupiter.extension.spending.SpendingResolverExtension;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,7 +13,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ExtendWith({CreateCategoryExtension.class, CreateSpendingExtension.class, SpendingResolverExtension.class})
+@ExtendWith({CreateCategoryExtension.class, CreateSpendingExtension.class})
 public @interface User {
     String username();
 

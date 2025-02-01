@@ -16,9 +16,6 @@ public class RandomDataUtils {
     public static String randomSurname(){
         return faker.name().lastName();
     }
-    public static String randomCategoryName(){
-        return faker.company().industry();
-    }
     public static String randomSentence(){
         return faker.shakespeare().hamletQuote();
     }

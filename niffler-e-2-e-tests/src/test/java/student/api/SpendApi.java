@@ -1,10 +1,10 @@
 package student.api;
 
-import student.model.Currency;
-import student.model.Period;
-import student.model.SpendJson;
 import retrofit2.Call;
 import retrofit2.http.*;
+import student.model.CurrencyValues;
+import student.model.Period;
+import student.model.SpendJson;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface SpendApi {
     Call<SpendJson> getSpend(@Query("id") String ids);
 
     @GET("/internal/spends/all")
-    Call<List<SpendJson>> getSpends(@Query("filterCurrency") Currency currency, @Query("filterPeriod") Period period );
+    Call<List<SpendJson>> getSpends(@Query("filterCurrency") CurrencyValues currency, @Query("filterPeriod") Period period);
 
     @DELETE("/internal/spends/remove")
     Call<Void> removeSpend(@Query("ids") List<String> ids);

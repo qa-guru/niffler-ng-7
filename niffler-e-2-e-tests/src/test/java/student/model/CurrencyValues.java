@@ -1,5 +1,5 @@
 package student.model;
 
-public enum Currency {
+public enum CurrencyValues {
     RUB, USD, EUR, KZT
 }
