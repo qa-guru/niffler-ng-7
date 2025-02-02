@@ -1,4 +1,4 @@
-package guru.qa.niffler.data.entity.userdata;
+package guru.qa.niffler.model;
 
 public enum FriendshipStatus {
   PENDING,
