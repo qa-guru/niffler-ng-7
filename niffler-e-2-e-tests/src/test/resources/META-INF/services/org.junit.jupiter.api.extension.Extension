@@ -1,3 +1,4 @@
 guru.qa.niffler.jupiter.extension.DatabasesExtension
 guru.qa.niffler.jupiter.extension.TestMethodContextExtension
+student.jupiter.extension.DatabasesExtension
 student.jupiter.extension.TestMethodContextExtension

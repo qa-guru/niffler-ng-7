@@ -9,6 +9,7 @@ import student.model.CurrencyValues;
 import student.model.SpendJson;
 import student.service.SpendDbClient;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 import static student.util.CategoryHelper.randomCategoryName;
@@ -42,10 +43,14 @@ public class CreateSpendingExtension implements BeforeEachCallback, ParameterRes
                                 spending.description(),
                                 annotation.username()
                         );
-                        context.getStore(NAMESPACE).put(
-                                context.getUniqueId(),
-                                spendDbClient.createSpend(spendJson)
-                        );
+                        try {
+                            context.getStore(NAMESPACE).put(
+                                    context.getUniqueId(),
+                                    spendDbClient.createSpend(spendJson)
+                            );
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 });
     }

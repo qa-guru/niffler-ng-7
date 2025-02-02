@@ -7,6 +7,8 @@ import student.jupiter.annotaion.meta.User;
 import student.model.CategoryJson;
 import student.service.SpendDbClient;
 
+import java.sql.SQLException;
+
 import static student.util.CategoryHelper.randomCategoryName;
 
 public class CreateCategoryExtension implements BeforeEachCallback, ParameterResolver, AfterTestExecutionCallback {
@@ -27,7 +29,12 @@ public class CreateCategoryExtension implements BeforeEachCallback, ParameterRes
                                 annotation.username(),
                                 category.archived()
                         );
-                        CategoryJson createCategory = spendDbClient.createCategory(categoryJson);
+                        CategoryJson createCategory;
+                        try {
+                            createCategory = spendDbClient.createCategory(categoryJson);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
                         context.getStore(NAMESPACE).put(context.getUniqueId(), createCategory);
                     }
                 });
@@ -44,7 +51,7 @@ public class CreateCategoryExtension implements BeforeEachCallback, ParameterRes
     }
 
     @Override
-    public void afterTestExecution(ExtensionContext context) {
+    public void afterTestExecution(ExtensionContext context) throws SQLException {
         CategoryJson categoryJson = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
         if (categoryJson != null) {
             CategoryJson category = new CategoryJson(

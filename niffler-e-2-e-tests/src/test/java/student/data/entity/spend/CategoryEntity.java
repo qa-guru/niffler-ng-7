@@ -10,13 +10,13 @@ import java.util.UUID;
 @Getter
 @Setter
 public class CategoryEntity implements Serializable {
-   private UUID id;
+    private UUID id;
 
-  private String name;
+    private String name;
 
-  private String username;
+    private String username;
 
-  private boolean archived;
+    private boolean archived;
 
     public static CategoryEntity fromJson(CategoryJson json) {
         CategoryEntity categoryEntity = new CategoryEntity();
