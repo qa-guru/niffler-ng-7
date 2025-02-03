@@ -4,7 +4,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
-import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.jdbc.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -43,6 +43,22 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
 
         return category;
 
+    }
+
+    @Override
+    public CategoryEntity update(CategoryEntity category) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.spendJdbcUrl()));
+        jdbcTemplate.update("""
+              UPDATE "category"
+                SET name     = ?,
+                    archived = ?
+                WHERE id = ?
+            """,
+                category.getName(),
+                category.isArchived(),
+                category.getId()
+        );
+        return category;
     }
 
     @Override

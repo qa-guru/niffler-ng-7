@@ -4,7 +4,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.mapper.AuthAuthorityEntityRowMapper;
-import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.jdbc.DataSources;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -56,5 +56,12 @@ public class AuthorityDaoSpringJdbc implements AuthorityDao {
                 AuthAuthorityEntityRowMapper.instance,
                 userId
         );
+    }
+
+    @Override
+    public void remove(AuthorityEntity authorityEntity) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.authJdbcUrl()));
+        jdbcTemplate.update("DELETE FROM authority WHERE user_id = ?",
+                ps -> ps.setObject(1, authorityEntity.getUser().getId(), java.sql.Types.OTHER));
     }
 }

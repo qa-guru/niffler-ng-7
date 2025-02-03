@@ -10,10 +10,14 @@ public interface AuthUserRepository {
 
     AuthUserEntity createUser(AuthUserEntity authUserEntity);
 
+    AuthUserEntity update (AuthUserEntity authUserEntity);
+
     Optional<AuthUserEntity> findById(UUID id);
 
     Optional<AuthUserEntity> findByUsername(String username);
 
     List<AuthUserEntity> findAll();
+
+    void remove(AuthUserEntity user);
 
 }

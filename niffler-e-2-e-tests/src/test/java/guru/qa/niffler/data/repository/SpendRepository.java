@@ -15,6 +15,8 @@ public interface SpendRepository {
 
     CategoryEntity createCategory(CategoryEntity category);
 
+    CategoryEntity updateCategory(CategoryEntity categoryEntity);
+
     Optional<CategoryEntity> findCategoryById(UUID id);
 
     Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String name);
@@ -27,7 +29,9 @@ public interface SpendRepository {
 
     List<SpendEntity> findAllSpend();
 
-    void deleteSpend(SpendEntity spendEntity);
+    void remove(SpendEntity spendEntity);
 
-    void deleteCategory(CategoryEntity category);
+    void removeCategory(CategoryEntity category);
+
+
 }

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 
 public class AuthorityDaoJdbc implements AuthorityDao {
@@ -70,6 +70,17 @@ public class AuthorityDaoJdbc implements AuthorityDao {
                 }
             }
             return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void remove(AuthorityEntity authorityEntity) {
+        try (PreparedStatement deletePs = holder(config.authJdbcUrl()).connection().prepareStatement(
+                "DELETE FROM authority WHERE user_id = ?")) {
+            deletePs.setObject(1, authorityEntity.getUser().getId());
+            deletePs.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -10,7 +10,7 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
 import guru.qa.niffler.data.mapper.SpendEntityRowMapper;
 import guru.qa.niffler.data.repository.SpendRepository;
-import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.jdbc.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
@@ -39,27 +39,20 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
 
     @Override
     public SpendEntity update(SpendEntity spend) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.spendJdbcUrl()));
-        jdbcTemplate.update("""
-                          UPDATE "spend"
-                            SET spend_date  = ?,
-                                currency    = ?,
-                                amount      = ?,
-                                description = ?
-                            WHERE id = ?
-                        """,
-                new java.sql.Date(spend.getSpendDate().getTime()),
-                spend.getCurrency().name(),
-                spend.getAmount(),
-                spend.getDescription(),
-                spend.getId()
-        );
+        spendDao.update(spend);
+        categoryDao.update(spend.getCategory());
         return spend;
     }
 
     @Override
     public CategoryEntity createCategory(CategoryEntity category) {
         return categoryDao.create(category);
+    }
+
+    @Override
+    public CategoryEntity updateCategory(CategoryEntity categoryEntity) {
+        categoryDao.update(categoryEntity);
+        return categoryEntity;
     }
 
     @Override
@@ -109,12 +102,12 @@ public class SpendRepositorySpringJdbc implements SpendRepository {
     }
 
     @Override
-    public void deleteSpend(SpendEntity spendEntity) {
+    public void remove(SpendEntity spendEntity) {
         spendDao.deleteSpend(spendEntity);
     }
 
     @Override
-    public void deleteCategory(CategoryEntity category) {
+    public void removeCategory(CategoryEntity category) {
         categoryDao.deleteCategory(category);
     }
 }

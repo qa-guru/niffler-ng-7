@@ -10,7 +10,7 @@ import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.extractor.AuthUserEntityExtractor;
 import guru.qa.niffler.data.repository.AuthUserRepository;
-import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.jdbc.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.ResultSet;
@@ -36,6 +36,14 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     }
 
     @Override
+    public AuthUserEntity update(AuthUserEntity authUserEntity) {
+        authUserDao.update(authUserEntity);
+        authAuthorityDao.remove(authUserEntity.getAuthorities().getFirst());
+        authAuthorityDao.createAuthority(authUserEntity.getAuthorities().toArray(new AuthorityEntity[0]));
+        return authUserEntity;
+    }
+
+    @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.authJdbcUrl()));
         return Optional.ofNullable(jdbcTemplate.query(
@@ -50,7 +58,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
                         u.account_non_locked,
                         u.credentials_non_expired
                         FROM "user" u
-                        JOIN public. authority a
+                        JOIN public.authority a
                         ON u.id = a.user_id
                         WHERE u.id = ?
                         """,
@@ -75,7 +83,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
                         u.account_non_locked,
                         u.credentials_non_expired
                         FROM "user" u
-                        JOIN public. authority a
+                        JOIN public.authority a
                         ON u.id = a.user_id
                         WHERE u.username = ?""",
                 AuthUserEntityExtractor.instance,
@@ -99,7 +107,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
                         u.account_non_locked,
                         u.credentials_non_expired
                         FROM "user" u
-                        JOIN public. authority a
+                        JOIN public.authority a
                         ON u.id = a.user_id""",
                 (ResultSet rs) -> {
                     while (rs.next()) {
@@ -130,5 +138,11 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
                 });
 
         return new ArrayList<>(userCacheMap.values());
+    }
+
+    @Override
+    public void remove(AuthUserEntity user) {
+        authAuthorityDao.remove(user.getAuthorities().getFirst());
+        authUserDao.remove(user);
     }
 }

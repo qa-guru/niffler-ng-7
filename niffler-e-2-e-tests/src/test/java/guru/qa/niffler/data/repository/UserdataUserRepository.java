@@ -10,7 +10,7 @@ public interface UserdataUserRepository {
 
     UserEntity createUser(UserEntity user);
 
-    void update(UserEntity user) throws SQLException;
+    UserEntity update(UserEntity user) throws SQLException;
 
     Optional<UserEntity> findById(UUID id);
 

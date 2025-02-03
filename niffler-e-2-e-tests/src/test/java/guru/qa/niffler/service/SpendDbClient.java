@@ -1,57 +1,80 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.CategoryDao;
-import guru.qa.niffler.data.dao.SpendDao;
-import guru.qa.niffler.data.dao.impl.CategoryDaoJdbc;
-import guru.qa.niffler.data.dao.impl.SpendDaoJdbc;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.data.entity.spend.SpendEntity;
-import guru.qa.niffler.data.tpl.JdbcTransactionTemplate;
+import guru.qa.niffler.data.repository.SpendRepository;
+import guru.qa.niffler.data.repository.impl.SpendRepositoryJdbc;
+import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
+import org.jetbrains.annotations.NotNull;
 
-public class SpendDbClient {
+import javax.annotation.Nonnull;
 
-    private static final Config config = Config.getInstance();
-    private final JdbcTransactionTemplate jdbcTransactionTemplate = new JdbcTransactionTemplate(
-            config.spendJdbcUrl()
+import static java.util.Objects.requireNonNull;
+
+public class SpendDbClient implements SpendClient {
+
+    private static final Config CFG = Config.getInstance();
+
+    private final SpendRepository spendRepository = new SpendRepositoryJdbc();
+
+    private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
+            CFG.spendJdbcUrl()
     );
-    private final CategoryDao categoryDao = new CategoryDaoJdbc();
-    private final SpendDao spendDao = new SpendDaoJdbc();
 
-    public SpendJson createSpend(SpendJson spendJson) {
-
-        return jdbcTransactionTemplate.execute(
-                () -> {
-                    SpendEntity spendEntity = SpendEntity.fromJson(spendJson);
-                    if (spendEntity.getCategory().getId() == null) {
-                        CategoryEntity categoryEntity = categoryDao.create(spendEntity.getCategory());
-                        spendEntity.setCategory(categoryEntity);
-                    }
-                    return SpendJson.fromEntity(spendDao.create(spendEntity));
-                }
-        );
-
-    }
-
-    public CategoryJson createCategory(CategoryJson categoryJson) {
-        return jdbcTransactionTemplate.execute(
-                () -> {
-                    CategoryEntity categoryEntity = CategoryEntity.fromJson(categoryJson);
-                    return CategoryJson.fromEntity(categoryDao.create(categoryEntity));
-                }
+    @Nonnull
+    @Override
+    public SpendJson createSpend(SpendJson spend) {
+        return requireNonNull(
+                xaTransactionTemplate.execute(
+                        () -> SpendJson.fromEntity(
+                                spendRepository.createSpend(
+                                        SpendEntity.fromJson(spend)
+                                )
+                        )
+                )
         );
     }
 
-    public void deleteCategory(CategoryJson categoryJson) {
-        jdbcTransactionTemplate.execute(
+    @Nonnull
+    @Override
+    public CategoryJson createCategory(CategoryJson category) {
+        return requireNonNull(
+                xaTransactionTemplate.execute(
+                        () -> CategoryJson.fromEntity(
+                                spendRepository.createCategory(
+                                        CategoryEntity.fromJson(category)
+                                )
+                        )
+                )
+        );
+    }
+
+    @NotNull
+    @Override
+    public CategoryJson updateCategory(CategoryJson category) {
+        return requireNonNull(
+                xaTransactionTemplate.execute(
+                        () -> CategoryJson.fromEntity(
+                                spendRepository.updateCategory(
+                                        CategoryEntity.fromJson(category)
+                                )
+                        )
+                )
+        );
+    }
+
+    @Override
+    public void removeCategory(CategoryJson category) {
+        xaTransactionTemplate.execute(
                 () -> {
-                    CategoryEntity categoryEntity = CategoryEntity.fromJson(categoryJson);
-                    categoryDao.deleteCategory(categoryEntity);
+                    spendRepository.removeCategory(
+                            CategoryEntity.fromJson(category)
+                    );
                     return null;
                 }
         );
     }
-
 }
