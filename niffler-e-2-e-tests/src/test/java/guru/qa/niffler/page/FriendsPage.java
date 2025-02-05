@@ -9,7 +9,8 @@ import static com.codeborne.selenide.Selenide.$;
 public class FriendsPage {
     private final SelenideElement
             friendsTable = $("#friends"),
-            requestTable = $("#requests");
+            requestTable = $("#requests"),
+            searchField = $("input[placeholder='Search']");
 
     public void checkThatFriendsExist(String... friendUserName) {
         friendsTable.$$("tr").shouldHave(textsInAnyOrder(friendUserName));
@@ -20,6 +21,7 @@ public class FriendsPage {
     }
 
     public void checkIncomeFriendRequest(String incomeUserName) {
+        searchField.setValue(incomeUserName).pressEnter();
         requestTable.$$("tr").find(text(incomeUserName)).shouldBe(visible);
     }
 }
