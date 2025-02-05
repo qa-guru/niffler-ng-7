@@ -38,5 +38,7 @@ public interface Config {
   String currencyJdbcUrl();
 
   @Nonnull
-  String ghUrl();
+  default String ghUrl() {
+    return "https://api.github.com/";
+  }
 }
