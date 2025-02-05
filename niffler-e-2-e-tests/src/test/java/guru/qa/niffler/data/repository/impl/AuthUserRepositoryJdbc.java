@@ -139,4 +139,48 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public Optional<AuthUserEntity> findByUserName(String username) {
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+                "SELECT * FROM \"user\" u join authority a on u.id=a.user_id WHERE username = ?")
+        ) {
+            ps.setObject(1, username);
+
+            ps.execute();
+
+            try (ResultSet rs = ps.getResultSet()) {
+                AuthUserEntity user = null;
+                List<AuthorityEntity> authUserEntityList = new ArrayList<>();
+                while (rs.next()) {
+                    if (user == null) {
+                        user = AuthUserEntityRowMapper.instance.mapRow(rs, 1);
+                    }
+                    AuthorityEntity ae = new AuthorityEntity();
+                    ae.setUser(user);
+                    ae.setId(rs.getObject("a.id", UUID.class));
+                    ae.setAuthority(Authority.valueOf(rs.getString("authority")));
+                    authUserEntityList.add(ae);
+
+
+                    AuthUserEntity result = new AuthUserEntity();
+                    result.setId(rs.getObject("id", UUID.class));
+                    result.setUsername(rs.getString("username"));
+                    result.setPassword(rs.getString("password"));
+                    result.setEnabled(rs.getBoolean("enabled"));
+                    result.setAccountNonExpired(rs.getBoolean("account_non_expired"));
+                    result.setAccountNonLocked(rs.getBoolean("account_non_locked"));
+                    result.setCredentialsNonExpired(rs.getBoolean("credentials_non_expired"));
+                }
+                if (user == null) {
+                    return Optional.empty();
+                } else {
+                    user.setAuthorities(authUserEntityList);
+                    return Optional.of(user);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

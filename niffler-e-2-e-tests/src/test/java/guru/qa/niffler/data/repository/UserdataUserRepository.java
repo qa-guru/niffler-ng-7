@@ -20,5 +20,7 @@ public interface UserdataUserRepository {
 
     void addIncomeInvitation(UserEntity requester, UserEntity addressee);
 
+    void addOutcomeInvitation(UserEntity requester, UserEntity addressee);
+
     void addFriend(UserEntity requester, UserEntity addressee);
 }

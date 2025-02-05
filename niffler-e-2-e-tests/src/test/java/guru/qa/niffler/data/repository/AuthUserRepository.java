@@ -14,4 +14,6 @@ public interface AuthUserRepository {
     Optional<AuthUserEntity> findById(UUID id);
 
     List<AuthUserEntity> findAll();
+
+    Optional<AuthUserEntity> findByUserName(String username);
 }

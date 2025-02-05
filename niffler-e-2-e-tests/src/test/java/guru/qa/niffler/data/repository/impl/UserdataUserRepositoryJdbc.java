@@ -47,11 +47,15 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
     }
 
     @Override
+    public void addOutcomeInvitation(UserEntity requester, UserEntity addressee) {
+    }
+
+    @Override
     public void addFriend(UserEntity requester, UserEntity addressee) {
         requester.addFriends(FriendshipStatus.ACCEPTED, addressee);
         addressee.addFriends(FriendshipStatus.ACCEPTED, requester);
         userdataUserDao.update(requester);
         userdataUserDao.update(addressee);
-
     }
+
 }
