@@ -1,4 +1,4 @@
-package guru.qa.niffler.service;
+package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
@@ -7,23 +7,23 @@ import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.impl.AuthUserRepositoryJdbc;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositorySpringJdbc;
-import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryJdbc;
-import guru.qa.niffler.data.repository.impl.UserdataUserRepositorySpringJdbc;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.UsersClient;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+import java.util.Objects;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
-
+@ParametersAreNonnullByDefault
 public class UsersDbClient implements UsersClient {
 
   private static final Config CFG = Config.getInstance();
@@ -37,11 +37,15 @@ public class UsersDbClient implements UsersClient {
       CFG.userdataJdbcUrl()
   );
 
+  @Nonnull
   @Override
   public UserJson createUser(String username, String password) {
-    return xaTransactionTemplate.execute(() -> UserJson.fromEntity(
-            createNewUser(username, password),
-            null
+    return Objects.requireNonNull(
+        xaTransactionTemplate.execute(
+            () -> UserJson.fromEntity(
+                createNewUser(username, password),
+                null
+            )
         )
     );
   }
@@ -77,10 +81,10 @@ public class UsersDbClient implements UsersClient {
       for (int i = 0; i < count; i++) {
         xaTransactionTemplate.execute(() -> {
               String username = randomUsername();
-          userdataUserRepository.addFriendshipRequest(
-              targetEntity,
-              createNewUser(username, "12345")
-          );
+              userdataUserRepository.addFriendshipRequest(
+                  targetEntity,
+                  createNewUser(username, "12345")
+              );
               return null;
             }
         );
@@ -109,12 +113,14 @@ public class UsersDbClient implements UsersClient {
     }
   }
 
+  @Nonnull
   private UserEntity createNewUser(String username, String password) {
     AuthUserEntity authUser = authUserEntity(username, password);
     authUserRepository.create(authUser);
     return userdataUserRepository.create(userEntity(username));
   }
 
+  @Nonnull
   private UserEntity userEntity(String username) {
     UserEntity ue = new UserEntity();
     ue.setUsername(username);
@@ -122,6 +128,7 @@ public class UsersDbClient implements UsersClient {
     return ue;
   }
 
+  @Nonnull
   private AuthUserEntity authUserEntity(String username, String password) {
     AuthUserEntity authUser = new AuthUserEntity();
     authUser.setUsername(username);
