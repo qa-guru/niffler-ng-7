@@ -42,6 +42,11 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     }
 
     @Override
+    public AuthUserEntity update(AuthUserEntity user) {
+        return null;
+    }
+
+    @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         return Optional.ofNullable(
@@ -54,10 +59,30 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     }
 
     @Override
+    public Optional<AuthUserEntity> findByUserName(String username) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(
+                        "SELECT * FROM \"user\" WHERE username = ? ",
+                        AuthUserEntityRowMapper.instance,
+                        username
+                )
+        );
+    }
+
+    @Override
     public List<AuthUserEntity> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         return jdbcTemplate.query(
                 "SELECT * FROM \"user\"",
                 AuthUserEntityRowMapper.instance);
+    }
+
+    @Override
+    public void remove(AuthUserEntity authUser) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+        jdbcTemplate.update(
+                "DELETE FROM \"user\" WHERE id = ?", authUser.getId()
+        );
     }
 }

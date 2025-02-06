@@ -1,7 +1,7 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.data.dao.UserdataUserDao;
-import guru.qa.niffler.data.dao.impl.UserdataUserDaoJdbc;
+import guru.qa.niffler.data.dao.impl.UserdataUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
+public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository {
 
-    private final UserdataUserDao userdataUserDao = new UserdataUserDaoJdbc();
+    private final UserdataUserDao userdataUserDao = new UserdataUserDaoSpringJdbc();
 
 
     @Override
@@ -47,14 +47,14 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
 
     @Override
     public void sendInvitation(UserEntity requester, UserEntity addressee) {
-        requester.addFriends(FriendshipStatus.PENDING, addressee);
-        userdataUserDao.update(requester);
+        addressee.addFriends(FriendshipStatus.PENDING, requester);
+        userdataUserDao.update(addressee);
     }
 
     @Override
     public void getInvitation(UserEntity addressee, UserEntity requester) {
-        addressee.addFriends(FriendshipStatus.PENDING, requester);
-        userdataUserDao.update(addressee);
+        requester.addFriends(FriendshipStatus.PENDING, addressee);
+        userdataUserDao.update(requester);
     }
 
     @Override

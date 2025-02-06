@@ -51,7 +51,7 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userDataJdbcUrl()));
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
-                        "SELECT * FROM \"user\" WHERE id = ? ",
+                        "SELECT * FROM \"user\" WHERE id = ?",
                         UserDataEntityRowMapper.instance,
                         id
                 )
@@ -91,27 +91,29 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
     public UserEntity update(UserEntity user) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userDataJdbcUrl()));
         jdbcTemplate.update("""
-                          UPDATE "user"
-                            SET currency    = ?,
-                                firstname   = ?,
-                                surname     = ?,
-                                photo       = ?,
-                                photo_small = ?
-                            WHERE id = ?
-            """,
+                                      UPDATE "user"
+                                        SET currency    = ?,
+                                            firstname   = ?,
+                                            surname     = ?,
+                                            full_name   = ?,
+                                            photo       = ?,
+                                            photo_small = ?
+                                        WHERE id = ?
+                        """,
                 user.getCurrency().name(),
                 user.getFirstname(),
                 user.getSurname(),
+                user.getFullname(),
                 user.getPhoto(),
                 user.getPhotoSmall(),
                 user.getId());
 
         jdbcTemplate.batchUpdate("""
-                             INSERT INTO friendship (requester_id, addressee_id, status)
-                             VALUES (?, ?, ?)
-                             ON CONFLICT (requester_id, addressee_id)
-                                 DO UPDATE SET status = ?
-            """,
+                                         INSERT INTO friendship (requester_id, addressee_id, status)
+                                         VALUES (?, ?, ?)
+                                         ON CONFLICT (requester_id, addressee_id)
+                                             DO UPDATE SET status = ?
+                        """,
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(@Nonnull PreparedStatement ps, int i) throws SQLException {
