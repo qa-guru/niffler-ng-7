@@ -1,6 +1,10 @@
 package guru.qa.niffler.tests.web;
 
+import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.Spending;
+import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,15 +17,25 @@ import static com.codeborne.selenide.Selenide.$;
 @DisplayName("Web тесты на регистрацию")
 public class LoginWebTests {
 
-    static final String userName = "Artur";
-    static final String password = "12345";
-
     @DisplayName("Отображение главной страницы после успешной авторизации")
+    @User(
+            categories = {
+                    @Category(name = "Магазины", archived = false),
+                    @Category(name = "Бары", archived = true)
+            },
+            spendings = {
+                    @Spending(
+                            category = "Обучение",
+                            description = "QA.GURU Advanced 7",
+                            amount = 80000
+                    )
+            }
+    )
     @Test
-    void mainPageShouldBeDisplayedAfterSuccessLogin() {
+    void mainPageShouldBeDisplayedAfterSuccessLogin(UserJson user) {
         new LoginPage()
                 .open()
-                .login(userName, password);
+                .login(user.username(), user.testData().password());
         $(".css-giaux5").shouldBe(visible)
                 .shouldHave(text("Statistics"));
         $(".css-uxhuts").shouldBe(visible)
@@ -33,7 +47,7 @@ public class LoginWebTests {
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
         new LoginPage()
                 .open()
-                .login(userName, "54321");
+                .login("Artur", "54321");
         $(".header").shouldBe(visible)
                 .shouldHave(text("Log in"));
         $(".form__error").shouldBe(visible)

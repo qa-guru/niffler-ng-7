@@ -19,7 +19,7 @@ public class RandomDataUtils {
     }
 
     public static String randomCategoryName() {
-        return faker.lordOfTheRings().character();
+        return faker.gameOfThrones().character() +" "+ faker.lordOfTheRings().character();
     }
 
     public static String randomSentence(int wordsCount) {

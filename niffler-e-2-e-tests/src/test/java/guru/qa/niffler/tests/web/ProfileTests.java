@@ -18,15 +18,15 @@ public class ProfileTests {
     )
     @DisplayName("Архивная категория должна присутствовать и отображаться в списке категорий")
     @Test
-    void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
+    void archivedCategoryShouldPresentInCategoriesList(CategoryJson[] category) {
         new LoginPage()
                 .open()
-                .login(category.username(), "12345")
+                .login(category[0].username(), "12345")
                 .navigateMenuComponent
                 .clickAccountMenuButton()
                 .clickProfileButton()
                 .clickArchivedCheckbox()
-                .checkCategoryInCategoryList(category.name());
+                .checkCategoryInCategoryList(category[0].name());
     }
 
     @User(
