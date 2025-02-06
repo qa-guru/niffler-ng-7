@@ -1,16 +1,19 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.components.SearchField;
 
 import static com.codeborne.selenide.CollectionCondition.textsInAnyOrder;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 
 public class FriendsPage {
+
+    private final SearchField searchField = new SearchField();
+
     private final SelenideElement
             friendsTable = $("#friends"),
-            requestTable = $("#requests"),
-            searchField = $("input[placeholder='Search']");
+            requestTable = $("#requests");
 
     public void checkThatFriendsExist(String... friendUserName) {
         friendsTable.$$("tr").shouldHave(textsInAnyOrder(friendUserName));
@@ -21,7 +24,7 @@ public class FriendsPage {
     }
 
     public void checkIncomeFriendRequest(String incomeUserName) {
-        searchField.setValue(incomeUserName).pressEnter();
+        searchField.search(incomeUserName);
         requestTable.$$("tr").find(text(incomeUserName)).shouldBe(visible);
     }
 }
