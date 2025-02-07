@@ -25,7 +25,8 @@ public class ProfilePage {
             nameInput = $("input#name"),
             saveChangesButton = $("button#:r9:"),
             categoryInput = $("input#category"),
-            showArchivedCheckbox = $("input[type='checkbox']");
+            showArchivedCheckbox = $("input[type='checkbox']"),
+            alert = $(".MuiSnackbar-root");
 
     @Nonnull
     @Step("Загрузка изображения <file> на странице профиля")
@@ -57,14 +58,20 @@ public class ProfilePage {
 
 
     @Step("Проверка нахождения категории <categoryName> в отображаемом списке на странице профиля")
-    public void checkCategoryInCategoryList(String categoryName){
+    public void checkCategoryInCategoryList(String categoryName) {
         $$(".css-17u3xlq").findBy(text(categoryName)).shouldBe(visible);
     }
 
+    @Nonnull
     @Step("Сохранение изменений на странице пользователя")
-    public void saveChanges() {
+    public ProfilePage saveChanges() {
         saveChangesButton.click();
+        return this;
     }
 
+    @Step("Проверка появления успешного сообщения обновления профиля <expectedText>")
+    public void checkAlertMessage(String expectedText) {
+        alert.shouldBe(visible).should(text(expectedText));
+    }
 
 }

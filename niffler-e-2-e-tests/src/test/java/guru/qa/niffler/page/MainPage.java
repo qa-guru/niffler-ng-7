@@ -3,6 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.ElementsCollection;
 import guru.qa.niffler.page.components.Header;
 import guru.qa.niffler.page.components.SearchField;
+import guru.qa.niffler.page.components.SpendingTable;
 import io.qameta.allure.Step;
 import lombok.Getter;
 
@@ -17,6 +18,7 @@ public class MainPage {
 
     private final SearchField searchField = new SearchField();
     private final Header header = new Header();
+    private final SpendingTable spendingTable = new SpendingTable();
 
     private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
 

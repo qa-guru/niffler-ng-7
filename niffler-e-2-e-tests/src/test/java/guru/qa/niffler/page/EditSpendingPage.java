@@ -9,6 +9,8 @@ import lombok.Getter;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import java.time.LocalDate;
+
 import static com.codeborne.selenide.Selenide.$;
 
 @Getter
@@ -23,7 +25,8 @@ public class EditSpendingPage {
             saveButton = $("#save"),
             amountInput = $("#amount"),
             categoryInput = $("#category"),
-            cancelButton = $("#cancel");
+            cancelButton = $("#cancel"),
+            alert = $(".MuiSnackbar-root");
 
     @Step("Изменение названия траты <description>")
     @Nonnull
@@ -33,12 +36,34 @@ public class EditSpendingPage {
         return this;
     }
 
+    @Step("Изменение категории траты <category>")
+    @Nonnull
+    public EditSpendingPage editCategory(String category) {
+        categoryInput.clear();
+        categoryInput.setValue(category);
+        return this;
+    }
+
+    @Step("Изменение даты для траты <date>")
+    @Nonnull
+    public EditSpendingPage editDate(LocalDate date) {
+        calendar.selectDateInCalendar(date);
+        return this;
+    }
+
+    @Step("Изменение суммы траты <amount>")
+    @Nonnull
+    public EditSpendingPage editAmount(double amount) {
+        amountInput.clear();
+        amountInput.setValue(String.valueOf(amount));
+        return this;
+    }
+
     @Step("Сохранение изменений")
     @Nonnull
     public MainPage saveChange() {
         saveButton.click();
         return new MainPage();
     }
-
 
 }

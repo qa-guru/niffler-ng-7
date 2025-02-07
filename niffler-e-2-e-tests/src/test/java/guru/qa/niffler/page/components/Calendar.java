@@ -6,7 +6,10 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.time.LocalDate;
 import java.time.Month;
+import java.time.Year;
+import java.util.Date;
 
 import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.Condition.text;
@@ -32,16 +35,16 @@ public class Calendar extends BaseComponent<Calendar> {
             currentMonthAndYear = self.$(".MuiPickersCalendarHeader-label");
 
     private final ElementsCollection
-            yearButtons = self.$$("button[class='MuiPickersYear-yearButton']"),
+            yearButtons = self.$$("button[class*='MuiPickersYear-yearButton']"),
             dayButtons = self.$$("button[role='gridcell']");
 
     @Step("Выбор даты в календаре <day>, <month>, <year>")
-    public void selectDateInCalendar(int day, int month, int year) {
+    public void selectDateInCalendar(LocalDate date) {
         calendarButton.click();
         selectYearButton.click(usingJavaScript());
-        yearButtons.find(text(String.valueOf(year))).click();
-        selectMonth(month);
-        dayButtons.find(text(String.valueOf(day))).click();
+        yearButtons.find(text(String.valueOf(date.getYear()))).click();
+        selectMonth(date.getMonthValue());
+        dayButtons.find(text(String.valueOf(date.getDayOfMonth()))).click();
     }
 
     private void selectMonth(int selectedMonth) {
@@ -49,12 +52,10 @@ public class Calendar extends BaseComponent<Calendar> {
 
         while (actualMonth > selectedMonth) {
             prevMonthButton.click();
-            Selenide.sleep(200);
             actualMonth = getActualMonthIndex();
         }
         while (actualMonth < selectedMonth) {
             nextMonthButton.click();
-            Selenide.sleep(200);
             actualMonth = getActualMonthIndex();
         }
     }
@@ -63,6 +64,6 @@ public class Calendar extends BaseComponent<Calendar> {
         return Month.valueOf(currentMonthAndYear.getText()
                         .split(" ")[0]
                         .toUpperCase())
-                .ordinal();
+                .getValue();
     }
 }
