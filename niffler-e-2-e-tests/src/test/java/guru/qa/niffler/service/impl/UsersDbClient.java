@@ -12,15 +12,17 @@ import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.*;
 import guru.qa.niffler.service.UsersClient;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 import static java.util.Objects.requireNonNull;
 
-
+@ParametersAreNonnullByDefault
 public class UsersDbClient implements UsersClient {
 
     private static final Config CONFIG = Config.getInstance();
@@ -35,6 +37,7 @@ public class UsersDbClient implements UsersClient {
             CONFIG.userdataJdbcUrl()
     );
 
+    @NotNull
     @Override
     public UserJson createUser(String username, String password) {
         return requireNonNull(
@@ -141,12 +144,14 @@ public class UsersDbClient implements UsersClient {
         }
     }
 
+    @NotNull
     private UserEntity createNewUser(String username, String password) {
         AuthUserEntity authUser = authUserEntity(username, password);
         authUserRepository.createUser(authUser);
         return userdataUserRepository.createUser(userEntity(username));
     }
 
+    @NotNull
     private UserEntity userEntity(String username) {
         UserEntity ue = new UserEntity();
         ue.setUsername(username);
@@ -154,6 +159,7 @@ public class UsersDbClient implements UsersClient {
         return ue;
     }
 
+    @NotNull
     private AuthUserEntity authUserEntity(String username, String password) {
         AuthUserEntity authUser = new AuthUserEntity();
         authUser.setUsername(username);

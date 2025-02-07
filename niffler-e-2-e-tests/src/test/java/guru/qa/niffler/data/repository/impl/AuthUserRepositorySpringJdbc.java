@@ -13,12 +13,14 @@ import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.jdbc.DataSources;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+@ParametersAreNonnullByDefault
 public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
 
     private static final Config config = Config.getInstance();
@@ -26,7 +28,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
     private final AuthUserDao authUserDao = new AuthUserDaoSpringJdbc();
     private final AuthorityDao authAuthorityDao = new AuthorityDaoSpringJdbc();
 
-
+    @Nonnull
     @Override
     public AuthUserEntity createUser(AuthUserEntity authUserEntity) {
         authUserDao.createUser(authUserEntity);
@@ -35,6 +37,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
         return authUserEntity;
     }
 
+    @Nonnull
     @Override
     public AuthUserEntity update(AuthUserEntity authUserEntity) {
         authUserDao.update(authUserEntity);
@@ -43,6 +46,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
         return authUserEntity;
     }
 
+    @Nonnull
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.authJdbcUrl()));
@@ -67,7 +71,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
         ));
     }
 
-
+    @Nonnull
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.authJdbcUrl()));
@@ -91,6 +95,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
         ));
     }
 
+    @Nonnull
     @Override
     public List<AuthUserEntity> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.authJdbcUrl()));

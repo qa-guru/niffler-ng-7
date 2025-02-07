@@ -6,6 +6,8 @@ import guru.qa.niffler.data.entity.userdata.FriendshipEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.CurrencyValues;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +16,12 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class UserdataUserDAOJdbc implements UserdataUserDAO {
 
     private static final Config config = Config.getInstance();
 
+    @Nonnull
     @Override
     public UserEntity createUser(UserEntity user) {
         try (PreparedStatement ps = holder(config.userdataJdbcUrl()).connection().prepareStatement(
@@ -52,6 +56,7 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
         }
     }
 
+    @Nonnull
     @Override
     public UserEntity update(UserEntity user) {
         try (PreparedStatement usersPs = holder(config.userdataJdbcUrl()).connection().prepareStatement(
@@ -96,6 +101,7 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
         return user;
     }
 
+    @Nonnull
     @Override
     public Optional<UserEntity> findById(UUID id) {
         try (PreparedStatement ps = holder(config.userdataJdbcUrl()).connection().prepareStatement(
@@ -116,6 +122,7 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
         }
     }
 
+    @Nonnull
     @Override
     public Optional<UserEntity> findByUsername(String username) {
         try (PreparedStatement ps = holder(config.userdataJdbcUrl()).connection().prepareStatement(
@@ -136,6 +143,7 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
         }
     }
 
+    @Nonnull
     @Override
     public List<UserEntity> findAll() {
         try (PreparedStatement ps = holder(config.userdataJdbcUrl()).connection().prepareStatement(
@@ -169,6 +177,7 @@ public class UserdataUserDAOJdbc implements UserdataUserDAO {
         }
     }
 
+    @Nonnull
     private UserEntity mapperUserEntity(ResultSet rs) throws SQLException {
         UserEntity result = new UserEntity();
         result.setId(rs.getObject("id", UUID.class));

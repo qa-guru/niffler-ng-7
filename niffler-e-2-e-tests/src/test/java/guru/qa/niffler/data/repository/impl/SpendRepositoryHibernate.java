@@ -9,12 +9,14 @@ import jakarta.persistence.NoResultException;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static guru.qa.niffler.data.jpa.EntityManagers.em;
 
+@ParametersAreNonnullByDefault
 public class SpendRepositoryHibernate implements SpendRepository {
 
     private static final Config CFG = Config.getInstance();
@@ -82,6 +84,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
         );
     }
 
+    @Nonnull
     @Override
     public List<SpendEntity> findAllSpendByUsername(String username) {
         return entityManager.createQuery("select s from SpendEntity s where s.username = :username", SpendEntity.class)
@@ -89,6 +92,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
                 .getResultList();
     }
 
+    @Nonnull
     @Override
     public List<SpendEntity> findAllSpend() {
         return entityManager.createQuery("select s from SpendEntity s", SpendEntity.class)
