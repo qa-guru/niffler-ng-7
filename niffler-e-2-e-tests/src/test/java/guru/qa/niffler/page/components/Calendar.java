@@ -1,15 +1,12 @@
 package guru.qa.niffler.page.components;
 
 import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.Year;
-import java.util.Date;
 
 import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.Condition.text;
