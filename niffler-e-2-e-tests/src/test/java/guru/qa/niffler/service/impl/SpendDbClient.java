@@ -9,6 +9,7 @@ import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
+import io.qameta.allure.Step;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -29,6 +30,7 @@ public class SpendDbClient implements SpendClient {
 
     @Nonnull
     @Override
+    @Step("Создание траты через БД")
     public SpendJson createSpend(SpendJson spend) {
         return requireNonNull(
                 xaTransactionTemplate.execute(
@@ -43,6 +45,7 @@ public class SpendDbClient implements SpendClient {
 
     @Nonnull
     @Override
+    @Step("Создание категории через БД")
     public CategoryJson createCategory(CategoryJson category) {
         return requireNonNull(
                 xaTransactionTemplate.execute(
@@ -57,6 +60,7 @@ public class SpendDbClient implements SpendClient {
 
     @NotNull
     @Override
+    @Step("Обновление категории через БД")
     public CategoryJson updateCategory(CategoryJson category) {
         return requireNonNull(
                 xaTransactionTemplate.execute(
@@ -70,6 +74,7 @@ public class SpendDbClient implements SpendClient {
     }
 
     @Override
+    @Step("Удаление категории через БД")
     public void removeCategory(CategoryJson category) {
         xaTransactionTemplate.execute(
                 () -> {

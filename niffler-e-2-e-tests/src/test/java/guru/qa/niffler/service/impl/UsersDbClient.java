@@ -12,6 +12,7 @@ import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.*;
 import guru.qa.niffler.service.UsersClient;
+import io.qameta.allure.Step;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,6 +40,7 @@ public class UsersDbClient implements UsersClient {
 
     @NotNull
     @Override
+    @Step("Создание пользователя через БД")
     public UserJson createUser(String username, String password) {
         return requireNonNull(
                 xaTransactionTemplate.execute(
@@ -55,6 +57,7 @@ public class UsersDbClient implements UsersClient {
     }
 
     @Override
+    @Step("Добавление входящего приглашения дружбы через БД")
     public void addIncomeInvitation(UserJson targetUser, int count) {
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
@@ -85,6 +88,7 @@ public class UsersDbClient implements UsersClient {
     }
 
     @Override
+    @Step("Добавление исходящего приглашения дружбы через БД")
     public void addOutcomeInvitation(UserJson targetUser, int count) {
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
@@ -115,6 +119,7 @@ public class UsersDbClient implements UsersClient {
     }
 
     @Override
+    @Step("Добавление действующей дружбы через БД")
     public void addFriend(UserJson targetUser, int count) {
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
