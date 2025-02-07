@@ -1,6 +1,7 @@
 package guru.qa.niffler.page.components;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,6 +23,7 @@ public class SearchField extends BaseComponent<SearchField> {
 
     private final SelenideElement searchInputClearButton = $("#input-clear");
 
+    @Step("Поиск по значению <query>")
     @Nonnull
     public SearchField search(String query) {
         clearIfNotEmpty();

@@ -22,16 +22,15 @@ public class ProfileTests {
         new LoginPage()
                 .open()
                 .login(category[0].username(), "12345")
-                .navigateMenuComponent
-                .clickAccountMenuButton()
-                .clickProfileButton()
+                .getHeader()
+                .toProfilePage()
                 .clickArchivedCheckbox()
                 .checkCategoryInCategoryList(category[0].name());
     }
 
     @User(
             username = "Artur",
-            categories = @Category( archived = false)
+            categories = @Category()
     )
     @DisplayName("Активная категория должна присутствовать и отображаться в списке категорий")
     @Test
@@ -39,9 +38,8 @@ public class ProfileTests {
         new LoginPage()
                 .open()
                 .login(category.username(), "12345")
-                .navigateMenuComponent
-                .clickAccountMenuButton()
-                .clickProfileButton()
+                .getHeader()
+                .toProfilePage()
                 .checkCategoryInCategoryList(category.name());
     }
 }

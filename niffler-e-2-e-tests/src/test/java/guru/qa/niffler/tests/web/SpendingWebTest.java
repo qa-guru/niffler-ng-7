@@ -28,9 +28,9 @@ public class SpendingWebTest {
         new LoginPage()
                 .open()
                 .login("Artur", "12345")
-                .editSpending(spend.description())
-                .setDescription(newDescription)
-                .save();
+                .editSpendingClick(spend.description())
+                .editDescription(newDescription)
+                .saveChange();
 
         new MainPage().checkThatTableContainsSpending(newDescription);
     }

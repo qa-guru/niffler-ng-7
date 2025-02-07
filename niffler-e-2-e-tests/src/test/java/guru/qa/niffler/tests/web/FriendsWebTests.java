@@ -22,9 +22,8 @@ public class FriendsWebTests {
         new LoginPage()
                 .open()
                 .login(user.username(), user.testData().password())
-                .navigateMenuComponent
-                .clickAccountMenuButton()
-                .clickFriendsButton()
+                .getHeader()
+                .toFriendsPage()
                 .checkThatFriendsExist(friendUsername);
 
     }
@@ -36,9 +35,8 @@ public class FriendsWebTests {
         new LoginPage()
                 .open()
                 .login(user.username(), user.testData().password())
-                .navigateMenuComponent
-                .clickAccountMenuButton()
-                .clickFriendsButton()
+                .getHeader()
+                .toFriendsPage()
                 .checkThatFriendsDoNotExist();
     }
 
@@ -49,9 +47,8 @@ public class FriendsWebTests {
         new LoginPage()
                 .open()
                 .login(user.username(), user.testData().password())
-                .navigateMenuComponent
-                .clickAccountMenuButton()
-                .clickFriendsButton()
+                .getHeader()
+                .toFriendsPage()
                 .checkIncomeFriendRequest(user.testData().incomeInvitationsUsernames()[0]);
     }
 
@@ -62,9 +59,8 @@ public class FriendsWebTests {
         new LoginPage()
                 .open()
                 .login(user.username(), user.testData().password())
-                .navigateMenuComponent
-                .clickAccountMenuButton()
-                .clickAllPeopleButton()
+                .getHeader()
+                .toAllPeoplesPage()
                 .checkOutcomeFriendRequest(user.testData().outcomeInvitationsUsernames()[0]);
     }
 }
