@@ -7,7 +7,6 @@ import lombok.Getter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.File;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
@@ -23,15 +22,15 @@ public class ProfilePage {
     private final SelenideElement
             uploadNewPictureButton = $("input#image__input"),
             nameInput = $("input#name"),
-            saveChangesButton = $("button#:r9:"),
+            saveChangesButton = $("button[type='submit']"),
             categoryInput = $("input#category"),
             showArchivedCheckbox = $("input[type='checkbox']"),
             alert = $(".MuiSnackbar-root");
 
     @Nonnull
     @Step("Загрузка изображения <file> на странице профиля")
-    public ProfilePage uploadImage(File file) {
-        uploadNewPictureButton.uploadFile(file);
+    public ProfilePage uploadImage(String file) {
+        uploadNewPictureButton.uploadFromClasspath(file);
         return this;
     }
 

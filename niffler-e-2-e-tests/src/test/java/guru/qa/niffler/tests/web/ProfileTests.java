@@ -10,7 +10,6 @@ import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 
 @DisplayName("Тесты для страницы профиля пользователя")
 @WebTest
@@ -55,7 +54,7 @@ public class ProfileTests {
                 .login(user.username(), user.testData().password())
                 .getHeader()
                 .toProfilePage()
-                .uploadImage(new File("resources/image/duck.jpg"))
+                .uploadImage("image/duck.jpg")
                 .setName(RandomDataUtils.randomName())
                 .setNewCategory(RandomDataUtils.randomCategoryName())
                 .saveChanges()
