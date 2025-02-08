@@ -12,7 +12,9 @@ import static com.codeborne.selenide.Selenide.$;
 
 @Getter
 @ParametersAreNonnullByDefault
-public class PeoplePage {
+public class PeoplePage extends BasePage<MainPage> {
+
+    public static final String PEOPLE_PAGE_URL = CONFIG.frontUrl() + "people/all";
 
     private final SearchField searchField = new SearchField();
     private final Header header = new Header();

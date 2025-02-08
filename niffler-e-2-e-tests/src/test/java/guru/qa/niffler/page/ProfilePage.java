@@ -15,7 +15,9 @@ import static com.codeborne.selenide.Selenide.$$;
 
 @Getter
 @ParametersAreNonnullByDefault
-public class ProfilePage {
+public class ProfilePage extends BasePage<MainPage> {
+
+    public static final String PROFILE_PAGE_URL = CONFIG.frontUrl() + "profile";
 
     private final Header header = new Header();
 
@@ -67,10 +69,4 @@ public class ProfilePage {
         saveChangesButton.click();
         return this;
     }
-
-    @Step("Проверка появления успешного сообщения обновления профиля <expectedText>")
-    public void checkAlertMessage(String expectedText) {
-        alert.shouldBe(visible).should(text(expectedText));
-    }
-
 }

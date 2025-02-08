@@ -15,7 +15,9 @@ import static com.codeborne.selenide.Selenide.$;
 
 @Getter
 @ParametersAreNonnullByDefault
-public class EditSpendingPage {
+public class EditSpendingPage extends BasePage<EditSpendingPage> {
+
+    public static final String EDIT_SPEND_PAGE_URL = CONFIG.frontUrl() + "spending";
 
     private final Header header = new Header();
     private final Calendar calendar = new Calendar();
