@@ -1,24 +1,19 @@
 package guru.qa.niffler.service.impl;
 
 import guru.qa.niffler.api.AuthApi;
-import guru.qa.niffler.api.ThreadSafeCookieStore;
+import guru.qa.niffler.api.core.RestClient.*;
+import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.api.UserdataApi;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import io.qameta.allure.Step;
-import okhttp3.JavaNetCookieJar;
-import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 import static java.util.Objects.requireNonNull;
@@ -30,31 +25,8 @@ public class UsersApiClient implements UsersClient {
     private static final Config CONFIG = Config.getInstance();
     private static final String PASSWORD = "12345";
 
-    OkHttpClient okHttpClient = new OkHttpClient.Builder()
-            .cookieJar(new JavaNetCookieJar(
-                    new CookieManager(
-                            ThreadSafeCookieStore.INSTANCE,
-                            CookiePolicy.ACCEPT_ALL
-                    )
-            ))
-            .build();
-
-
-    private final Retrofit retrofitAuth = new Retrofit.Builder()
-            .client(okHttpClient)
-            .baseUrl(CONFIG.authUrl())
-            .addConverterFactory(JacksonConverterFactory.create())
-            .build();
-
-    private final Retrofit retrofitUserdata = new Retrofit.Builder()
-            .client(okHttpClient)
-            .baseUrl(CONFIG.userdataUrl())
-            .addConverterFactory(JacksonConverterFactory.create())
-            .build();
-
-    private final AuthApi authApi = retrofitAuth.create(AuthApi.class);
-    private final UserdataApi userdataApi = retrofitUserdata.create(UserdataApi.class);
-
+    private final AuthApi authApi = new EmtyRestClient(CONFIG.authUrl()).create(AuthApi.class);
+    private final UserdataApi userdataApi = new EmtyRestClient(CONFIG.userdataUrl()).create(UserdataApi.class);
 
     @NotNull
     @Override
