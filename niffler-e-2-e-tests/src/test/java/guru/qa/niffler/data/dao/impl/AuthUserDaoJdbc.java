@@ -3,6 +3,7 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -27,7 +28,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
                 Statement.RETURN_GENERATED_KEYS
         )) {
             ps.setString(1, user.getUsername());
-            ps.setString(2, pe.encode(user.getPassword()));
+            ps.setString(2, user.getPassword());
             ps.setBoolean(3, user.getEnabled());
             ps.setBoolean(4, user.getAccountNonExpired());
             ps.setBoolean(5, user.getAccountNonLocked());
@@ -48,6 +49,31 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public AuthUserEntity update(AuthUserEntity user) {
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+                "UPDATE \"user\" " +
+                        "SET username = ?, password = ?, enabled = ?, account_non_expired = ?, account_non_locked = ?, credentials_non_expired = ? " +
+                        "WHERE id = ?"
+        )) {
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPassword());
+            ps.setBoolean(3, user.getEnabled());
+            ps.setBoolean(4, user.getAccountNonExpired());
+            ps.setBoolean(5, user.getAccountNonLocked());
+            ps.setBoolean(6, user.getCredentialsNonExpired());
+            ps.setObject(7, user.getId());
+            ps.executeUpdate();
+            int affectedRows = ps.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("");
+            }
+            return user;
+        } catch (SQLException e) {
+            throw new RuntimeException("", e);
         }
     }
 
@@ -81,6 +107,29 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
+    public Optional<AuthUserEntity> findByUserName(String username) {
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement("""
+                        SELECT * FROM "user" WHERE username = ?
+                """)) {
+            ps.setString(1, username);
+
+            ps.execute();
+
+            try (ResultSet rs = ps.getResultSet()) {
+                if (rs.next()) {
+                    return Optional.ofNullable(
+                            AuthUserEntityRowMapper.instance.mapRow(rs, rs.getRow())
+                    );
+                } else {
+                    return Optional.empty();
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public List<AuthUserEntity> findAll() {
         List<AuthUserEntity> authUserEntities = new ArrayList<>();
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
@@ -103,6 +152,19 @@ public class AuthUserDaoJdbc implements AuthUserDao {
                 return authUserEntities;
 
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void remove(AuthUserEntity authUser) {
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+                "DELETE FROM \"user\" WHERE ID = ?"
+        )) {
+            ps.setObject(1, authUser.getId());
+            ps.execute();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -23,9 +23,9 @@ public class UserDataEntityRowMapper implements RowMapper<UserEntity> {
         result.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
         result.setFirstname(rs.getString("firstname"));
         result.setSurname(rs.getString("surname"));
-        result.setFullname(rs.getString("fullname"));
+        result.setFullname(rs.getString("full_name"));
         result.setPhoto(rs.getBytes("photo"));
-        result.setPhotoSmall(rs.getBytes("photoSmall"));
+        result.setPhotoSmall(rs.getBytes("photo_small"));
 
         return result;
     }

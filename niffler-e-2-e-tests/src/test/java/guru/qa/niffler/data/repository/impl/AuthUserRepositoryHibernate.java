@@ -18,33 +18,46 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
     private final EntityManager entityManager = EntityManagers.em(CFG.authJdbcUrl());
 
     @Override
-    public AuthUserEntity createUser(AuthUserEntity authUser) {
+    public AuthUserEntity create(AuthUserEntity user) {
         entityManager.joinTransaction();
-        entityManager.persist(authUser);
-        return authUser;
+        entityManager.persist(user);
+        return user;
     }
+
+    @Override
+    public AuthUserEntity update(AuthUserEntity user) {
+        entityManager.joinTransaction();
+        entityManager.merge(user);
+        return user;
+    }
+
 
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         return Optional.ofNullable(
                 entityManager.find(AuthUserEntity.class, id));
-
     }
 
     @Override
     public List<AuthUserEntity> findAll() {
-        return List.of(entityManager.createQuery("select u from UserEntity", AuthUserEntity.class))
+        return List.of(entityManager.createQuery("select u from AuthUserEntity", AuthUserEntity.class))
                 .getLast().getResultList();
     }
 
     @Override
     public Optional<AuthUserEntity> findByUserName(String username) {
         try {
-            return Optional.of(entityManager.createQuery("select u from UserEntity u where u.username =: username", AuthUserEntity.class)
+            return Optional.of(entityManager.createQuery("select u from AuthUserEntity u where u.username =: username", AuthUserEntity.class)
                     .setParameter("username", username)
                     .getSingleResult());
         } catch (NoResultException e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void remove(AuthUserEntity user) {
+        entityManager.joinTransaction();
+        entityManager.remove(user);
     }
 }

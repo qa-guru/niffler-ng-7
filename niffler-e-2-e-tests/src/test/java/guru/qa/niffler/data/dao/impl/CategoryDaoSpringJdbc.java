@@ -90,4 +90,28 @@ public class CategoryDaoSpringJdbc implements CategoryDao {
                 "SELECT * FROM category",
                 CategoryEntityRowMapper.instance);
     }
+
+    @Override
+    public CategoryEntity update(CategoryEntity category) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
+        jdbcTemplate.update("""
+               UPDATE "category"
+               SET username = ?,
+               name = ?,
+               archived = ?,
+               WHERE id = ?
+             """,
+
+                category.getUsername(),
+                category.getName(),
+                category.isArchived()
+        );
+        return category;
+    }
+
+    @Override
+    public void removeCategory(CategoryEntity category) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.spendJdbcUrl()));
+        jdbcTemplate.update("DELETE FROM category WHERE id = ?", category.getId());
+    }
 }

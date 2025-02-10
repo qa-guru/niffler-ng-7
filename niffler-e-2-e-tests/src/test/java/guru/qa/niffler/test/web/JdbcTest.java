@@ -6,6 +6,7 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UserDbClient;
+import guru.qa.niffler.service.UsersClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -38,13 +39,13 @@ public class JdbcTest {
 
 
     @ValueSource(strings = {
-            "ddd13",
-            "ddd14",
-            "ddd15"
+            "ddd16",
+            "ddd17",
+            "ddd18"
     })
     @ParameterizedTest
-    void springJdbcTest(String name) {
-        UserDbClient uc = new UserDbClient();
+    void createUserTest(String name) {
+        UsersClient uc = new UserDbClient();
         UserJson user = uc.createUser(
                 name,
                 "123"
@@ -52,34 +53,27 @@ public class JdbcTest {
         System.out.println(user);
     }
 
-//    @Test
-//    void jbcChainedTest() {
-//        UserDbClient uc = new UserDbClient();
-//        UserJson user = uc.createUserWithChainTx(
-//                new UserJson(
-//                        null,
-//                        "UserChained",
-//                        null,
-//                        null,
-//                        null,
-//                        CurrencyValues.RUB,
-//                        null,
-//                        null
-//
-//                )
-//        );
-//        System.out.println(user);
-//    }
-    //Тест не прошел, но пользователь создался
 
-//    @Test
-//    void checkUserInList() {
-//        UserDbClient uc = new UserDbClient();
-//        List<AuthUserEntity> users = uc.findAllUsers();
-//        List<String> userNames = new ArrayList<>();
-//        for (AuthUserEntity user : users) {
-//            userNames.add(user.getUsername());
-//        }
-//        System.out.println(userNames);
-//    }
+    @Test
+    void createUser() {
+
+        UsersClient uc = new UserDbClient();
+        UserJson user = uc.createUser(
+                "o5",
+                "123"
+        );
+        System.out.println(user);
+    }
+
+    @Test
+    void incomeInvitationTesst() {
+        UsersClient uc = new UserDbClient();
+        UserJson requester = uc.createUser(
+                "o19",
+                "123"
+        );
+        uc.createIncomeInvitations(requester, 2);
+    }
+
+
 }
