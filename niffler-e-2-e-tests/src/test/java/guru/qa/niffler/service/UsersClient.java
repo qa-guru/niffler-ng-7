@@ -1,6 +1,6 @@
 package guru.qa.niffler.service;
 
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.impl.UsersApiClient;
 import guru.qa.niffler.service.impl.UsersDbClient;
 

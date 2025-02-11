@@ -5,14 +5,16 @@ import okhttp3.Interceptor;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import org.apache.commons.lang3.ArrayUtils;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+
+import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
 
 @ParametersAreNonnullByDefault
 public abstract class RestClient {
@@ -38,7 +40,7 @@ public abstract class RestClient {
     final OkHttpClient.Builder builder = new OkHttpClient.Builder()
         .followRedirects(followRedirect);
 
-    if (ArrayUtils.isNotEmpty(interceptors)) {
+    if (isNotEmpty(interceptors)) {
       for (Interceptor interceptor : interceptors) {
         builder.addNetworkInterceptor(interceptor);
       }
@@ -61,11 +63,12 @@ public abstract class RestClient {
         .build();
   }
 
+  @Nonnull
   public <T> T create(final Class<T> service) {
     return this.retrofit.create(service);
   }
 
-  public final class EmtyRestClient extends RestClient {
+  public static final class EmtyRestClient extends RestClient {
     public EmtyRestClient(String baseUrl) {
       super(baseUrl);
     }

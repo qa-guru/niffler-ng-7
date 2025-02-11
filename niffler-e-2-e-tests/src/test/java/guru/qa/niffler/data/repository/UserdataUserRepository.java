@@ -1,6 +1,9 @@
 package guru.qa.niffler.data.repository;
 
 import guru.qa.niffler.data.entity.userdata.UserEntity;
+import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
+import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.impl.UserdataUserRepositorySpringJdbc;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -9,6 +12,16 @@ import java.util.UUID;
 
 @ParametersAreNonnullByDefault
 public interface UserdataUserRepository {
+
+  @Nonnull
+  static UserdataUserRepository getInstance() {
+    return switch (System.getProperty("repository.impl", "jpa")) {
+      case "jpa" -> new UserdataUserRepositoryHibernate();
+      case "jdbc" -> new UserdataUserRepositoryJdbc();
+      case "sjdbc" -> new UserdataUserRepositorySpringJdbc();
+      default -> throw new IllegalStateException("Unexpected value: " + System.getProperty("repository.impl"));
+    };
+  }
 
   @Nonnull
   UserEntity create(UserEntity user);

@@ -10,8 +10,12 @@ public abstract class BaseComponent<T extends BaseComponent<?>> {
 
   protected final SelenideElement self;
 
-  @Nonnull
   protected BaseComponent(SelenideElement self) {
     this.self = self;
+  }
+
+  @Nonnull
+  public SelenideElement getSelf() {
+    return self;
   }
 }

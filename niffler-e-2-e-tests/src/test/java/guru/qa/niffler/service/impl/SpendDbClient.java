@@ -6,9 +6,11 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.repository.SpendRepository;
 import guru.qa.niffler.data.repository.impl.SpendRepositoryJdbc;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
-import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.rest.CategoryJson;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.service.SpendClient;
+import io.qameta.allure.Step;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -26,8 +28,9 @@ public class SpendDbClient implements SpendClient {
       CFG.spendJdbcUrl()
   );
 
-  @Nonnull
   @Override
+  @Step("Create spend using SQL INSERT")
+  @Nonnull
   public SpendJson createSpend(SpendJson spend) {
     return requireNonNull(
         xaTransactionTemplate.execute(
@@ -40,8 +43,9 @@ public class SpendDbClient implements SpendClient {
     );
   }
 
-  @Nonnull
   @Override
+  @Step("Create category using SQL INSERT")
+  @Nonnull
   public CategoryJson createCategory(CategoryJson category) {
     return requireNonNull(
         xaTransactionTemplate.execute(
@@ -55,6 +59,22 @@ public class SpendDbClient implements SpendClient {
   }
 
   @Override
+  @Step("Update category using SQL UPDATE")
+  @NotNull
+  public CategoryJson updateCategory(CategoryJson category) {
+    return requireNonNull(
+        xaTransactionTemplate.execute(
+            () -> CategoryJson.fromEntity(
+                spendRepository.updateCategory(
+                    CategoryEntity.fromJson(category)
+                )
+            )
+        )
+    );
+  }
+
+  @Override
+  @Step("Remove category using SQL DELETE")
   public void removeCategory(CategoryJson category) {
     xaTransactionTemplate.execute(
         () -> {
