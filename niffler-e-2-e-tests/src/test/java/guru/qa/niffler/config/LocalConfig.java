@@ -3,7 +3,8 @@ package guru.qa.niffler.config;
 public class LocalConfig implements Config {
     static final LocalConfig INSTANCE = new LocalConfig();
 
-    private LocalConfig() {}
+    private LocalConfig() {
+    }
 
     @Override
     public String frontUrl() {
@@ -12,7 +13,7 @@ public class LocalConfig implements Config {
 
     @Override
     public String authUrl() {
-        return "http://127.0.0.1:9090/";
+        return "http://127.0.0.1:9000/";
     }
 
     @Override
