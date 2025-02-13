@@ -54,7 +54,7 @@ public class FriendsPage extends BasePage<FriendsPage> {
 
     @Step("Проверка, что приглашение в друзья для <friendUserName> принято")
     public void checkThatFriendAccepted(String friendUserName) {
-        requestTable.$$("tr").find(text(friendUserName))
+        friendsTable.$$("tr").find(text(friendUserName))
                 .$(byText("Unfriend")).shouldBe(exist);
     }
 
