@@ -5,6 +5,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.service.SpendClient;
+import io.qameta.allure.Step;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -29,6 +30,7 @@ public class SpendApiClient implements SpendClient {
 
     @Override
     @Nonnull
+    @Step("Создание траты через API")
     public SpendJson createSpend(SpendJson spend) {
         final Response<SpendJson> response;
         try {
@@ -43,6 +45,7 @@ public class SpendApiClient implements SpendClient {
 
     @Override
     @Nonnull
+    @Step("Создание категории через API")
     public CategoryJson createCategory(CategoryJson category) {
         final Response<CategoryJson> response;
         try {
@@ -67,6 +70,7 @@ public class SpendApiClient implements SpendClient {
 
     @Override
     @Nonnull
+    @Step("Обновление категории через API")
     public CategoryJson updateCategory(CategoryJson category) {
         final Response<CategoryJson> response;
         try {
@@ -80,6 +84,7 @@ public class SpendApiClient implements SpendClient {
     }
 
     @Override
+    @Step("Удаление категории через API")
     public void removeCategory(CategoryJson category) {
         throw new UnsupportedOperationException("Unacceptable action - remove category using API");
     }

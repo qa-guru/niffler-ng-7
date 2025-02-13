@@ -7,6 +7,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UsersClient;
+import io.qameta.allure.Step;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
@@ -57,6 +58,7 @@ public class UsersApiClient implements UsersClient {
 
     @NotNull
     @Override
+    @Step("Создание пользователя через API")
     public UserJson createUser(String username, String password) {
         try {
             authApi.requestRegisterForm().execute();
@@ -79,6 +81,7 @@ public class UsersApiClient implements UsersClient {
 
 
     @Override
+    @Step("Добавление входящего приглашения дружбы через API")
     public void addIncomeInvitation(UserJson targetUser, int count) {
         if (count > 0) {
             for (int i = 0; i < count; i++) {
@@ -105,6 +108,7 @@ public class UsersApiClient implements UsersClient {
     }
 
     @Override
+    @Step("Добавление исходящего приглашения дружбы через API")
     public void addOutcomeInvitation(UserJson targetUser, int count) {
         if (count > 0) {
             for (int i = 0; i < count; i++) {
@@ -131,6 +135,7 @@ public class UsersApiClient implements UsersClient {
     }
 
     @Override
+    @Step("Добавление действующей дружбы через API")
     public void addFriend(UserJson targetUser, int count) {
         if (count > 0) {
             for (int i = 0; i < count; i++) {

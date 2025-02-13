@@ -7,18 +7,22 @@ import guru.qa.niffler.data.repository.AuthUserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static guru.qa.niffler.data.jpa.EntityManagers.em;
 
+@ParametersAreNonnullByDefault
 public class AuthUserRepositoryHibernate implements AuthUserRepository {
 
     private static final Config CONFIG = Config.getInstance();
 
     private final EntityManager entityManager = em(CONFIG.authJdbcUrl());
 
+    @Nonnull
     @Override
     public AuthUserEntity createUser(AuthUserEntity user) {
         entityManager.joinTransaction();
@@ -26,6 +30,7 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
         return user;
     }
 
+    @Nonnull
     @Override
     public AuthUserEntity update(AuthUserEntity authUserEntity) {
         entityManager.joinTransaction();
@@ -40,6 +45,7 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
         return mergedUser;
     }
 
+    @Nonnull
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         return Optional.ofNullable(
@@ -47,6 +53,7 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
         );
     }
 
+    @Nonnull
     @Override
     public Optional<AuthUserEntity> findByUsername(String username) {
         try {
@@ -60,6 +67,7 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
         }
     }
 
+    @Nonnull
     @Override
     public List<AuthUserEntity> findAll() {
         return entityManager.createQuery("SELECT u FROM AuthUserEntity u", AuthUserEntity.class)

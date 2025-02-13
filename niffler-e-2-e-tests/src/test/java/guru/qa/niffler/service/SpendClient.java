@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 
 public interface SpendClient {
+
+    @Nonnull
     SpendJson createSpend(SpendJson spend);
 
     @Nonnull

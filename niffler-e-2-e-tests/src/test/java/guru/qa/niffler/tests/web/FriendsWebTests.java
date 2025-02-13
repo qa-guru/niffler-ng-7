@@ -22,9 +22,8 @@ public class FriendsWebTests {
         new LoginPage()
                 .open()
                 .login(user.username(), user.testData().password())
-                .navigateMenuComponent
-                .clickAccountMenuButton()
-                .clickFriendsButton()
+                .getHeader()
+                .toFriendsPage()
                 .checkThatFriendsExist(friendUsername);
 
     }
@@ -36,9 +35,8 @@ public class FriendsWebTests {
         new LoginPage()
                 .open()
                 .login(user.username(), user.testData().password())
-                .navigateMenuComponent
-                .clickAccountMenuButton()
-                .clickFriendsButton()
+                .getHeader()
+                .toFriendsPage()
                 .checkThatFriendsDoNotExist();
     }
 
@@ -49,9 +47,8 @@ public class FriendsWebTests {
         new LoginPage()
                 .open()
                 .login(user.username(), user.testData().password())
-                .navigateMenuComponent
-                .clickAccountMenuButton()
-                .clickFriendsButton()
+                .getHeader()
+                .toFriendsPage()
                 .checkIncomeFriendRequest(user.testData().incomeInvitationsUsernames()[0]);
     }
 
@@ -62,9 +59,39 @@ public class FriendsWebTests {
         new LoginPage()
                 .open()
                 .login(user.username(), user.testData().password())
-                .navigateMenuComponent
-                .clickAccountMenuButton()
-                .clickAllPeopleButton()
+                .getHeader()
+                .toAllPeoplesPage()
                 .checkOutcomeFriendRequest(user.testData().outcomeInvitationsUsernames()[0]);
     }
+
+    @User(incomeInvitations = 1)
+    @DisplayName("Проверка возможности принять входящее приглашение дружбы")
+    @Test
+    void acceptInvitation(UserJson user) {
+        final String userIncome = user.testData().incomeInvitationsUsernames()[0];
+
+        new LoginPage()
+                .open()
+                .login(user.username(), user.testData().password())
+                .getHeader()
+                .toFriendsPage()
+                .acceptFriendInvitation(userIncome)
+                .checkThatFriendAccepted(userIncome);
+    }
+
+    @User(incomeInvitations = 1)
+    @DisplayName("Проверка возможности отклонить входящее приглашение дружбы")
+    @Test
+    void declineInvitation(UserJson user) {
+        final String userIncome = user.testData().incomeInvitationsUsernames()[0];
+
+        new LoginPage()
+                .open()
+                .login(user.username(), user.testData().password())
+                .getHeader()
+                .toFriendsPage()
+                .declineFriendInvitation(userIncome)
+                .checkThatFriendsTableEmpty();
+    }
+
 }

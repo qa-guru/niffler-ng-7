@@ -9,11 +9,14 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class AuthorityDaoSpringJdbc implements AuthorityDao {
 
 
@@ -39,6 +42,7 @@ public class AuthorityDaoSpringJdbc implements AuthorityDao {
         );
     }
 
+    @Nonnull
     @Override
     public List<AuthorityEntity> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.authJdbcUrl()));
@@ -48,6 +52,7 @@ public class AuthorityDaoSpringJdbc implements AuthorityDao {
         );
     }
 
+    @Nonnull
     @Override
     public List<AuthorityEntity> findAllByUserId(UUID userId) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(config.authJdbcUrl()));

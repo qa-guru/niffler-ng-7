@@ -5,6 +5,8 @@ import guru.qa.niffler.data.dao.AuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +14,11 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.jdbc.Connections.holder;
 
-
+@ParametersAreNonnullByDefault
 public class AuthorityDaoJdbc implements AuthorityDao {
 
     private static final Config config = Config.getInstance();
+
 
     @Override
     public void createAuthority(AuthorityEntity... authAuthorityEntities) {
@@ -40,6 +43,7 @@ public class AuthorityDaoJdbc implements AuthorityDao {
 
     }
 
+    @Nonnull
     @Override
     public List<AuthorityEntity> findAll() {
         try (PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
@@ -57,6 +61,7 @@ public class AuthorityDaoJdbc implements AuthorityDao {
         }
     }
 
+    @Nonnull
     @Override
     public List<AuthorityEntity> findAllByUserId(UUID userId) {
         try (PreparedStatement ps = holder(config.authJdbcUrl()).connection().prepareStatement(
@@ -86,6 +91,7 @@ public class AuthorityDaoJdbc implements AuthorityDao {
         }
     }
 
+    @Nonnull
     private AuthorityEntity mapperAuthAuthorityEntity(ResultSet rs) throws SQLException {
         AuthorityEntity ae = new AuthorityEntity();
         ae.setId(rs.getObject("id", UUID.class));
