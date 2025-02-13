@@ -1,9 +1,9 @@
 package guru.qa.niffler.api;
 
 import guru.qa.niffler.api.core.RestClient;
-import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
-import guru.qa.niffler.model.SpendJson;
+import guru.qa.niffler.model.rest.SpendJson;
 import retrofit2.Response;
 
 import java.io.IOException;
