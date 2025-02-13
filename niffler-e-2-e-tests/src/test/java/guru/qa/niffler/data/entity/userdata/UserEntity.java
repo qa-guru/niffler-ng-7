@@ -2,7 +2,7 @@ package guru.qa.niffler.data.entity.userdata;
 
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.FriendshipStatus;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
