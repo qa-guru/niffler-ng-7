@@ -2,7 +2,7 @@ package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
-import guru.qa.niffler.data.jta.EntityManagers;
+import guru.qa.niffler.data.jpa.EntityManagers;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;

@@ -72,7 +72,7 @@ public class JdbcTest {
                 "o19",
                 "123"
         );
-        uc.createIncomeInvitations(requester, 2);
+        uc.addIncomeInvitation(requester, 2);
     }
 
 

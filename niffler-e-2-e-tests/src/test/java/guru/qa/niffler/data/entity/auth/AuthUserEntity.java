@@ -1,8 +1,14 @@
 package guru.qa.niffler.data.entity.auth;
 
-import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.model.AuthUserJson;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
@@ -46,10 +52,17 @@ public class AuthUserEntity implements Serializable {
   @OneToMany(fetch = EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
   private List<AuthorityEntity> authorities = new ArrayList<>();
 
+  public AuthUserEntity(UUID id) {
+    this.id = id;
+  }
+
+  public AuthUserEntity() {
+  }
+
   public void addAuthorities(AuthorityEntity... authorities) {
     for (AuthorityEntity authority : authorities) {
       this.authorities.add(authority);
-      authority.setUser(null);
+      authority.setUser(this);
     }
   }
 
@@ -65,7 +78,7 @@ public class AuthUserEntity implements Serializable {
     Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
     Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
     if (thisEffectiveClass != oEffectiveClass) return false;
-    UserEntity that = (UserEntity) o;
+    AuthUserEntity that = (AuthUserEntity) o;
     return getId() != null && Objects.equals(getId(), that.getId());
   }
 
@@ -73,7 +86,6 @@ public class AuthUserEntity implements Serializable {
   public final int hashCode() {
     return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
   }
-
   public static AuthUserEntity fromJson(AuthUserJson user) {
     AuthUserEntity ae = new AuthUserEntity();
     ae.setId(user.id());

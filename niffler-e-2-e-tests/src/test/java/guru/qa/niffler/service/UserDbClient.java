@@ -1,6 +1,5 @@
 package guru.qa.niffler.service;
 
-
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
@@ -19,40 +18,39 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.Arrays;
 
 import static guru.qa.niffler.utils.DataUtils.randomUserName;
+import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
 
 public class UserDbClient implements UsersClient {
 
     private static final Config CFG = Config.getInstance();
     private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
     private final AuthUserRepository authUserRepository = new AuthUserRepositorySpringJdbc();
     private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositorySpringJdbc();
 
-    private final XaTransactionTemplate xaTxTemplate = new XaTransactionTemplate(
+    private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
             CFG.authJdbcUrl(),
-            CFG.userDataUrl()
+            CFG.userdataJdbcUrl()
     );
 
-    public UserJson createUser(String username, String password) {
-        return xaTxTemplate.execute(() -> {
-                    AuthUserEntity auth = authUserEntity(username, password);
-                    authUserRepository.create(auth);
-                    return UserJson.fromEntity(
-                            userdataUserRepository.create(userEntity(username)
-                            )
-                    );
-                }
-        );
-
-    }
-
     @Override
-    public void createIncomeInvitations(UserJson targetUser, int count) {
+    public UserJson createUser(String username, String password) {
+        return xaTransactionTemplate.execute(() -> UserJson.fromEntity(
+                        createNewUser(username, password),
+                        null
+                )
+        );
+    }
+    @Override
+    public void addIncomeInvitation(UserJson targetUser, int count) {
         if (count > 0) {
-            UserEntity targetEntity = userdataUserRepository.findById(targetUser.id())
-                    .orElseThrow();
+            UserEntity targetEntity = userdataUserRepository.findById(
+                    targetUser.id()
+            ).orElseThrow();
+
             for (int i = 0; i < count; i++) {
-                xaTxTemplate.execute(() -> {
+                xaTransactionTemplate.execute(() -> {
                             final String username = randomUserName();
                             userdataUserRepository.sendInvitation(
                                     createNewUser(username, "123"),
@@ -65,14 +63,13 @@ public class UserDbClient implements UsersClient {
         }
     }
 
-
     @Override
-    public void createOutcomeInvitations(UserJson targetUser, int count) {
+    public void addOutcomeInvitation(UserJson targetUser, int count) {
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(targetUser.id())
                     .orElseThrow();
             for (int i = 0; i < count; i++) {
-                xaTxTemplate.execute(() -> {
+                xaTransactionTemplate.execute(() -> {
                             final String username = randomUserName();
                             userdataUserRepository.getInvitation(targetEntity,
                                     createNewUser(username, "123")
@@ -85,18 +82,18 @@ public class UserDbClient implements UsersClient {
     }
 
     @Override
-    public void createFriends(UserJson targetUser, int count) {
+    public void addFriend(UserJson targetUser, int count) {
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
                     targetUser.id()
             ).orElseThrow();
 
             for (int i = 0; i < count; i++) {
-                xaTxTemplate.execute(() -> {
-                            String username = randomUserName();
+                xaTransactionTemplate.execute(() -> {
+                            String username = randomUsername();
                             userdataUserRepository.addFriend(
                                     targetEntity,
-                                    createNewUser(username, "12345")
+                                    createNewUser(username, "123")
                             );
                             return null;
                         }
@@ -111,7 +108,7 @@ public class UserDbClient implements UsersClient {
         return userdataUserRepository.create(userEntity(username));
     }
 
-    public UserEntity userEntity(String username) {
+    private UserEntity userEntity(String username) {
         UserEntity ue = new UserEntity();
         ue.setUsername(username);
         ue.setCurrency(CurrencyValues.RUB);
@@ -119,23 +116,23 @@ public class UserDbClient implements UsersClient {
     }
 
     private AuthUserEntity authUserEntity(String username, String password) {
-        AuthUserEntity auth = new AuthUserEntity();
-        auth.setUsername(username);
-        auth.setPassword(pe.encode(password));
-        auth.setEnabled(true);
-        auth.setAccountNonExpired(true);
-        auth.setAccountNonLocked(true);
-        auth.setCredentialsNonExpired(true);
-        auth.setAuthorities(
+        AuthUserEntity authUser = new AuthUserEntity();
+        authUser.setUsername(username);
+        authUser.setPassword(pe.encode(password));
+        authUser.setEnabled(true);
+        authUser.setAccountNonExpired(true);
+        authUser.setAccountNonLocked(true);
+        authUser.setCredentialsNonExpired(true);
+        authUser.setAuthorities(
                 Arrays.stream(Authority.values()).map(
                         e -> {
                             AuthorityEntity ae = new AuthorityEntity();
-                            ae.setUser(auth);
+                            ae.setUser(authUser);
                             ae.setAuthority(e);
                             return ae;
                         }
                 ).toList()
         );
-        return auth;
+        return authUser;
     }
 }

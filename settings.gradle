@@ -1,4 +1,4 @@
-rootProject.name = 'niffler'
+rootProject.name = 'niffler-ng'
 include 'niffler-gateway'
 include 'niffler-auth'
 include 'niffler-currency'

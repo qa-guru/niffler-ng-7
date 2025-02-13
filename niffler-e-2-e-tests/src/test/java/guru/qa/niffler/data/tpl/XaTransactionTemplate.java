@@ -1,10 +1,11 @@
 package guru.qa.niffler.data.tpl;
 
 import com.atomikos.icatch.jta.UserTransactionImp;
+import guru.qa.niffler.data.jdbc.Connections;
+import guru.qa.niffler.data.jdbc.JdbcConnectionHolders;
 import jakarta.transaction.SystemException;
 import jakarta.transaction.UserTransaction;
 
-import java.sql.Connection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
@@ -22,7 +23,6 @@ public class XaTransactionTemplate {
         return this;
     }
 
-
     public <T> T execute(Supplier<T>... actions) {
         UserTransaction ut = new UserTransactionImp();
         try {
@@ -39,6 +39,7 @@ public class XaTransactionTemplate {
             } catch (SystemException ex) {
                 throw new RuntimeException(ex);
             }
+
             throw new RuntimeException(e);
         } finally {
             if (closeAfterAction.get()) {

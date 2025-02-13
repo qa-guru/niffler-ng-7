@@ -3,8 +3,9 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.UserdataUserDao;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
-import guru.qa.niffler.data.mapper.UserDataEntityRowMapper;
-import guru.qa.niffler.data.tpl.DataSources;
+import guru.qa.niffler.data.jdbc.DataSources;
+import guru.qa.niffler.data.mapper.UserdataUserEntityRowMapper;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,81 +22,43 @@ import java.util.UUID;
 public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
 
     private static final Config CFG = Config.getInstance();
+    private final String url = CFG.userdataJdbcUrl();
 
     @Override
     public UserEntity create(UserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userDataJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
         KeyHolder kh = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(
-                    "INSERT INTO \"user\" (username, currency, firstname, surname, full_name, photo, photo_small)" +
-                            "VALUES(?, ?, ?, ?, ?, ?, ?)",
-                    Statement.RETURN_GENERATED_KEYS);
+                    """
+                            INSERT INTO "user" (username, currency, firstname, surname, photo, photo_small, full_name)
+                            VALUES (?, ?, ?, ?, ?, ?, ?)
+                            """,
+                    Statement.RETURN_GENERATED_KEYS
+            );
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getCurrency().name());
             ps.setString(3, user.getFirstname());
             ps.setString(4, user.getSurname());
-            ps.setString(5, user.getFullname());
-            ps.setBytes(6, user.getPhoto());
-            ps.setBytes(7, user.getPhotoSmall());
+            ps.setBytes(5, user.getPhoto());
+            ps.setBytes(6, user.getPhotoSmall());
+            ps.setString(7, user.getFullname());
             return ps;
         }, kh);
+
         final UUID generatedKey = (UUID) kh.getKeys().get("id");
         user.setId(generatedKey);
         return user;
     }
 
-
     @Override
-    public Optional<UserEntity> findById(UUID id) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userDataJdbcUrl()));
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(
-                        "SELECT * FROM \"user\" WHERE id = ?",
-                        UserDataEntityRowMapper.instance,
-                        id
-                )
-        );
-    }
-
-    @Override
-    public Optional<UserEntity> findByUsername(String username) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userDataJdbcUrl()));
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(
-                        "SELECT * FROM \"user\" WHERE username = ? ",
-                        UserDataEntityRowMapper.instance,
-                        username
-                )
-        );
-    }
-
-    @Override
-    public void delete(UserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userDataJdbcUrl()));
-        jdbcTemplate.update(
-                "DELETE FROM \"user\" WHERE id = ?",
-                user.getId()
-        );
-
-    }
-
-    @Override
-    public List<UserEntity> findAll() {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userDataJdbcUrl()));
-        return jdbcTemplate.query(
-                "SELECT * FROM \"user\"",
-                UserDataEntityRowMapper.instance);
-    }
-
     public UserEntity update(UserEntity user) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.userDataJdbcUrl()));
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
         jdbcTemplate.update("""
                                       UPDATE "user"
                                         SET currency    = ?,
                                             firstname   = ?,
                                             surname     = ?,
-                                            full_name   = ?,
                                             photo       = ?,
                                             photo_small = ?
                                         WHERE id = ?
@@ -103,7 +66,6 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
                 user.getCurrency().name(),
                 user.getFirstname(),
                 user.getSurname(),
-                user.getFullname(),
                 user.getPhoto(),
                 user.getPhotoSmall(),
                 user.getId());
@@ -129,5 +91,58 @@ public class UserdataUserDaoSpringJdbc implements UserdataUserDao {
                     }
                 });
         return user;
+    }
+
+    @Override
+    public Optional<UserEntity> findById(UUID id) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
+        try {
+            return Optional.ofNullable(
+                    jdbcTemplate.queryForObject(
+                            """
+                                       SELECT * FROM "user" WHERE id = ?
+                                    """,
+                            UserdataUserEntityRowMapper.instance,
+                            id
+                    )
+            );
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<UserEntity> findByUsername(String username) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(
+                        """
+                                   SELECT * FROM "user" WHERE username = ?
+                                """,
+                        UserdataUserEntityRowMapper.instance,
+                        username
+                )
+        );
+    }
+
+    @Override
+    public void delete(UserEntity user) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
+        jdbcTemplate.update(
+                "DELETE FROM \"user\" WHERE id = ?",
+                user.getId()
+        );
+
+    }
+
+    @Override
+    public List<UserEntity> findAll() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
+        return jdbcTemplate.query(
+                """
+                            SELECT * FROM "user"
+                        """,
+                UserdataUserEntityRowMapper.instance
+        );
     }
 }

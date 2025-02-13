@@ -1,5 +1,6 @@
 package guru.qa.niffler.model;
 
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import guru.qa.niffler.model.gql.SpendGqlInput;
 import jakarta.annotation.Nonnull;

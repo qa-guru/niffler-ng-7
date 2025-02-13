@@ -16,12 +16,12 @@ public class FriendsWebTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
-    void friendShouldBePresentInFriendsTable(@UserType(WITH_FRIENDS) StaticUser user) {
+    void friendShouldBePresentInFriendsTable(@UserType(WITH_FRIEND) StaticUser user) {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), user.password())
                 .checkIsLoaded()
                 .openFriendsPage()
-                .checkUserInUserFriendsList(user.friends());
+                .checkUserInUserFriendsList(user.friend());
     }
 
     @Test
@@ -39,7 +39,7 @@ public class FriendsWebTest {
                 .doLogin(user.username(), user.password())
                 .checkIsLoaded()
                 .openFriendsPage()
-                .checkIncomeRequest(user.incomeRequest());
+                .checkIncomeRequest(user.income());
     }
 
     @Test
@@ -48,6 +48,6 @@ public class FriendsWebTest {
                 .doLogin(user.username(), user.password())
                 .checkIsLoaded()
                 .openAllPeoplesPage()
-                .checkOutcomeRequest(user.outcomeRequest());
+                .checkOutcomeRequest(user.outcome());
     }
 }
