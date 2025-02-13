@@ -81,7 +81,7 @@ public class UsersDbClient implements UsersClient {
                                                         }
                                                 )
                                         ),
-                                        FriendshipStatus.PENDING
+                                        FriendshipStatus.INVITE_RECEIVED
                                 )
                         );
             }
@@ -112,7 +112,7 @@ public class UsersDbClient implements UsersClient {
                                                         }
                                                 )
                                         ),
-                                FriendshipStatus.PENDING
+                                FriendshipStatus.INVITE_RECEIVED
                                 )
                         );
             }
@@ -143,7 +143,7 @@ public class UsersDbClient implements UsersClient {
                                                         }
                                                 )
                                         ),
-                                FriendshipStatus.ACCEPTED
+                                FriendshipStatus.FRIEND
                                 )
                         );
             }
