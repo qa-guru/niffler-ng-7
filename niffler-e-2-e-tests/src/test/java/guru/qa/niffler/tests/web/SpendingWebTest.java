@@ -7,7 +7,6 @@ import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 
@@ -34,9 +33,9 @@ public class SpendingWebTest {
                 .login("Artur", "12345")
                 .editSpendingClick(spend.description())
                 .editDescription(newDescription)
-                .saveChange();
-
-        new MainPage().checkThatTableContainsSpending(newDescription);
+                .saveChange()
+                .checkAlertMessage("Spending is edited successfully")
+                .checkThatTableContainsSpending(newDescription);
     }
 
     @User
@@ -56,8 +55,10 @@ public class SpendingWebTest {
                 .editAmount(amount)
                 .editDate(currentDate)
                 .editDescription(description)
-                .saveChange();
-        new MainPage().getSpendingTable()
+                .saveChange()
+                .checkAlertMessage("New spending is successfully created")
+                .getSpendingTable()
                 .checkTableContains(description);
     }
 }
+

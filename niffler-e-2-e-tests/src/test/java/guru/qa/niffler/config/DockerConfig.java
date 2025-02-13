@@ -59,9 +59,4 @@ enum DockerConfig implements Config {
         return "";
     }
 
-    @Nonnull
-    @Override
-    public String ghUrl() {
-        return "";
-    }
 }

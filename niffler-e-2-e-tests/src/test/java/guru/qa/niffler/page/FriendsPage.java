@@ -17,7 +17,9 @@ import static com.codeborne.selenide.Selenide.$;
 
 @Getter
 @ParametersAreNonnullByDefault
-public class FriendsPage {
+public class FriendsPage extends BasePage<FriendsPage> {
+
+    public static final String FRIENDS_PAGE_URL = CONFIG.frontUrl() + "people/friends";
 
     private final SearchField searchField = new SearchField();
     private final Header header = new Header();

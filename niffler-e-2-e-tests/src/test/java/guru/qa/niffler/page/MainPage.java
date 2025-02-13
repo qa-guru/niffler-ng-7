@@ -14,7 +14,9 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 @Getter
-public class MainPage {
+public class MainPage extends BasePage<MainPage> {
+
+    private final static String MAIN_PAGE_URL = CONFIG.frontUrl() + "login";
 
     private final SearchField searchField = new SearchField();
     private final Header header = new Header();
