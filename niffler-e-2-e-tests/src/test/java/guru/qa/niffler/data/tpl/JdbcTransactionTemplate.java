@@ -1,9 +1,14 @@
 package guru.qa.niffler.data.tpl;
 
+import guru.qa.niffler.data.jdbc.Connections;
+import guru.qa.niffler.data.jdbc.JdbcConnectionHolder;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
+
+import static java.sql.Connection.TRANSACTION_READ_COMMITTED;
 
 public class JdbcTransactionTemplate {
 
@@ -19,36 +24,34 @@ public class JdbcTransactionTemplate {
         return this;
     }
 
-
-    public <T> T execute(int isolationLevel, Supplier<T> action) {
+    public <T> T execute(Supplier<T> action, int isolationLvl) {
         Connection connection = null;
         try {
             connection = holder.connection();
-            connection.setTransactionIsolation(isolationLevel);
+            connection.setTransactionIsolation(isolationLvl);
             connection.setAutoCommit(false);
-            T result;
-            result = action.get();
+            T result = action.get();
             connection.commit();
             connection.setAutoCommit(true);
             return result;
-        } catch (SQLException e) {
+        } catch (Exception e) {
             if (connection != null) {
                 try {
                     connection.rollback();
                     connection.setAutoCommit(true);
                 } catch (SQLException ex) {
                     throw new RuntimeException(ex);
-                } finally {
-                    if (closeAfterAction.get()) {
-                        holder.close();
-                    }
                 }
             }
             throw new RuntimeException(e);
+        } finally {
+            if (closeAfterAction.get()) {
+                holder.close();
+            }
         }
     }
 
     public <T> T execute(Supplier<T> action) {
-        return execute(Connection.TRANSACTION_READ_COMMITTED, action);
+        return execute(action, TRANSACTION_READ_COMMITTED);
     }
 }

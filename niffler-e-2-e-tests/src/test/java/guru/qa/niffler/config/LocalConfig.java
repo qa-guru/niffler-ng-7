@@ -26,12 +26,12 @@ public class LocalConfig implements Config {
     }
 
     @Override
-    public String userDataUrl() {
+    public String userdataUrl() {
         return "http://127.0.0.1:8089/";
     }
 
     @Override
-    public String userDataJdbcUrl() {
+    public String userdataJdbcUrl() {
         return "jdbc:postgresql://127.0.0.1:5432/niffler-userdata";
     }
 

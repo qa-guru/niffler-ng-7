@@ -2,13 +2,30 @@ package guru.qa.niffler.data.entity.userdata;
 
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.io.Serializable;
-import java.util.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @Getter
@@ -16,38 +33,45 @@ import java.util.stream.Stream;
 @Entity
 @Table(name = "\"user\"")
 public class UserEntity implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id", nullable = false, columnDefinition = "UUID default gen_random_uuid()")
+  private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String username;
+  @Column(nullable = false, unique = true)
+  private String username;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private CurrencyValues currency;
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private CurrencyValues currency;
 
-    @Column()
-    private String firstname;
+  @Column()
+  private String firstname;
 
-    @Column()
-    private String surname;
+  @Column()
+  private String surname;
 
-    @Column(name = "full_name")
-    private String fullname;
+  @Column(name = "full_name")
+  private String fullname;
 
-    @Column(name = "photo", columnDefinition = "bytea")
-    private byte[] photo;
+  @Column(name = "photo", columnDefinition = "bytea")
+  private byte[] photo;
 
-    @Column(name = "photo_small", columnDefinition = "bytea")
-    private byte[] photoSmall;
+  @Column(name = "photo_small", columnDefinition = "bytea")
+  private byte[] photoSmall;
 
-    @OneToMany(mappedBy = "requester", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FriendshipEntity> friendshipRequests = new ArrayList<>();
+  @OneToMany(mappedBy = "requester", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<FriendshipEntity> friendshipRequests = new ArrayList<>();
 
-    @OneToMany(mappedBy = "addressee", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FriendshipEntity> friendshipAddressees = new ArrayList<>();
+  @OneToMany(mappedBy = "addressee", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<FriendshipEntity> friendshipAddressees = new ArrayList<>();
+
+    public UserEntity(UUID id) {
+        this.id = id;
+    }
+
+    public UserEntity() {
+    }
 
     public void addFriends(FriendshipStatus status, UserEntity... friends) {
         List<FriendshipEntity> friendsEntities = Stream.of(friends)
@@ -97,6 +121,19 @@ public class UserEntity implements Serializable {
         }
     }
 
+    public static UserEntity fromJson(UserJson json) {
+        UserEntity ue = new UserEntity();
+        ue.setId(json.id());
+        ue.setUsername(json.username());
+        ue.setCurrency(json.currency());
+        ue.setFirstname(json.firstname());
+        ue.setSurname(json.surname());
+        ue.setFullname(json.fullname());
+        ue.setPhoto(json.photo() != null ? json.photo().getBytes(StandardCharsets.UTF_8) : null);
+        ue.setPhotoSmall(json.photoSmall() != null ? json.photoSmall().getBytes(StandardCharsets.UTF_8) : null);
+        return ue;
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -111,18 +148,5 @@ public class UserEntity implements Serializable {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
-    }
-
-    public static UserEntity fromJson(UserJson user) {
-        UserEntity ue = new UserEntity();
-        ue.setId(user.id());
-        ue.setUsername(user.username());
-        ue.setCurrency(user.currency());
-        ue.setFirstname(user.firstname());
-        ue.setSurname(user.surname());
-        ue.setFullname(user.fullname());
-        ue.setPhoto(user.photo());
-        ue.setPhotoSmall(user.photoSmall());
-        return ue;
     }
 }
