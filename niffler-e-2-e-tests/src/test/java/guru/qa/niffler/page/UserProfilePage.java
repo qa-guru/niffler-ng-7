@@ -1,6 +1,7 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.config.Config;
 
 import static com.codeborne.selenide.Condition.clickable;
 import static com.codeborne.selenide.Condition.visible;
@@ -8,6 +9,8 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
 public class UserProfilePage {
+
+    public static String url = Config.getInstance().frontUrl()+ "profile";
 
     private final SelenideElement
             dialogModal = $x("//div[@role='dialog']"),
