@@ -5,6 +5,8 @@ import guru.qa.niffler.data.dao.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.mapper.AuthUserEntityRowMapper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,12 +18,14 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class AuthUserDaoJdbc implements AuthUserDao {
 
     private static final Config CFG = Config.getInstance();
     private final String url = CFG.authJdbcUrl();
 
     @Override
+    @Nonnull
     public AuthUserEntity createUser(AuthUserEntity user) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired)" +
@@ -54,6 +58,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
 
     @Override
+    @Nonnull
     public AuthUserEntity update(AuthUserEntity user) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "UPDATE \"user\" " +
@@ -79,6 +84,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
+    @Nonnull
     public Optional<AuthUserEntity> findById(UUID id) {
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
                 "SELECT * FROM \"user\" WHERE id = ?")
@@ -102,6 +108,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
+    @Nonnull
     public Optional<AuthUserEntity> findByUserName(String username) {
         try (PreparedStatement ps = holder(url).connection().prepareStatement("""
                 SELECT * FROM "user" WHERE username = ?
@@ -125,6 +132,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
     }
 
     @Override
+    @Nonnull
     public List<AuthUserEntity> findAll() {
         List<AuthUserEntity> authUserEntities = new ArrayList<>();
         try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(

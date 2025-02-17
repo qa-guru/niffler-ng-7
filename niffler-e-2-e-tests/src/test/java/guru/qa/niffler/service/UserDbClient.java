@@ -15,7 +15,9 @@ import guru.qa.niffler.model.UserJson;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.Objects;
 
 import static guru.qa.niffler.utils.DataUtils.randomUserName;
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
@@ -34,14 +36,16 @@ public class UserDbClient implements UsersClient {
             CFG.userdataJdbcUrl()
     );
 
+    @Nonnull
     @Override
     public UserJson createUser(String username, String password) {
-        return xaTransactionTemplate.execute(() -> UserJson.fromEntity(
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> UserJson.fromEntity(
                         createNewUser(username, password),
                         null
                 )
-        );
+        ));
     }
+
     @Override
     public void addIncomeInvitation(UserJson targetUser, int count) {
         if (count > 0) {
@@ -115,6 +119,7 @@ public class UserDbClient implements UsersClient {
         return ue;
     }
 
+    @Nonnull
     private AuthUserEntity authUserEntity(String username, String password) {
         AuthUserEntity authUser = new AuthUserEntity();
         authUser.setUsername(username);

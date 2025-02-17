@@ -3,10 +3,10 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import guru.qa.niffler.data.mapper.AuthAuthorityRowMapper;
 import guru.qa.niffler.data.mapper.AuthorityEntityRowMapper;
-import guru.qa.niffler.model.Authority;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
 
     private static final Config CFG = Config.getInstance();
@@ -39,6 +40,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
+    @Nonnull
     public List<AuthorityEntity> update(AuthorityEntity... authority) {
         try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "UPDATE authority SET user_id = ?, authority = ? WHERE id = ?")) {
@@ -58,6 +60,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
+    @Nonnull
     public List<AuthorityEntity> findAll() {
         try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "SELECT * FROM authority")) {
@@ -75,6 +78,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
     }
 
     @Override
+    @Nonnull
     public List<AuthorityEntity> findAllByUserId(UUID userId) {
         try (PreparedStatement ps = holder(url).connection().prepareStatement(
                 "SELECT * FROM authority where user_id = ?")) {

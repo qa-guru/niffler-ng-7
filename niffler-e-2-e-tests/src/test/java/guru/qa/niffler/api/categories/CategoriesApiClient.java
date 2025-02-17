@@ -6,10 +6,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ParametersAreNonnullByDefault
 public class CategoriesApiClient {
 
     private static final String BASE_URL = "http://127.0.0.1:8093";
@@ -20,6 +22,7 @@ public class CategoriesApiClient {
 
     private final CategoriesApi categoryApi = retrofit.create(CategoriesApi.class);
 
+    @Nonnull
     public CategoryJson getAllCategories(@Nonnull String username, boolean excludeArchived) {
         final Response<CategoryJson> response;
         try {
@@ -31,6 +34,7 @@ public class CategoriesApiClient {
         return response.body();
     }
 
+    @Nonnull
     public CategoryJson createCategory(@Nonnull CategoryJson category) {
         final Response<CategoryJson> response;
         try {
@@ -42,6 +46,7 @@ public class CategoriesApiClient {
         return response.body();
     }
 
+    @Nonnull
     public CategoryJson updateCategory(@Nonnull CategoryJson category) {
         final Response<CategoryJson> response;
         try {

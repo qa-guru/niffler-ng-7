@@ -31,8 +31,9 @@ public class SpendApiClient implements SpendClient {
 
     private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
+    @Nonnull
     @Override
-    public @Nullable SpendJson createSpend(SpendJson spend) {
+    public SpendJson createSpend(SpendJson spend) {
         final Response<SpendJson> response;
         try {
             response = spendApi.addSpend(spend)
@@ -56,7 +57,8 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-    public @Nullable SpendJson getSpend(String id) {
+    @Nonnull
+    public SpendJson getSpend(String id) {
         final Response<SpendJson> response;
         try {
             response = spendApi.getSpend(id)
@@ -65,10 +67,12 @@ public class SpendApiClient implements SpendClient {
             throw new AssertionError(e);
         }
         assertEquals(200, response.code());
+        assert response.body() != null;
         return response.body();
     }
 
-    public @Nonnull List<SpendJson> allSpends(String username,
+    @Nonnull
+    public List<SpendJson> allSpends(String username,
                                      @Nullable CurrencyValues currency,
                                      @Nullable String from,
                                      @Nullable String to) {
@@ -82,15 +86,16 @@ public class SpendApiClient implements SpendClient {
         assertEquals(200, response.code());
         return response.body() != null ?
                 response.body()
-                :Collections.emptyList();
+                : Collections.emptyList();
     }
 
     public void removeSpends(@Nonnull String username, @Nonnull String... ids) {
         throw new UnsupportedOperationException("Удаление не поддерживается в API");
     }
 
+    @Nonnull
     @Override
-    public @Nullable CategoryJson createCategory(CategoryJson category) {
+    public CategoryJson createCategory(CategoryJson category) {
         final Response<CategoryJson> response;
         try {
             response = spendApi.addCategory(category)
@@ -102,7 +107,8 @@ public class SpendApiClient implements SpendClient {
         return response.body();
     }
 
-    public @Nullable CategoryJson updateCategory(CategoryJson category) {
+    @Nonnull
+    public CategoryJson updateCategory(CategoryJson category) {
         final Response<CategoryJson> response;
         try {
             response = spendApi.updateCategory(category)
@@ -111,10 +117,12 @@ public class SpendApiClient implements SpendClient {
             throw new AssertionError(e);
         }
         assertEquals(200, response.code());
+        assert response.body() != null;
         return response.body();
     }
 
-    public @Nonnull List<CategoryJson> allCategory(String username) {
+    @Nonnull
+    public List<CategoryJson> allCategory(String username) {
         final Response<List<CategoryJson>> response;
         try {
             response = spendApi.allCategories(username)
@@ -125,6 +133,6 @@ public class SpendApiClient implements SpendClient {
         assertEquals(200, response.code());
         return response.body() != null ?
                 response.body()
-                : Collections.emptyList() ;
+                : Collections.emptyList();
     }
 }
