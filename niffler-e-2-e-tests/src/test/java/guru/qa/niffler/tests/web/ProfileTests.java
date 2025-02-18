@@ -32,21 +32,21 @@ public class ProfileTests {
     }
 
     @User(
-            username = "Artur",
-            categories = @Category()
+            categories = @Category
     )
     @DisplayName("Активная категория должна присутствовать и отображаться в списке категорий")
     @Test
-    void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
+    void activeCategoryShouldPresentInCategoriesList(UserJson user) {
         new LoginPage()
                 .open()
-                .login(category.username(), "12345")
+                .login(user.testData().categories().getFirst().username(), user.testData().password())
                 .getHeader()
                 .toProfilePage()
-                .checkCategoryInCategoryList(category.name());
+                .checkCategoryInCategoryList(user.testData().categories().getFirst().name());
     }
 
     @User
+    @DisplayName("Обновление всех полей профиля")
     @Test
     void updateAllFieldsProfile(UserJson user) {
         new LoginPage()

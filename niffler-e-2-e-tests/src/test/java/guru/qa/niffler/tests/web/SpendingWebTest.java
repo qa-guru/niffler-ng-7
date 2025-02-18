@@ -4,7 +4,6 @@ import guru.qa.niffler.jupiter.annotation.DisabledByIssue;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
-import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.utils.RandomDataUtils;
@@ -18,22 +17,22 @@ public class SpendingWebTest {
 
 
     @User(
-            username = "Artur",
             spendings = @Spending(
-            category = "Обучение",
-            description = "Обучение Advanced 2.0",
-            amount = 79990)
+                    category = "Обучение",
+                    description = "Обучение Advanced 2.0",
+                    amount = 79990
+            )
     )
     @DisabledByIssue("5")
     @DisplayName("Название категории должно быть изменено в таблице")
     @Test
-    void categoryDescriptionShouldBeChangedFromTable(SpendJson spend) {
+    void categoryDescriptionShouldBeChangedFromTable(UserJson user) {
         final String newDescription = "Обучение Niffler Next Generation";
 
         new LoginPage()
                 .open()
-                .login("Artur", "12345")
-                .editSpendingClick(spend.description())
+                .login(user.username(), user.testData().password())
+                .editSpendingClick(user.testData().spends().getFirst().description())
                 .editDescription(newDescription)
                 .saveChange()
                 .checkAlertMessage("Spending is edited successfully")
