@@ -12,7 +12,7 @@ import static com.codeborne.selenide.Condition.clickable;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class EditSpendingPage {
+public class EditSpendingPage extends BasePage<EditSpendingPage>{
 
     private final Calendar calendar = new Calendar();
 
@@ -24,7 +24,7 @@ public class EditSpendingPage {
 
     @Step("Устанавливаем новое описание: '{0}'")
     @Nonnull
-    public EditSpendingPage setNewSpendingDescription(String description) {
+    public EditSpendingPage setDescription(String description) {
         descriptionInput.clear();
         descriptionInput.setValue(description);
         return this;
@@ -32,7 +32,7 @@ public class EditSpendingPage {
 
     @Step("Добавляем новую категорию")
     @Nonnull
-    public EditSpendingPage setNewSpendingCategory(String category) {
+    public EditSpendingPage setCategory(String category) {
         categoryInput.clear();
         categoryInput.setValue(category);
         return this;
@@ -40,7 +40,7 @@ public class EditSpendingPage {
 
     @Step("Устанавливаем сумму '{0}'")
     @Nonnull
-    public EditSpendingPage setNewSpendingAmount(double amount) {
+    public EditSpendingPage setSpendingAmount(double amount) {
         amountInput.shouldBe(clickable);
         amountInput.clear();
         amountInput.setValue(String.valueOf(amount));
@@ -49,7 +49,7 @@ public class EditSpendingPage {
 
     @Step("Устанавливаем дату '{0}'")
     @Nonnull
-    public EditSpendingPage setNewSpendingDate(Date date) {
+    public EditSpendingPage setSpendingDate(Date date) {
         calendar.selectDateInCalendar(date);
         return this;
     }

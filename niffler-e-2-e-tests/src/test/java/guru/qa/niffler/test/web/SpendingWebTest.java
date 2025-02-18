@@ -41,7 +41,7 @@ public class SpendingWebTest {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin("duck", "12345")
                 .editSpending(spend.description())
-                .setNewSpendingDescription(newDescription)
+                .setDescription(newDescription)
                 .save();
 
         new MainPage().checkThatTableContainsSpending(newDescription);
@@ -61,10 +61,10 @@ public class SpendingWebTest {
                 .checkIsLoaded()
                 .getHeader()
                 .addSpendingPage()
-                .setNewSpendingAmount(amount)
-                .setNewSpendingCategory(category)
-                .setNewSpendingDate(currentDate)
-                .setNewSpendingDescription(description)
+                .setSpendingAmount(amount)
+                .setCategory(category)
+                .setSpendingDate(currentDate)
+                .setDescription(description)
                 .save();
         spendingTable.checkTableContains(category);
     }

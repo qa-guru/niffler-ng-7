@@ -18,9 +18,12 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
-public class SpendingTable {
+public class SpendingTable extends BaseComponent<SpendingTable>{
 
-    private final SelenideElement self = $("#spendings tbody");
+    public SpendingTable() {
+        super($("#spendings tbody"));
+    }
+
 
     private final SearchField searchField = new SearchField();
     private final SelenideElement periodMenu = self.$("#period"),
@@ -32,6 +35,8 @@ public class SpendingTable {
             $$(".MuiList-padding li"),
             headerCells = tableHeader.$$(".MuiTableCell-root"),
             tableRows = self.$$("tr");
+
+
 
 
     @Step("Выбираем период")

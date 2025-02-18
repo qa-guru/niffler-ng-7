@@ -10,7 +10,7 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class PeoplesPage {
+public class PeoplesPage extends BasePage<PeoplesPage>{
 
     private final SelenideElement
             searchInput = $("input[aria-label='search']");

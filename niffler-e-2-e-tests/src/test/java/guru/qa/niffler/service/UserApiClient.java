@@ -1,14 +1,13 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.api.AuthApi;
-import guru.qa.niffler.api.ThreadSafeCookieStore;
+import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.api.UserdataApi;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
-import org.jetbrains.annotations.NotNull;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
