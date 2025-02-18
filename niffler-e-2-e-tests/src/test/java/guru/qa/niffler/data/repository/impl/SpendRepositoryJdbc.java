@@ -10,7 +10,9 @@ import guru.qa.niffler.data.entity.spend.SpendEntity;
 import guru.qa.niffler.data.mapper.CategoryEntityRowMapper;
 import guru.qa.niffler.data.mapper.SpendEntityRowMapper;
 import guru.qa.niffler.data.repository.SpendRepository;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,6 +21,7 @@ import java.util.UUID;
 
 import static guru.qa.niffler.data.jdbc.Connections.holder;
 
+@ParametersAreNonnullByDefault
 public class SpendRepositoryJdbc implements SpendRepository {
 
   private static final Config CFG = Config.getInstance();
@@ -27,6 +30,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
   private final SpendDao spendDao = new SpendDaoJdbc();
   private final CategoryDao categoryDao = new CategoryDaoJdbc();
 
+  @NotNull
   @Override
   public SpendEntity create(SpendEntity spend) {
     final UUID categoryId = spend.getCategory().getId();
@@ -38,6 +42,7 @@ public class SpendRepositoryJdbc implements SpendRepository {
     return spendDao.create(spend);
   }
 
+  @NotNull
   @Override
   public SpendEntity update(SpendEntity spend) {
     spendDao.update(spend);
@@ -45,16 +50,19 @@ public class SpendRepositoryJdbc implements SpendRepository {
     return spend;
   }
 
+  @NotNull
   @Override
   public CategoryEntity createCategory(CategoryEntity category) {
     return categoryDao.create(category);
   }
 
+  @NotNull
   @Override
   public Optional<CategoryEntity> findCategoryById(UUID id) {
     return categoryDao.findCategoryById(id);
   }
 
+  @NotNull
   @Override
   public Optional<CategoryEntity> findCategoryByUsernameAndSpendName(String username, String name) {
     try (PreparedStatement ps = holder(url).connection().prepareStatement(
@@ -77,11 +85,13 @@ public class SpendRepositoryJdbc implements SpendRepository {
     }
   }
 
+  @NotNull
   @Override
   public Optional<SpendEntity> findSpendById(UUID id) {
     return spendDao.findSpendById(id);
   }
 
+  @NotNull
   @Override
   public Optional<SpendEntity> findSpendByUsernameAndSpendDescription(String username, String description) {
     try (PreparedStatement ps = holder(url).connection().prepareStatement(

@@ -8,7 +8,13 @@ import guru.qa.niffler.data.repository.impl.SpendRepositorySpringJdbc;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.SpendJson;
+import io.qameta.allure.Step;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Objects;
+
+@ParametersAreNonnullByDefault
 public class SpendDbClient implements SpendClient {
 
     private static final Config CFG = Config.getInstance();
@@ -19,19 +25,23 @@ public class SpendDbClient implements SpendClient {
             CFG.spendJdbcUrl()
     );
 
+
+    @Step("Создаем новый 'spend'")
     @Override
+    @Nonnull
     public SpendJson createSpend(SpendJson spend) {
-        return xaTransactionTemplate.execute(() -> SpendJson.fromEntity(
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> SpendJson.fromEntity(
                         spendRepository.create(SpendEntity.fromJson(spend))
                 )
-        );
+        ));
     }
 
     @Override
+    @Nonnull
     public CategoryJson createCategory(CategoryJson category) {
-        return xaTransactionTemplate.execute(() -> CategoryJson.fromEntity(
+        return Objects.requireNonNull(xaTransactionTemplate.execute(() -> CategoryJson.fromEntity(
                         spendRepository.createCategory(CategoryEntity.fromJson(category))
                 )
-        );
+        ));
     }
 }

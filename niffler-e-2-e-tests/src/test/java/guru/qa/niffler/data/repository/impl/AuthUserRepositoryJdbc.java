@@ -8,15 +8,19 @@ import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class AuthUserRepositoryJdbc implements AuthUserRepository {
 
     private final AuthUserDao authUserDao = new AuthUserDaoJdbc();
     private final AuthAuthorityDao authAuthorityDao = new AuthAuthorityDaoJdbc();
 
+    @Nonnull
     @Override
     public AuthUserEntity create(AuthUserEntity user) {
         authUserDao.createUser(user);
@@ -24,6 +28,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         return user;
     }
 
+    @Nonnull
     @Override
     public AuthUserEntity update(AuthUserEntity user) {
         authUserDao.update(user);
@@ -31,16 +36,19 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         return user;
     }
 
+    @Nonnull
     @Override
     public Optional<AuthUserEntity> findById(UUID id) {
         return findById(id);
     }
 
+    @Nonnull
     @Override
     public List<AuthUserEntity> findAll() {
         return authUserDao.findAll();
     }
 
+    @Nonnull
     @Override
     public Optional<AuthUserEntity> findByUserName(String username) {
         return authUserDao.findByUserName(username);

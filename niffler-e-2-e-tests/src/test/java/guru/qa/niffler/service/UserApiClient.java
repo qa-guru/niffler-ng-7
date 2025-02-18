@@ -13,6 +13,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.net.CookieManager;
@@ -54,7 +55,7 @@ public class UserApiClient implements UsersClient {
     private final UserdataApi userdataApi = retrofitUserdata.create(UserdataApi.class);
 
 
-    @NotNull
+    @Nonnull
     @Override
     public UserJson createUser(String username, String password) {
         try {

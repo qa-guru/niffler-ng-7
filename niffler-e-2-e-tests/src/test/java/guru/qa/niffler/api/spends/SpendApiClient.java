@@ -8,11 +8,13 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ParametersAreNonnullByDefault
 public class SpendApiClient {
 
     private static final String BASE_URL = "http://127.0.0.1:8093";
@@ -23,6 +25,7 @@ public class SpendApiClient {
 
     private final SpendApi spendApi = retrofit.create(SpendApi.class);
 
+    @Nonnull
     public SpendJson createSpend(SpendJson spend) {
         final Response<SpendJson> response;
         try {
@@ -34,7 +37,7 @@ public class SpendApiClient {
         return response.body();
     }
 
-    public SpendJson getAllSpends(@Nonnull String username,
+    public SpendJson getAllSpends(String username,
                                   @Nullable CurrencyValues filterCurrency,
                                   @Nullable String from,
                                   @Nullable String to) {
@@ -48,8 +51,7 @@ public class SpendApiClient {
         return response.body();
     }
 
-    public SpendJson getSpendById(@Nonnull String id,
-                                  @Nonnull String username) {
+    public SpendJson getSpendById(String id, String username) {
         final Response<SpendJson> response;
         try {
             response = spendApi.getSpend(id, username).execute();
@@ -60,6 +62,7 @@ public class SpendApiClient {
         return response.body();
     }
 
+    @Nonnull
     public SpendJson editSpend(SpendJson spend) {
         final Response<SpendJson> response;
         try {
@@ -71,7 +74,8 @@ public class SpendApiClient {
         return response.body();
     }
 
-    public SpendJson deleteSpend(@Nonnull String username, @Nonnull List<String> ids) {
+    @Nonnull
+    public SpendJson deleteSpend(String username, List<String> ids) {
         final Response<SpendJson> response;
         try {
             response = spendApi.deleteSpends(username, ids).execute();

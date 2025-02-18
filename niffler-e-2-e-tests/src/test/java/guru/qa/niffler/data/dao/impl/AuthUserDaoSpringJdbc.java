@@ -9,18 +9,22 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@ParametersAreNonnullByDefault
 public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
     private static final Config CFG = Config.getInstance();
     private final String url = CFG.authJdbcUrl();
 
     @Override
+    @Nonnull
     public AuthUserEntity createUser(AuthUserEntity authUser) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         KeyHolder kh = new GeneratedKeyHolder();
@@ -43,11 +47,26 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     }
 
     @Override
+    @Nonnull
     public AuthUserEntity update(AuthUserEntity user) {
-        return null;
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+        jdbcTemplate.update("UPDATE \"user\" " +
+                        "SET username = ?, password = ?, enabled = ?, account_non_expired = ?, account_non_locked = ?, credentials_non_expired = ? " +
+                        "WHERE id = ?",
+
+                user.getUsername(),
+                user.getPassword(),
+                user.getEnabled(),
+                user.getAccountNonExpired(),
+                user.getAccountNonLocked(),
+                user.getCredentialsNonExpired()
+
+        );
+        return user;
     }
 
     @Override
+    @Nonnull
     public Optional<AuthUserEntity> findById(UUID id) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         return Optional.ofNullable(
@@ -60,6 +79,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     }
 
     @Override
+    @Nonnull
     public Optional<AuthUserEntity> findByUserName(String username) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         return Optional.ofNullable(
@@ -72,6 +92,7 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     }
 
     @Override
+    @Nonnull
     public List<AuthUserEntity> findAll() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
         return jdbcTemplate.query(
