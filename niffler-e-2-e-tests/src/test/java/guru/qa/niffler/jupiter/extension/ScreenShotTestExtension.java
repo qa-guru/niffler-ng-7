@@ -41,7 +41,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
     public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
 
         ScreenShotTest annotation = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
-        if(annotation.rewrite()){
+        if(annotation.rewriteExpected()){
             try{
                 ImageIO.write(getActual(), "png", new File("niffler-e-2-e-tests/src/test/resources/" + annotation.value()).getAbsoluteFile());
             } catch (IOException e) {

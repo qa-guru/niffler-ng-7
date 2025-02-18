@@ -16,5 +16,5 @@ import java.lang.annotation.Target;
 public @interface ScreenShotTest {
     String value();
 
-    boolean rewrite() default false;
+    boolean rewriteExpected() default false;
 }
