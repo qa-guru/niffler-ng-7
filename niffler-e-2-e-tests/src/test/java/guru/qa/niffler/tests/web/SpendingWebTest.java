@@ -8,6 +8,7 @@ import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.utils.RandomDataUtils;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ public class SpendingWebTest {
             amount = 79990)
     )
     @DisabledByIssue("5")
+    @DisplayName("Название категории должно быть изменено в таблице")
     @Test
     void categoryDescriptionShouldBeChangedFromTable(SpendJson spend) {
         final String newDescription = "Обучение Niffler Next Generation";
@@ -39,6 +41,7 @@ public class SpendingWebTest {
     }
 
     @User
+    @DisplayName("Должна быть добавлена новая трата")
     @Test
     void shouldAddNewSpending(UserJson user) {
         String category = "Duck";
