@@ -19,17 +19,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ParametersAreNonnullByDefault
-public class SpendApiClient implements SpendClient {
+public class SpendApiClient extends RestClient implements SpendClient {
 
-    private static final Config CFG = Config.getInstance();
+    private final SpendApi spendApi;
 
-
-    private final Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(CFG.spendUrl())
-            .addConverterFactory(JacksonConverterFactory.create())
-            .build();
-
-    private final SpendApi spendApi = retrofit.create(SpendApi.class);
+    public SpendApiClient() {
+        super(CFG.spendUrl());
+        this.spendApi = retrofit.create(SpendApi.class);
+    }
 
     @Nonnull
     @Override

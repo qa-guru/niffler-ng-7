@@ -12,14 +12,20 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class Header {
+public class Header extends BaseComponent<Header>{
+
+    public Header() {
+        super($("#root header"));
+    }
+
     private final SelenideElement
-            self = $("#root header"),
             mainPageLink = self.$("a[href*='/main']"),
             addSpendingBtn = self.$("a[href*='/spending']"),
             menuBtn = self.$("button"),
             menu = $("ul[role='menu']");
     private final ElementsCollection menuItems = menu.$$("li");
+
+
 
     @Step("Переходим на страницу 'Friends'")
     @Nonnull

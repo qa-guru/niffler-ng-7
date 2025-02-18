@@ -1,5 +1,6 @@
 package guru.qa.niffler.test.web;
 
+import guru.qa.niffler.jupiter.extension.UsersClientExtention;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
@@ -8,12 +9,15 @@ import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UserDbClient;
 import guru.qa.niffler.service.UsersClient;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Date;
 
+@ExtendWith(UsersClientExtention.class)
 public class JdbcTest {
+    private UsersClient uc;
 
     @Test
     void txTest() {
@@ -67,7 +71,6 @@ public class JdbcTest {
 
     @Test
     void incomeInvitationTesst() {
-        UsersClient uc = new UserDbClient();
         UserJson requester = uc.createUser(
                 "o19",
                 "123"

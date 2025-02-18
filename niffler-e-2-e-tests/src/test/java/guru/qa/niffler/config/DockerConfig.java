@@ -51,8 +51,4 @@ public class DockerConfig implements Config {
         return "";
     }
 
-    @Override
-    public String ghUrl() {
-        return "";
-    }
 }

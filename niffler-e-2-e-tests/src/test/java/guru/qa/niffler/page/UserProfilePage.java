@@ -12,7 +12,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
 @ParametersAreNonnullByDefault
-public class UserProfilePage {
+public class UserProfilePage extends BasePage<UserProfilePage>{
 
     public static String url = Config.getInstance().frontUrl() + "profile";
 

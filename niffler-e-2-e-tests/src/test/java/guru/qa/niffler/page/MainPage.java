@@ -14,7 +14,7 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$x;
 
 @ParametersAreNonnullByDefault
-public class MainPage {
+public class MainPage extends BasePage<MainPage>{
     protected final Header header = new Header();
 
     private final SelenideElement

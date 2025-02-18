@@ -14,7 +14,7 @@ import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class FriendsPage {
+public class FriendsPage extends BasePage<FriendsPage>{
 
     private final SelenideElement
             noFriendsTextElement = $("#simple-tabpanel-friends .MuiTypography-root"),

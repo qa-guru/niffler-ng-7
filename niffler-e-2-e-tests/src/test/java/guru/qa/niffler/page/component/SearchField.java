@@ -11,25 +11,30 @@ import static com.codeborne.selenide.Condition.not;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class SearchField {
+public class SearchField extends BaseComponent<SearchField>{
+
+    public SearchField() {
+        super($("input[aria-label='search']"));
+    }
 
     private final SelenideElement
-            searchInput = $("input[aria-label='search']"),
             clearSearchInputBtn = $("#input-clear");
+
+
 
     @Step("Вводим '{0}' в поисковик")
     @Nonnull
     public SearchField search(String query){
         clearIfNotEmpty();
-        searchInput.setValue(query).pressEnter();
+        self.setValue(query).pressEnter();
         return this;
     }
 
     @Nonnull
     public SearchField clearIfNotEmpty(){
-        if (searchInput.is(not(empty))){
+        if (self.is(not(empty))){
             clearSearchInputBtn.click();
-            searchInput.shouldBe(empty);
+            self.shouldBe(empty);
         }
         return this;
     }
