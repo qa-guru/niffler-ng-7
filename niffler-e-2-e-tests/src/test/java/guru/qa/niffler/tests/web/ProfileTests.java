@@ -1,14 +1,23 @@
 package guru.qa.niffler.tests.web;
 
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.ProfilePage;
 import guru.qa.niffler.utils.RandomDataUtils;
+import guru.qa.niffler.utils.ScreenDiffResult;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 
 
 @DisplayName("Тесты для страницы профиля пользователя")
@@ -54,10 +63,29 @@ public class ProfileTests {
                 .login(user.username(), user.testData().password())
                 .getHeader()
                 .toProfilePage()
-                .uploadImage("image/duck.jpg")
+                .uploadImage("image/duck.png")
                 .setName(RandomDataUtils.randomName())
                 .setNewCategory(RandomDataUtils.randomCategoryName())
                 .saveChanges()
                 .checkAlertMessage("Profile successfully updated");
+    }
+
+    @DisplayName("Проверка корректной загрузки аватарки")
+    @User
+    @ScreenShotTest(value = "image/expected-avatar.png")
+    void checkCorrectUploadAvatar(UserJson user, BufferedImage expected) throws IOException {
+        new LoginPage()
+                .open()
+                .login(user.username(), user.testData().password())
+                .getHeader()
+                .toProfilePage()
+                .uploadImage("image/duck.png")
+                .saveChanges();
+
+        BufferedImage actual = ImageIO.read(Objects.requireNonNull(new ProfilePage().getAvatarImage().screenshot()));
+        Assertions.assertFalse(new ScreenDiffResult(
+                actual,
+                expected
+        ));
     }
 }

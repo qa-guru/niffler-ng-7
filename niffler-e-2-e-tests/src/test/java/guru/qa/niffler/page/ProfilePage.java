@@ -27,7 +27,8 @@ public class ProfilePage extends BasePage<MainPage> {
             saveChangesButton = $("button[type='submit']"),
             categoryInput = $("input#category"),
             showArchivedCheckbox = $("input[type='checkbox']"),
-            alert = $(".MuiSnackbar-root");
+            alert = $(".MuiSnackbar-root"),
+            avatarImage = $(".MuiAvatar-img");
 
     @Nonnull
     @Step("Загрузка изображения <file> на странице профиля")
