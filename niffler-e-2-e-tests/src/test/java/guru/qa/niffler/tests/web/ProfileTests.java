@@ -10,6 +10,7 @@ import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.ProfilePage;
 import guru.qa.niffler.utils.RandomDataUtils;
 import guru.qa.niffler.utils.ScreenDiffResult;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ public class ProfileTests {
     )
     @DisplayName("Архивная категория должна присутствовать и отображаться в списке категорий")
     @Test
-    void archivedCategoryShouldPresentInCategoriesList(CategoryJson[] category) {
+    void archivedCategoryShouldPresentInCategoriesList(@NotNull CategoryJson[] category) {
         new LoginPage()
                 .open()
                 .login(category[0].username(), "12345")
@@ -45,7 +46,7 @@ public class ProfileTests {
     )
     @DisplayName("Активная категория должна присутствовать и отображаться в списке категорий")
     @Test
-    void activeCategoryShouldPresentInCategoriesList(UserJson user) {
+    void activeCategoryShouldPresentInCategoriesList(@NotNull UserJson user) {
         new LoginPage()
                 .open()
                 .login(user.testData().categories().getFirst().username(), user.testData().password())
@@ -57,7 +58,7 @@ public class ProfileTests {
     @User
     @DisplayName("Обновление всех полей профиля")
     @Test
-    void updateAllFieldsProfile(UserJson user) {
+    void updateAllFieldsProfile(@NotNull UserJson user) {
         new LoginPage()
                 .open()
                 .login(user.username(), user.testData().password())
@@ -73,7 +74,7 @@ public class ProfileTests {
     @DisplayName("Проверка корректной загрузки аватарки")
     @User
     @ScreenShotTest(value = "image/expected-avatar.png")
-    void checkCorrectUploadAvatar(UserJson user, BufferedImage expected) throws IOException {
+    void checkCorrectUploadAvatar(@NotNull UserJson user, BufferedImage expected) throws IOException {
         new LoginPage()
                 .open()
                 .login(user.username(), user.testData().password())
