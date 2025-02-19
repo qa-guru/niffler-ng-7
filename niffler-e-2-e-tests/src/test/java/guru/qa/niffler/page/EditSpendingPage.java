@@ -16,7 +16,8 @@ public class EditSpendingPage extends BasePage<EditSpendingPage>{
 
     private final Calendar calendar = new Calendar();
 
-    private final SelenideElement amountInput = $("#amount"),
+    private final SelenideElement
+            amountInput = $("#amount"),
             categoryInput = $("#category"),
             descriptionInput = $("#description"),
             saveBtn = $("#save");
@@ -56,8 +57,8 @@ public class EditSpendingPage extends BasePage<EditSpendingPage>{
 
     @Step("Cохраняем изменения")
     @Nonnull
-    public MainPage save() {
+    public EditSpendingPage save() {
         saveBtn.click();
-        return new MainPage();
+        return this;
     }
 }
