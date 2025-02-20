@@ -3,6 +3,7 @@ package guru.qa.niffler.page;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
+import guru.qa.niffler.page.component.SpendingTable;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
@@ -16,6 +17,13 @@ import static com.codeborne.selenide.Selenide.$x;
 @ParametersAreNonnullByDefault
 public class MainPage extends BasePage<MainPage>{
     protected final Header header = new Header();
+    protected final SpendingTable spendingTable = new SpendingTable();
+
+    @Nonnull
+    public SpendingTable getSpendingTable() {
+        spendingTable.getSelf().scrollIntoView(true);
+        return spendingTable;
+    }
 
     private final SelenideElement
             historyOfSpendingsText = $("#spendings h2"),
