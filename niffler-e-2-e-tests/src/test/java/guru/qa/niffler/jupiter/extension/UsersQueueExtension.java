@@ -10,6 +10,8 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -23,6 +25,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
+@ParametersAreNonnullByDefault
 @Deprecated
 public class UsersQueueExtension implements
     BeforeTestExecutionCallback,
@@ -31,7 +34,11 @@ public class UsersQueueExtension implements
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UsersQueueExtension.class);
 
-  public record StaticUser(String username, String password, String friend, String income, String outcome) {
+  public record StaticUser(String username,
+                           String password,
+                           @Nullable String friend,
+                           @Nullable String income,
+                           @Nullable String outcome) {
   }
 
   private static final Queue<StaticUser> EMPTY_USERS = new ConcurrentLinkedQueue<>();

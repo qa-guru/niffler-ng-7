@@ -9,7 +9,10 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.junit.platform.commons.support.SearchOption;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 
+
+@ParametersAreNonnullByDefault
 public class IssueExtension implements ExecutionCondition {
 
   private final GithubApiClient ghApiClient = new GithubApiClient();

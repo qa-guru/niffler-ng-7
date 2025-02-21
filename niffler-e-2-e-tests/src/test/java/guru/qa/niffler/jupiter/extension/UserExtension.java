@@ -11,8 +11,11 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-public class UserExtension implements BeforeEachCallback,
-    ParameterResolver {
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+public class UserExtension implements BeforeEachCallback, ParameterResolver {
 
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(UserExtension.class);
   private static final String defaultPassword = "12345";
@@ -45,6 +48,11 @@ public class UserExtension implements BeforeEachCallback,
 
   @Override
   public UserJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    return createdUser(extensionContext);
+  }
+
+  @Nullable
+  public static UserJson createdUser(ExtensionContext extensionContext) {
     return extensionContext.getStore(NAMESPACE).get(
         extensionContext.getUniqueId(),
         UserJson.class
