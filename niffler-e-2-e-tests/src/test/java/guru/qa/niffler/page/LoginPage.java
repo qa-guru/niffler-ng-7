@@ -11,7 +11,6 @@ import static guru.qa.niffler.page.RegisterPage.getRegisterPage;
 import static java.lang.String.format;
 
 public class LoginPage {
-  private final static ThreadLocal<LoginPage> INSTANCE = ThreadLocal.withInitial(LoginPage::new);
 
   private final SelenideElement usernameInput = $("input[name='username']");
   private final SelenideElement passwordInput = $("input[name='password']");
@@ -48,10 +47,6 @@ public class LoginPage {
     return new MainPage();
   }
 
-  private LoginPage() {
-  }
-
-  public static LoginPage getLoginPage(){
-    return INSTANCE.get();
+  public LoginPage() {
   }
 }

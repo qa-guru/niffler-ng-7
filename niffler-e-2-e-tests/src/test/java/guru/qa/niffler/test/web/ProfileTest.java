@@ -16,40 +16,28 @@ public class ProfileTest {
     private static final Config CFG = Config.getInstance();
 
     @Test
-    void testWithEmptyUser0(@UserQueueExtension.UserType(empty = true) UserQueueExtension.StaticUser user) throws InterruptedException {
-        Thread.sleep(1000);
-        System.out.println(user);
+    @Category(
+            username = Constants.MAIN_USERNAME,
+            archived = true)
+    void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(Constants.MAIN_USERNAME, Constants.MAIN_PASSWORD)
+                .clickByUserAvatar()
+                .clickByProfile()
+                .activatedShowArchiveCategory()
+                .checkNameSpendInCategoryList(category.name());
     }
 
     @Test
-    void testWithEmptyUser1(@UserQueueExtension.UserType(empty = false) UserQueueExtension.StaticUser user) throws InterruptedException {
-        Thread.sleep(1000);
-        System.out.println(user);
+    @Category(
+            username = Constants.MAIN_USERNAME,
+            archived = false)
+    void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .login(Constants.MAIN_USERNAME, Constants.MAIN_PASSWORD)
+                .clickByUserAvatar()
+                .clickByProfile()
+                .checkNameSpendInCategoryList(category.name());
     }
-
-//    @Test
-//    @Category(
-//            username = Constants.userName,
-//            archived = true)
-//    void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
-//        Selenide.open(CFG.frontUrl(), LoginPage.class)
-//                .login(Constants.userName, Constants.password)
-//                .clickByUserAvatar()
-//                .clickByProfile()
-//                .activatedShowArchiveCategory()
-//                .checkNameSpendInCategoryList(category.name());
-//    }
-//
-//    @Test
-//    @Category(
-//            username = Constants.userName,
-//            archived = false)
-//    void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
-//        Selenide.open(CFG.frontUrl(), LoginPage.class)
-//                .login(Constants.userName, Constants.password)
-//                .clickByUserAvatar()
-//                .clickByProfile()
-//                .checkNameSpendInCategoryList(category.name());
-//    }
 
 }
