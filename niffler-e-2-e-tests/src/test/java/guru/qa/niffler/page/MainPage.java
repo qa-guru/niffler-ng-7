@@ -48,8 +48,7 @@ public class MainPage extends BasePage<MainPage> {
 
     @Step("Проверяем в блоке Statistics ячейку с категорией и суммой")
     public void checkCellCategoryAndAmountInStatisticsBlock(String categoryName, String amount) {
-        Assertions.assertTrue(categoryContainerComponents.findBy(
-                text(categoryName)
-        ).getText().contains(amount));
+        categoryContainerComponents.findBy(text(categoryName))
+                .shouldHave(text(amount));
     }
 }
