@@ -1,4 +1,4 @@
-package guru.qa.niffler.page;
+package guru.qa.niffler.page.profileInfo;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
@@ -9,8 +9,6 @@ import static com.codeborne.selenide.Selenide.$$x;
 import static com.codeborne.selenide.Selenide.$x;
 
 public class ProfilePage {
-    private final static ThreadLocal<ProfilePage> INSTANCE = ThreadLocal.withInitial(ProfilePage::new);
-
     private final SelenideElement archiveButton = $x(".//button[@aria-label = 'Archive category']");
     private final SelenideElement showArchiveCategories = $x(
             ".//*[./*[normalize-space(text()) = 'Show archived']]");
@@ -27,10 +25,6 @@ public class ProfilePage {
         return this;
     }
 
-    private ProfilePage() {
-    }
-
-    public static ProfilePage getProfilePage(){
-        return INSTANCE.get();
+    public ProfilePage() {
     }
 }

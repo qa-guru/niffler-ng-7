@@ -8,7 +8,6 @@ import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static guru.qa.niffler.page.LoginPage.getLoginPage;
 import static guru.qa.niffler.util.DataGenerator.getRandomPassword;
 import static guru.qa.niffler.util.DataGenerator.getRandomUsername;
 import static java.lang.String.format;
@@ -39,11 +38,11 @@ public class RegistrationWebTest {
     void shouldNotRegisterUserWithExistingUsername() {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickRegisterButton()
-                .setUsername(Constants.userName)
-                .setPassword(Constants.password)
-                .setPasswordSubmit(Constants.password)
+                .setUsername(Constants.MAIN_USERNAME)
+                .setPassword(Constants.MAIN_PASSWORD)
+                .setPasswordSubmit(Constants.MAIN_PASSWORD)
                 .clickSubmitButton()
-                .checkErrorMessageUsername(format("Username `%s` already exists", Constants.userName));
+                .checkErrorMessageUsername(format("Username `%s` already exists", Constants.MAIN_USERNAME));
     }
 
     @Test
@@ -60,7 +59,7 @@ public class RegistrationWebTest {
     @Test
     void mainPageShouldBeDisplayedAfterSuccessLogin() {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .login(Constants.userName, Constants.password)
+                .login(Constants.MAIN_USERNAME, Constants.MAIN_PASSWORD)
                 .checkDiagramStatistics()
                 .checkTableSpending();
     }
@@ -69,6 +68,6 @@ public class RegistrationWebTest {
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .login(getRandomUsername(), getRandomPassword());
-        getLoginPage().checkErrorMessage("Неверные учетные данные пользователя");
+        new LoginPage().checkErrorMessage("Неверные учетные данные пользователя");
     }
 }

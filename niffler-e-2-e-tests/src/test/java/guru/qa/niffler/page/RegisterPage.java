@@ -5,7 +5,6 @@ import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static guru.qa.niffler.actions.FieldActions.setValueField;
-import static guru.qa.niffler.page.LoginPage.getLoginPage;
 import static java.lang.String.format;
 import static java.time.Duration.ofSeconds;
 
@@ -49,7 +48,7 @@ public class RegisterPage {
 
     public LoginPage clickSubmitRegistration() {
         singInButton.shouldBe(visible).click();
-        return getLoginPage();
+        return new LoginPage();
     }
 
     public RegisterPage checkErrorMessagePassword(String message) {
