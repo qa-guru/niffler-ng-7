@@ -53,8 +53,6 @@ public class UserQueueExtension implements
         List<UserType> userTypeList = Arrays.stream(context.getRequiredTestMethod().getParameters())
                 .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
                 .map(p -> p.getAnnotation(UserType.class)).toList();
-        if (userTypeList.isEmpty()) throw new AssertionError(
-                "@UserType is not found for testMethod - [%s]".formatted(context.getTestMethod().get().getName()));
         Map<UserType, StaticUser> users = new HashMap<>();
         userTypeList.forEach(annoUserType -> {
             Optional<StaticUser> user = Optional.empty();
@@ -87,7 +85,7 @@ public class UserQueueExtension implements
     public void afterEach(ExtensionContext context) {
         Map<UserType, StaticUser> usersMap = context.getStore(NAMESPACE).get(
                 context.getUniqueId(), Map.class);
-        if (usersMap != null && !usersMap.isEmpty()) {
+        if (usersMap != null) {
             usersMap.forEach((userType, user) ->
                     getQueueByType(userType).add(user));
         }

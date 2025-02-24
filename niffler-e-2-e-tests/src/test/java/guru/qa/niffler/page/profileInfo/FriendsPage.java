@@ -2,7 +2,6 @@ package guru.qa.niffler.page.profileInfo;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import org.junit.jupiter.api.Assertions;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$$x;
@@ -23,8 +22,8 @@ public class FriendsPage {
     }
 
     public FriendsPage checkSelectedTabByName(String tabName) {
-        Assertions.assertEquals(tabName, selectedTab.getText(), "Название выбранной вкладки %s не совпадает с актуальной - %s"
-                .formatted(selectedTab.text(), tabName));
+        selectedTab.shouldBe(text(tabName).because(format(
+                "Название выбранной вкладки %s не совпадает с актуальной - %s", selectedTab.text(), tabName)));
         return this;
     }
 
