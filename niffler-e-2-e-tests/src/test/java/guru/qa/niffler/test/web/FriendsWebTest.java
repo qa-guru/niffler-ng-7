@@ -1,22 +1,17 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.FriendsPage;
 import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.page.component.Header;
 import org.junit.jupiter.api.Test;
 
 import static com.codeborne.selenide.Selenide.open;
 
 @WebTest
 public class FriendsWebTest {
-    private Header header = new Header();
-
-    private static final Config CFG = Config.getInstance();
 
     @User(
             friends = 1
@@ -25,20 +20,24 @@ public class FriendsWebTest {
     @Test
     void friendShouldBePresentInFriendsTable(UserJson user) {
         final String friendUsername = user.testData().friendsUsernames()[0];
-        open(CFG.frontUrl(), LoginPage.class)
+        open(LoginPage.URL, LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
-                .checkIsLoaded()
-                .openFriendsPage()
+                .checkThatPageLoaded()
+                .getHeader()
+                .toFriendsPage()
+                .checkThatPageLoaded()
                 .checkUserInUserFriendsList(friendUsername);
     }
 
     @User
     @Test
     void friendShouldBeEmptyForNewUser(UserJson user) {
-        open(CFG.frontUrl(), LoginPage.class)
+        open(LoginPage.URL, LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
-                .checkIsLoaded()
-                .openFriendsPage()
+                .checkThatPageLoaded()
+                .getHeader()
+                .toFriendsPage()
+                .checkThatPageLoaded()
                 .checkFriendsIsEmpty();
     }
 
@@ -48,10 +47,12 @@ public class FriendsWebTest {
     @Test
     void incomeInvitationShouldBePresentInFriendsTable(UserJson user) {
         final String friendUsername = user.testData().incomeInvitationsUsernames()[0];
-        open(CFG.frontUrl(), LoginPage.class)
+        open(LoginPage.URL, LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
-                .checkIsLoaded()
-                .openFriendsPage()
+                .checkThatPageLoaded()
+                .getHeader()
+                .toFriendsPage()
+                .checkThatPageLoaded()
                 .checkIncomeRequest(friendUsername);
     }
 
@@ -61,10 +62,10 @@ public class FriendsWebTest {
     @Test
     void outcomeInvitationShouldBePresentInAllPeopleTable(UserJson user) {
         final String friendUsername = user.testData().outcomeInvitationsUsernames()[0];
-        open(CFG.frontUrl(), LoginPage.class)
+        open(LoginPage.URL, LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
-                .checkIsLoaded()
-                .openAllPeoplesPage()
+                .getHeader()
+                .toAllPeoplesPage()
                 .checkOutcomeRequest(friendUsername);
     }
 
@@ -72,9 +73,9 @@ public class FriendsWebTest {
     @Test
     void acceptInvitationTest(UserJson user) {
         final String userToAccept = user.testData().incomeInvitationsUsernames()[0];
-        FriendsPage friendsPage = open(CFG.frontUrl(), LoginPage.class)
+        FriendsPage friendsPage = open(LoginPage.URL, LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
-                .checkIsLoaded()
+                .checkThatPageLoaded()
                 .getHeader()
                 .toFriendsPage()
                 .checkExistingInvitationsCount(1)
@@ -91,9 +92,8 @@ public class FriendsWebTest {
     @Test
     void declineInvitationTest(UserJson user) {
         final String userToAccept = user.testData().incomeInvitationsUsernames()[0];
-        FriendsPage friendsPage = open(CFG.frontUrl(), LoginPage.class)
+        FriendsPage friendsPage = open(LoginPage.URL, LoginPage.class)
                 .doLogin(user.username(), user.testData().password())
-                .checkIsLoaded()
                 .getHeader()
                 .toFriendsPage()
                 .checkExistingInvitationsCount(1)

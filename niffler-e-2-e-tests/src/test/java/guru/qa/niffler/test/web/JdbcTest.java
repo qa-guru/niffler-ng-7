@@ -10,10 +10,10 @@ import guru.qa.niffler.service.UserDbClient;
 import guru.qa.niffler.service.UsersClient;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Date;
+
+import static guru.qa.niffler.utils.DataUtils.*;
 
 @ExtendWith(UsersClientExtention.class)
 public class JdbcTest {
@@ -22,39 +22,24 @@ public class JdbcTest {
     @Test
     void txTest() {
         SpendDbClient spendDbClient = new SpendDbClient();
+        String username = randomUserName();
         SpendJson spend = spendDbClient.createSpend(
                 new SpendJson(
                         null,
                         new Date(),
                         new CategoryJson(
                                 null,
-                                "cat-name-trrr",
-                                "taty",
+                                randomName(),
+                                username,
                                 false
                         ),
                         CurrencyValues.RUB,
                         1000.0,
-                        "spend-name-txt",
-                        "taty"
+                        randomDescription(2),
+                        username
                 )
         );
         System.out.println(spend);
-    }
-
-
-    @ValueSource(strings = {
-            "ddd16",
-            "ddd17",
-            "ddd18"
-    })
-    @ParameterizedTest
-    void createUserTest(String name) {
-        UsersClient uc = new UserDbClient();
-        UserJson user = uc.createUser(
-                name,
-                "123"
-        );
-        System.out.println(user);
     }
 
 
@@ -63,7 +48,7 @@ public class JdbcTest {
 
         UsersClient uc = new UserDbClient();
         UserJson user = uc.createUser(
-                "o5",
+                randomUserName(),
                 "123"
         );
         System.out.println(user);
@@ -72,7 +57,7 @@ public class JdbcTest {
     @Test
     void incomeInvitationTesst() {
         UserJson requester = uc.createUser(
-                "o19",
+                randomUserName(),
                 "123"
         );
         uc.addIncomeInvitation(requester, 2);

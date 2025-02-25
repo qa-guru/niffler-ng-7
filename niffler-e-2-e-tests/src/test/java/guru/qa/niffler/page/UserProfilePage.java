@@ -1,5 +1,6 @@
 package guru.qa.niffler.page;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.config.Config;
 import io.qameta.allure.Step;
@@ -8,21 +9,31 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.*;
 
 @ParametersAreNonnullByDefault
 public class UserProfilePage extends BasePage<UserProfilePage>{
 
-    public static String url = Config.getInstance().frontUrl() + "profile";
+    public static String URL = Config.getInstance().frontUrl() + "profile";
 
     private final SelenideElement
             dialogModal = $x("//div[@role='dialog']"),
             confirmButton = $x("//button[contains(text(),'chive')]"),
             switchToggle = $(".MuiSwitch-switchBase"),
             nameInput = $("#name"),
+            userName = $("#username"),
             uploadPickButton = $x("//label[@for='image__input']");
 
+    private final ElementsCollection bubblesArchived = $$(".MuiChip-filled.MuiChip-colorDefault");
+
+
+    @Override
+    @Step("Check that page is loaded")
+    @Nonnull
+    public UserProfilePage checkThatPageLoaded() {
+        userName.should(visible);
+        return this;
+    }
 
     @Step("Меняем состояние категории '{0}'")
     @Nonnull
@@ -80,6 +91,14 @@ public class UserProfilePage extends BasePage<UserProfilePage>{
     @Nonnull
     public UserProfilePage checkPageIsLoaded() {
         uploadPickButton.shouldBe(visible);
+        return this;
+    }
+
+    @Step("Проверка архивной категории: '{0}'")
+    @Nonnull
+    public UserProfilePage checkArchivedCategoryExists(String category) {
+        switchToggle.shouldBe(clickable).click();
+        bubblesArchived.find(text(category)).shouldBe(visible);
         return this;
     }
 }

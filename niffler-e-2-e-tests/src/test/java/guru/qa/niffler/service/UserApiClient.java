@@ -1,8 +1,8 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.api.AuthApi;
-import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.api.UserdataApi;
+import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.UserJson;
@@ -17,6 +17,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
+import java.util.Collections;
+import java.util.List;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 import static java.util.Objects.requireNonNull;
@@ -154,5 +156,20 @@ public class UserApiClient implements UsersClient {
                         .add(response.body());
             }
         }
+    }
+
+    @Nonnull
+    public List<UserJson> allUsers(String username) {
+        final Response<List<UserJson>> response;
+        try {
+            response = userdataApi.allUsers(username)
+                    .execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(200, response.code());
+        return response.body() != null ?
+                response.body()
+                : Collections.emptyList();
     }
 }

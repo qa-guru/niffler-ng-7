@@ -6,12 +6,11 @@ import io.qameta.allure.Step;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.codeborne.selenide.Condition.interactable;
-import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class RegisterPage extends BasePage<RegisterPage>{
+public class RegisterPage extends BasePage<RegisterPage> {
     private final SelenideElement
             userNameInput = $("#username"),
             passwordInput = $("#password"),
@@ -19,6 +18,15 @@ public class RegisterPage extends BasePage<RegisterPage>{
             successRegisterText = $(".form__paragraph_success"),
             errorRegisterText = $(".form__error");
 
+
+    @Override
+    @Nonnull
+    public RegisterPage checkThatPageLoaded() {
+        userNameInput.should(visible);
+        passwordInput.should(visible);
+        passwordSubmitInput.should(visible);
+        return this;
+    }
 
     @Step("Заполняем логин и пароль")
     @Nonnull
