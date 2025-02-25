@@ -17,8 +17,6 @@ public class RegisterPage {
     private final SelenideElement submitButton = $("button[type='submit']");
     private final SelenideElement singInButton = $x(".//a[text() = 'Sign in']");
 
-    //Congratulations! You've registered! - текст при подтверждении регистрации
-
     private RegisterPage() {
     }
 

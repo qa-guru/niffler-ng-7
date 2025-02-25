@@ -51,7 +51,8 @@ public class UserQueueExtension implements
     @Override
     public void beforeEach(ExtensionContext context) {
         List<UserType> userTypeList = Arrays.stream(context.getRequiredTestMethod().getParameters())
-                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class))
+                .filter(p -> AnnotationSupport.isAnnotated(p, UserType.class)
+                        && p.getType().isAssignableFrom(StaticUser.class))
                 .map(p -> p.getAnnotation(UserType.class)).toList();
         Map<UserType, StaticUser> users = new HashMap<>();
         userTypeList.forEach(annoUserType -> {
@@ -62,7 +63,6 @@ public class UserQueueExtension implements
             }
             Allure.getLifecycle().updateTestCase(testCase -> testCase.setStart(new Date().getTime()));
             /* Запись нужного юзера в контекст теста */
-            log.info("user - {}", user);
             user.ifPresentOrElse(u ->
                     users.put(annoUserType, u),
                     () -> new IllegalStateException("Can't find user after 30 sec")

@@ -4,7 +4,7 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.profileInfo.FriendsPage;
 import guru.qa.niffler.page.profileInfo.ProfilePage;
-import guru.qa.niffler.test.web.AllPeoplePage;
+import guru.qa.niffler.page.profileInfo.AllPeoplePage;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
