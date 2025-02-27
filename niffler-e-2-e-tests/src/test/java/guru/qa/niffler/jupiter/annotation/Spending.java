@@ -12,7 +12,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @ExtendWith(SpendingExtension.class)
 public @interface Spending {
-  String username() default "";
   String category();
   String description();
   double amount();

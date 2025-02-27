@@ -21,7 +21,7 @@ public class RandomDataUtils {
     }
 
     public static String randomCategoryName() {
-        return faker.book().title();
+        return faker.book().title() + System.currentTimeMillis();
     }
     public static String randomSentence() {
         return faker.elderScrolls().creature();
