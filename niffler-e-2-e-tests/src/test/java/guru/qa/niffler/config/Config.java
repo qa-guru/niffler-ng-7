@@ -8,7 +8,16 @@ public interface Config {
 
   String frontUrl();
 
+  String authJdbcUrl();
+
   String spendUrl();
 
+  String spendJdbcUrl();
+
+  String currencyJdbcUrl();
+
   String ghUrl();
+
+  String userdataJdbcUrl();
+
 }
