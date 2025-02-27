@@ -26,7 +26,6 @@ public class UserExtension implements BeforeEachCallback,
                         usersClient.addIncomeInvitation(user, userAnno.incomeInvitations());
                         usersClient.addOutcomeInvitation(user, userAnno.outcomeInvitations());
                         usersClient.addFriend(user, userAnno.friends());
-
                         context.getStore(NAMESPACE).put(
                                 context.getUniqueId(),
                                 user
