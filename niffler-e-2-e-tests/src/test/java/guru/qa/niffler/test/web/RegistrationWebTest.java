@@ -7,8 +7,8 @@ import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.util.DataGenerator.getRandomPassword;
-import static guru.qa.niffler.util.DataGenerator.getRandomUsername;
+import static guru.qa.niffler.util.RandomDataUtils.randomPassword;
+import static guru.qa.niffler.util.RandomDataUtils.randomUsername;
 import static java.lang.String.format;
 
 
@@ -19,8 +19,8 @@ public class RegistrationWebTest {
 
     @Test
     void shouldRegisterNewUser() {
-        String username = getRandomUsername();
-        String password = getRandomPassword();
+        String username = randomUsername();
+        String password = randomPassword();
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickRegisterButton()
@@ -48,9 +48,9 @@ public class RegistrationWebTest {
     void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual() {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .clickRegisterButton()
-                .setUsername(getRandomUsername())
-                .setPassword(getRandomPassword())
-                .setPasswordSubmit(getRandomPassword())
+                .setUsername(randomUsername())
+                .setPassword(randomPassword())
+                .setPasswordSubmit(randomPassword())
                 .clickSubmitButton()
                 .checkErrorMessagePassword("Passwords should be equal");
     }
@@ -66,7 +66,7 @@ public class RegistrationWebTest {
     @Test
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .login(getRandomUsername(), getRandomPassword());
+                .login(randomUsername(), randomPassword());
         new LoginPage().checkErrorMessage("Неверные учетные данные пользователя");
     }
 }
