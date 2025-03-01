@@ -1,6 +1,6 @@
 package guru.qa.niffler.tests.web;
 
-import condition.Color;
+import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.jupiter.annotation.DisabledByIssue;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
