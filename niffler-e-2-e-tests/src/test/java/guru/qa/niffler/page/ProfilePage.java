@@ -1,18 +1,27 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.jupiter.extension.ScreenShotTestExtension;
 import guru.qa.niffler.page.components.Header;
+import guru.qa.niffler.utils.ScreenDiffResult;
 import io.qameta.allure.Step;
 import lombok.Getter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.imageio.ImageIO;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Getter
 @ParametersAreNonnullByDefault
@@ -29,7 +38,8 @@ public class ProfilePage extends BasePage<MainPage> {
             categoryInput = $("input#category"),
             showArchivedCheckbox = $("input[type='checkbox']"),
             alert = $(".MuiSnackbar-root"),
-            avatarImage = $(".MuiAvatar-img");
+            avatarImage = $(".MuiAvatar-img"),
+            avatar = $("#image__input").parent().$("img");
 
     private final ElementsCollection
             listCategory = $("div").$$("div[role='button']"),
@@ -80,6 +90,20 @@ public class ProfilePage extends BasePage<MainPage> {
     public ProfilePage archivedCategory(String categoryName) {
         listCategory.find(text(categoryName)).parent().parent().$("button[aria-label='Archive category']").click();
         archiveSubmitButtons.find(text("Archive")).click();
+        return this;
+    }
+
+    @Step("Проверка фото")
+    @Nonnull
+    public ProfilePage checkPhoto(BufferedImage expected) throws IOException {
+        Selenide.sleep(1000);
+        BufferedImage actualImage = ImageIO.read(Objects.requireNonNull(avatar.screenshot()));
+        assertFalse(
+                new ScreenDiffResult(
+                        actualImage, expected
+                ),
+                ScreenShotTestExtension.ASSERT_SCREEN_MESSAGE
+    );
         return this;
     }
 }

@@ -7,18 +7,13 @@ import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.page.ProfilePage;
 import guru.qa.niffler.utils.RandomDataUtils;
-import guru.qa.niffler.utils.ScreenDiffResult;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Objects;
 
 
 @DisplayName("Тесты для страницы профиля пользователя")
@@ -81,12 +76,7 @@ public class ProfileTests {
                 .getHeader()
                 .toProfilePage()
                 .uploadImage("image/duck.png")
-                .saveChanges();
-
-        BufferedImage actual = ImageIO.read(Objects.requireNonNull(new ProfilePage().getAvatarImage().screenshot()));
-        Assertions.assertFalse(new ScreenDiffResult(
-                actual,
-                expected
-        ));
+                .saveChanges()
+                .checkPhoto(expected);
     }
 }
