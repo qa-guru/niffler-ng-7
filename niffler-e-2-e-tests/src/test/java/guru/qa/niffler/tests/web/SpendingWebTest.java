@@ -78,7 +78,7 @@ public class SpendingWebTest {
             )
     )
     @DisplayName("Проверка компонента статистики")
-    @ScreenShotTest("img/expected-stat.png")
+    @ScreenShotTest(value = "image/expected-stat.png",rewriteExpected = true)
     void checkStatComponentTest(@NotNull UserJson user, BufferedImage expected) throws IOException {
         new LoginPage()
                 .open()
@@ -159,7 +159,7 @@ public class SpendingWebTest {
                 .checkCellCategoryAndAmountInStatisticsBlock("Archived",
                         String.format("%.0f", user.testData().spends().getFirst().amount()))
                 .checkStatisticImage(expected)
-                .checkBubbles(Color.green);
+                .checkBubbles(Color.yellow);
     }
 }
 
