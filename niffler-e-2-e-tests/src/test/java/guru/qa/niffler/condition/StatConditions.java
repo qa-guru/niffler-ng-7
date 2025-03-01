@@ -1,4 +1,4 @@
-package condition;
+package guru.qa.niffler.condition;
 
 import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Driver;
