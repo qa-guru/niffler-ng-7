@@ -9,23 +9,16 @@ import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.utils.ScreenDiffResult;
-import io.qameta.allure.Allure;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
-import ru.yandex.qatools.ashot.comparison.ImageDiff;
-import ru.yandex.qatools.ashot.comparison.ImageDiffer;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
-import static com.codeborne.selenide.Selenide.$;
 import static guru.qa.niffler.utils.RandomDataUtils.randomSentence;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static guru.qa.niffler.utils.ScreenDiffResult.checkActualImageEqualsExpected;
 
 @WebTest
 
@@ -94,14 +87,82 @@ public class SpendingWebTest {
         Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), "123");
 
-        BufferedImage actual = ImageIO.read($("canvas[role='img']").screenshot());
-
-        assertFalse(new ScreenDiffResult(
-                expected,
-                actual
-        ));
+        checkActualImageEqualsExpected(expected, "canvas[role='img']");
     }
 
 
+    @User(
+            spendings = {
+                    @Spending(
+                            category = "Food",
+                            description = "apples",
+                            amount = 50
+                    ),
+                    @Spending(
+                            category = "Animal",
+                            description = "cat",
+                            amount = 350
+                    )
+            }
+    )
+    @ScreenShotTest("img/spend.png")
+    void checkStatComponentAfterDeleteSpending(UserJson user, BufferedImage expected) throws IOException {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .doLogin(user.username(), "123")
+                .getStatComponent()
+                .checkStatisticBubblesContains("Animal 350", "Food 50");
+        checkActualImageEqualsExpected(expected, "canvas[role='img']");
 
+        new MainPage().getSpendingTable()
+                .deleteSpending("cat");
+
+        new MainPage()
+                .getStatComponent()
+                .checkStatisticBubblesContains("Food 50");
+
+        expected = ImageIO.read(
+                new ClassPathResource(
+                        "img/expected-stat.png"
+                ).getInputStream());
+
+        checkActualImageEqualsExpected(expected, "canvas[role='img']");
+    }
+
+    @User(
+            spendings = {
+                    @Spending(
+                            category = "Food",
+                            description = "apples",
+                            amount = 50
+                    ),
+                    @Spending(
+                            category = "Animal",
+                            description = "cat",
+                            amount = 350
+                    )
+            }
+    )
+    @ScreenShotTest("img/spend.png")
+    void checkStatComponentAfterEditSpending(UserJson user, BufferedImage expected) throws IOException {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .doLogin(user.username(), "123")
+                .getStatComponent()
+                .checkStatisticBubblesContains("Animal 350", "Food 50");
+        checkActualImageEqualsExpected(expected, "canvas[role='img']");
+
+        new MainPage().getSpendingTable()
+                .editSpending("apples")
+                .setSpendingAmount(1000)
+                .save();
+        new MainPage().getStatComponent()
+                .checkStatisticBubblesContains("Food 1000", "Animal 350");
+        ;
+
+        expected = ImageIO.read(
+                new ClassPathResource(
+                        "img/spend-after-edit.png"
+                ).getInputStream());
+
+        checkActualImageEqualsExpected(expected, "canvas[role='img']");
+    }
 }

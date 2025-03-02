@@ -17,7 +17,7 @@ public class GetUsersTest {
 
     private final UserApiClient usersApiClient = new UserApiClient();
 
-    @Order(2)
+    @Order(Integer.MAX_VALUE)
     @Test
     @User
     void checkNotEmptyUsersList(UserJson user) {
