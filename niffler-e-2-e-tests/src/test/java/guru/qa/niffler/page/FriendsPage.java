@@ -18,10 +18,21 @@ public class FriendsPage extends BasePage<FriendsPage>{
 
     private final SelenideElement
             noFriendsTextElement = $("#simple-tabpanel-friends .MuiTypography-root"),
+            peopleTab = $("a[href='/people/friends']"),
             searchInput = $("input[aria-label='search']"),
+            allTab = $("a[href='/people/all']"),
             requestsTable = $("#requests"),
             friendsTable = $("#friends"),
             popup = $("div[role='dialog']");
+
+
+    @Override
+    @Nonnull
+    public FriendsPage checkThatPageLoaded() {
+        peopleTab.shouldBe(visible);
+        allTab.shouldBe(visible);
+        return this;
+    }
 
     @Step("Проверяем, что у пользователя нет друзей")
     public FriendsPage checkFriendsIsEmpty() {

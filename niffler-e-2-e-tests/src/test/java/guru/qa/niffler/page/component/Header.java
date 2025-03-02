@@ -8,7 +8,7 @@ import io.qameta.allure.Step;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
@@ -46,7 +46,7 @@ public class Header extends BaseComponent<Header>{
     @Step("Переходим на страницу 'Profile'")
     @Nonnull
     public UserProfilePage toProfilePage() {
-        menuBtn.click();
+        menuBtn.shouldBe(clickable).click();
         menuItems.find(text("Profile")).click();
         return new UserProfilePage();
     }

@@ -4,8 +4,6 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.meta.User;
-import guru.qa.niffler.model.CategoryJson;
-
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
@@ -17,39 +15,38 @@ public class ProfileTest {
     private static final Config CFG = Config.getInstance();
 
     @User(
-            username = "taty",
-            categories = @Category(
-                    archived = false
-            )
-    )
-    @Test
-    void archivedCategoryShouldBePresentedInList(CategoryJson categoryJson) {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(categoryJson.username(), "123")
-                .openProfilePage()
-                .changeArchiveCategoryStateByName(categoryJson.name(), "Archive")
-                .confirmArchiveCategory()
-                .checkCategoryNotInList(categoryJson.name())
-                .switchArchiveToggle()
-                .checkCategoryInList(categoryJson.name());
-    }
-
-    @User(
-            username = "taty",
             categories = @Category(
                     archived = true
             )
     )
     @Test
-    void unArchivedCategoryShouldBePresentedInList(CategoryJson categoryJson) {
+    void archivedCategoryShouldPresentInCategoriesList(UserJson user) {
+        final String categoryName = user.testData().categoryDescriptions()[0];
+
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(categoryJson.username(), "123")
-                .openProfilePage()
+                .doLogin(user.username(), user.testData().password())
+                .getHeader()
+                .toProfilePage()
+                .checkThatPageLoaded()
+                .checkArchivedCategoryExists(categoryName);
+    }
+
+
+    @User(
+            categories = @Category(
+                    archived = false
+            )
+    )
+    @Test
+    void unArchivedCategoryShouldBePresentedInList(UserJson user) {
+        final String categoryName = user.testData().categoryDescriptions()[0];
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .doLogin(user.username(), "123")
+                .getHeader()
+                .toProfilePage()
+                .checkThatPageLoaded()
                 .switchArchiveToggle()
-                .changeArchiveCategoryStateByName(categoryJson.name(), "Unarchive")
-                .confirmArchiveCategory()
-                .switchArchiveToggle()
-                .checkCategoryInList(categoryJson.name());
+                .checkCategoryInList(categoryName);
     }
 
     @User

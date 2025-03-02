@@ -7,17 +7,26 @@ import io.qameta.allure.Step;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.codeborne.selenide.Condition.interactable;
-import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
 public class LoginPage extends BasePage<LoginPage>{
+    public static final String URL = CFG.authUrl() + "login";
+
     private final SelenideElement
             userNameInput = $("input[name='username']"),
             passwordInput = $("input[name='password']"),
             formRegisterButton = $(".form__register"),
             errorForm = $(".form__error");
+
+    @Override
+    @Nonnull
+    public LoginPage checkThatPageLoaded() {
+        userNameInput.should(visible);
+        passwordInput.should(visible);
+        return this;
+    }
 
     @Step("Нажимаем на кнопку 'Регистрация'")
     public RegisterPage clickOnRegisterButton() {

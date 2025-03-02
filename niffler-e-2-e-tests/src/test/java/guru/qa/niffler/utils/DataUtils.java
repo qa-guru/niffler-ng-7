@@ -27,4 +27,8 @@ public class DataUtils {
     public static String randomCategoryName() {
         return "Category_" + random.nextInt(1000);
     }
+
+    public static String randomDescription(int wordsCount) {
+        return faker.lorem().sentence(wordsCount);
+    }
 }

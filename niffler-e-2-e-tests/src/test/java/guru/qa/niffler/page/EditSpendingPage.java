@@ -9,6 +9,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Date;
 
 import static com.codeborne.selenide.Condition.clickable;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
@@ -21,6 +22,13 @@ public class EditSpendingPage extends BasePage<EditSpendingPage>{
             categoryInput = $("#category"),
             descriptionInput = $("#description"),
             saveBtn = $("#save");
+
+    @Override
+    @Nonnull
+    public EditSpendingPage checkThatPageLoaded() {
+        amountInput.should(visible);
+        return this;
+    }
 
 
     @Step("Устанавливаем новое описание: '{0}'")

@@ -7,13 +7,24 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
 public class PeoplesPage extends BasePage<PeoplesPage>{
 
     private final SelenideElement
-            searchInput = $("input[aria-label='search']");
+            searchInput = $("input[aria-label='search']"),
+            peopleTab = $("a[href='/people/friends']"),
+            allTab = $("a[href='/people/all']");
+
+    @Override
+    @Nonnull
+    public PeoplesPage checkThatPageLoaded() {
+        peopleTab.shouldBe(visible);
+        allTab.shouldBe(visible);
+        return this;
+    }
 
     @Step("Проверяем, что '{0}' присутствует в списке исходящих друзей")
     @Nonnull

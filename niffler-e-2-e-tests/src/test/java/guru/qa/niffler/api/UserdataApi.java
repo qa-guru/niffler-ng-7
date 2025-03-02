@@ -20,8 +20,7 @@ public interface UserdataApi {
     Call<UserJson> updateUserInfo(@Body UserJson user);
 
     @GET("internal/users/all")
-    Call<List<UserJson>> allUsers(@Query("username") String username,
-                                  @Query("searchQuery") @Nullable String searchQuery);
+    Call<List<UserJson>>  allUsers(@Query("username") @Nullable String username);
 
     @GET("internal/friends/all")
     Call<List<UserJson>> friends(@Query("username") String username,
