@@ -77,6 +77,4 @@ public class ProfileTest {
                 .checkPageIsLoaded();
         checkActualImageEqualsExpected(expected, ".MuiGrid-root [data-testId='PersonIcon']");
     }
-
-
 }
