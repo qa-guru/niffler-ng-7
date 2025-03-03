@@ -41,51 +41,54 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
 
     @Override
     public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
-        final ScreenShotTest screenShotTest = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
-        if (screenShotTest.rewriteExpected()) {
-            final BufferedImage actual = getActual();
-            if (actual != null) {
-                ImageIO.write(
-                        actual,
-                        "png",
-                        new File("src/test/resources/" + screenShotTest.value())
-                );
-            }
-        }
-        ScreenDiff screenDiff = new ScreenDiff(
-                "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(getExpected())),
-                "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(getActual())),
-                "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(getDiff()))
-        );
+        if (throwable.getMessage().contains("Screen comparison failure")) {
 
-        Allure.addAttachment("Screenshot diff",
-                "application/vnd.allure.image.diff",
-                objectMapper.writeValueAsString(screenDiff));
+            final ScreenShotTest screenShotTest = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
+            if (screenShotTest.rewriteExpected()) {
+                final BufferedImage actual = getActual();
+                if (actual != null) {
+                    ImageIO.write(
+                            actual,
+                            "png",
+                            new File("src/test/resources/" + screenShotTest.value())
+                    );
+                }
+            }
+            ScreenDiff screenDiff = new ScreenDiff(
+                    "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(getExpected())),
+                    "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(getActual())),
+                    "data:image/png;base64," + Base64.getEncoder().encodeToString(imageToBytes(getDiff()))
+            );
+
+            Allure.addAttachment("Screenshot diff",
+                    "application/vnd.allure.image.diff",
+                    objectMapper.writeValueAsString(screenDiff));
+        }
 
         throw throwable;
     }
 
-    public static void setExpected(BufferedImage expected){
+    public static void setExpected(BufferedImage expected) {
         TestMethodContextExtension.context().getStore(NAMESPACE).put("expected", expected);
     }
 
-    public static BufferedImage getExpected(){
+    public static BufferedImage getExpected() {
         return TestMethodContextExtension.context().getStore(NAMESPACE).get("expected", BufferedImage.class);
     }
 
-    public static void setActual(BufferedImage expected){
+    public static void setActual(BufferedImage expected) {
         TestMethodContextExtension.context().getStore(NAMESPACE).put("actual", expected);
     }
 
-    public static BufferedImage getActual(){
+    public static BufferedImage getActual() {
         return TestMethodContextExtension.context().getStore(NAMESPACE).get("actual", BufferedImage.class);
     }
 
-    public static void setDiff(BufferedImage expected){
+    public static void setDiff(BufferedImage expected) {
         TestMethodContextExtension.context().getStore(NAMESPACE).put("diff", expected);
     }
 
-    public static BufferedImage getDiff(){
+    public static BufferedImage getDiff() {
         return TestMethodContextExtension.context().getStore(NAMESPACE).get("diff", BufferedImage.class);
     }
 
