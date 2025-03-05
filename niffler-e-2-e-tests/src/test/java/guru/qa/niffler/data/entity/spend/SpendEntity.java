@@ -20,17 +20,17 @@ public class SpendEntity implements Serializable {
   private String description;
   private CategoryEntity category;
 
-  public static SpendEntity fromJson(SpendJson json) {
+  public static SpendEntity fromJson(SpendJson spendJson) {
     SpendEntity spendEntity = new SpendEntity();
-    spendEntity.setId(json.id());
-    spendEntity.setUsername(json.username());
-    spendEntity.setCurrency(json.currency());
-    spendEntity.setSpendDate(new Date(json.spendDate().getTime()));
-    spendEntity.setAmount(json.amount());
-    spendEntity.setDescription(json.description());
+    spendEntity.setId(spendJson.id());
+    spendEntity.setUsername(spendJson.username());
+    spendEntity.setCurrency(spendJson.currency());
+    spendEntity.setSpendDate(new Date(spendJson.spendDate().getTime()));
+    spendEntity.setAmount(spendJson.amount());
+    spendEntity.setDescription(spendJson.description());
     spendEntity.setCategory(
             CategoryEntity.fromJson(
-                    json.category()
+                    spendJson.category()
             ));
     return spendEntity;
   }
