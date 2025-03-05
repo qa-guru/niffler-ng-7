@@ -16,9 +16,14 @@ public class SpendDAOJdbc implements SpendDAO {
 
     private static final Config CFG = Config.getInstance();
 
+    private final Connection connection;
+
+    public SpendDAOJdbc(Connection connection) {
+        this.connection = connection;
+    }
+
     @Override
     public SpendEntity create(SpendEntity spend) {
-        try (Connection connection = DataBases.connection(CFG.spendJdbcUrl())) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(
                     "INSERT INTO spend (username, spend_date, currency, amount, description, category_id) " +
                             "VALUES (?, ?, ?, ?, ?, ?)",
@@ -42,7 +47,6 @@ public class SpendDAOJdbc implements SpendDAO {
                 }
                 spend.setId(generatedKey);
                 return spend;
-            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

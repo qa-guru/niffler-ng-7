@@ -19,6 +19,7 @@ buildscript {
         springDataCommonsVersion = '3.3.3'
         wiremockVersion = '3.0.1'
         fakerVersion = '1.0.2'
+        atomicVersion = '6.0.0'
         userdataWsdlUrl = System.getProperty("test.env") == "docker"
                 ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
                 : "http://127.0.0.1:8089/ws/userdata.wsdl"
@@ -103,6 +104,9 @@ dependencies {
     testImplementation "com.apollographql.java:client:${apollographqlVersion}"
     testImplementation "com.apollographql.java:rx2:${apollographqlVersion}"
     // DB
+    testImplementation "com.atomikos:transactions-jta:${atomicVersion}:jakarta"        //занятие 4.2
+    testImplementation "com.atomikos:transactions-hibernate4:${atomicVersion}:jakarta" //занятие 4.2
+    testImplementation "com.atomikos:transactions-jdbc:${atomicVersion}"               //занятие 4.2
     testImplementation "org.springframework:spring-jdbc:${springJdbcVersion}"
     testImplementation "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
     testImplementation "p6spy:p6spy:${p6spyVersion}"

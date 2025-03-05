@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class CategoryDBClient {
+
     private final SpendDAO spendDao = new SpendDAOJdbc();
     private final CategoryDAO categoryDao = new CategoryDAOJdbc();
 
