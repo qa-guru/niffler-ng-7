@@ -51,7 +51,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver,
     public void afterTestExecution(ExtensionContext context) throws Exception {
         CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
         if (category != null ) {
-            categoryDBClient.deleteCategory(category);
+            categoryDBClient.delete(category);
         }
     }
 }
