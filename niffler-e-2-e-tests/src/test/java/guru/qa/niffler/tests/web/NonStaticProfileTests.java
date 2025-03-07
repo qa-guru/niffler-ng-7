@@ -38,7 +38,7 @@ public class NonStaticProfileTests {
         nonStaticBrowsersExtension.drivers().add(driver);
         new LoginPage(driver)
                 .open(driver)
-                .login(user.testData().spends().getFirst().category().username(), "12345", driver)
+                .login(user.username(), "12345", driver)
                 .getHeader()
                 .toProfilePage(driver)
                 .clickArchivedCheckbox()
