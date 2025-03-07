@@ -106,12 +106,12 @@ public class ProfilePage extends BasePage<MainPage> {
 
     @Step("Проверка нахождения категории <categoryName> в отображаемом списке на странице профиля")
     public void checkCategoryInCategoryList(String categoryName) {
-        $$(".css-17u3xlq").findBy(text(categoryName)).shouldBe(visible);
+        $$(".MuiChip-filled.MuiChip-clickable").findBy(text(categoryName)).shouldBe(visible);
     }
 
     @Step("Проверка нахождения категории <categoryName> в отображаемом списке на странице профиля")
     public void checkCategoryInCategoryList(String categoryName,SelenideDriver driver) {
-        driver.$$(".css-17u3xlq").findBy(text(categoryName)).shouldBe(visible);
+        driver.$$(".MuiChip-filled.MuiChip-clickable").findBy(text(categoryName)).shouldBe(visible);
     }
 
     @Nonnull

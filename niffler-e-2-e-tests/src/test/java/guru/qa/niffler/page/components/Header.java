@@ -48,9 +48,9 @@ public class Header extends BaseComponent<Header> {
 
     public Header(SelenideDriver driver) {
         super(driver.$("#root header"));
-        this.mainPageLink = self.$("#root header").$("a[href*='/main']");
-        this.newSpendingButton = self.$("#root header").$("a[href*='/spending']");
-        this.menuButton = self.$("#root header").$("button[aria-label='Menu']");
+        this.mainPageLink = self.$("a[href*='/main']");
+        this.newSpendingButton = self.$("a[href*='/spending']");
+        this.menuButton = self.$("button[aria-label='Menu']");
         this.profileButton = driver.$("a[href*='/profile']");
         this.friendsButton = driver.$("a[href*='/people/friends']");
         this.allPeopleButton = driver.$("a[href*='/people/all']");
