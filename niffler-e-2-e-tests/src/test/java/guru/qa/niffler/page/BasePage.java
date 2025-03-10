@@ -6,7 +6,8 @@ import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public abstract class BasePage<T extends BasePage<?>> {
@@ -14,12 +15,13 @@ public abstract class BasePage<T extends BasePage<?>> {
     private final SelenideElement alert = $(".MuiSnackbar-root");
 
     public abstract T checkThatPageLoaded();
+
     @Step("Проверка, что alert содержит текст {text}")
     @SuppressWarnings("unchecked")
     @Nonnull
     public T checkAlertMessage(String text) {
-        alert.isDisplayed();
-                alert.should(text(text));
+        alert.should(visible);
+        alert.should(text(text));
         return (T) this;
     }
 }

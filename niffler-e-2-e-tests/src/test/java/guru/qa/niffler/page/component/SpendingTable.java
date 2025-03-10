@@ -27,7 +27,7 @@ public class SpendingTable extends BaseComponent<SpendingTable>{
 
     private final SearchField searchField = new SearchField();
     private final SelenideElement periodMenu = self.$("#period"),
-            deleteBtn = self.$("#delete"),
+            deleteBtn = $("#delete"),
             popup = $("div[role='dialog']"),
             tableHeader = self.$(".MuiTableHead-root");
 

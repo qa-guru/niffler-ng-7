@@ -3,12 +3,17 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
 import static guru.qa.niffler.utils.RandomDataUtils.randomName;
+import static guru.qa.niffler.utils.ScreenDiffResult.checkActualImageEqualsExpected;
 
 
 public class ProfileTest {
@@ -61,4 +66,17 @@ public class ProfileTest {
                 .setName(name)
                 .checkName(name);
     }
+
+    @User
+    @ScreenShotTest("img/avatar.png")
+    void checkProfileAvatar(UserJson user, BufferedImage expected) throws IOException {
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .doLogin(user.username(), user.testData().password())
+                .getHeader()
+                .toProfilePage()
+                .checkPageIsLoaded();
+        checkActualImageEqualsExpected(expected, ".MuiGrid-root [data-testId='PersonIcon']");
+    }
+
+
 }

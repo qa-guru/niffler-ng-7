@@ -28,6 +28,11 @@ public class MainPage extends BasePage<MainPage>{
         return spendingTable;
     }
 
+    @Nonnull
+    public StatComponent getStatComponent() {
+       return statComponent;
+    }
+
     @Override
     @Step("Check that page is loaded")
     @Nonnull
