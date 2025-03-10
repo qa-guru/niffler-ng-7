@@ -2,12 +2,16 @@ package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.condition.SpendConditions;
 import guru.qa.niffler.model.DataFilterValues;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.EditSpendingPage;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import java.util.List;
 
 import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
@@ -87,6 +91,11 @@ public class SpendingTable extends BaseComponent<SpendingTable>{
     @Nonnull
     public SpendingTable checkTableSize(int expectedSize) {
         tableRows.should(size(expectedSize));
+        return this;
+    }
+
+    public SpendingTable checkSpendTable(List<SpendJson> spendJsons) {
+        tableRows.should(SpendConditions.expectedSpends(spendJsons));
         return this;
     }
 }

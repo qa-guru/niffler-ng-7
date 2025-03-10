@@ -40,7 +40,7 @@ public class SpendEntityRowExtractor implements ResultSetExtractor<SpendEntity> 
         result.setUsername(rs.getString("username"));
         result.setSpendDate(rs.getDate("spend_date"));
         result.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
-        result.setAmount(rs.getDouble("amount"));
+        result.setAmount(rs.getInt("amount"));
         result.setDescription(rs.getString("description"));
 
         CategoryEntity category = new CategoryEntity(rs.getObject("category_id", UUID.class));

@@ -1,12 +1,14 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.condition.Bubble;
 import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
+import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
@@ -19,6 +21,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomSentence;
 import static guru.qa.niffler.utils.ScreenDiffResult.checkActualImageEqualsExpected;
@@ -98,7 +101,7 @@ public class SpendingWebTest {
                 statComponent.chartScreenshot()
         ), "Screen comparison failure");
 
-        statComponent.checkBubbles(Color.YELLOW);
+        statComponent.checkBubbles(new Bubble(Color.YELLOW, "Food 50 ₽"));
     }
 
 
@@ -118,25 +121,32 @@ public class SpendingWebTest {
     )
     @ScreenShotTest("img/spend.png")
     void checkStatComponentAfterDeleteSpending(UserJson user, BufferedImage expected) throws IOException {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        StatComponent statComponent = Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), "123")
-                .getStatComponent()
-                .checkStatisticBubblesContains("Animal 350", "Food 50");
-        checkActualImageEqualsExpected(expected, "canvas[role='img']");
+                .getStatComponent();
+
+        assertFalse(new ScreenDiffResult(
+                expected,
+                statComponent.chartScreenshot()
+        ), "Screen comparison failure");
+
+        statComponent.checkBubbles(new Bubble(Color.YELLOW, "Animal 350 ₽"),
+                new Bubble(Color.GREEN, "Food 50 ₽"));
 
         new MainPage().getSpendingTable()
                 .deleteSpending("cat");
 
-        new MainPage()
-                .getStatComponent()
-                .checkStatisticBubblesContains("Food 50");
+        statComponent.checkBubbles(new Bubble(Color.YELLOW, "Food 50 ₽"));
 
         expected = ImageIO.read(
                 new ClassPathResource(
                         "img/expected-stat.png"
                 ).getInputStream());
 
-        checkActualImageEqualsExpected(expected, "canvas[role='img']");
+        assertFalse(new ScreenDiffResult(
+                expected,
+                statComponent.chartScreenshot()
+        ), "Screen comparison failure");
     }
 
     @User(
@@ -155,25 +165,60 @@ public class SpendingWebTest {
     )
     @ScreenShotTest("img/spend.png")
     void checkStatComponentAfterEditSpending(UserJson user, BufferedImage expected) throws IOException {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        StatComponent statComponent = Selenide.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(user.username(), "123")
-                .getStatComponent()
-                .checkStatisticBubblesContains("Animal 350", "Food 50");
-        checkActualImageEqualsExpected(expected, "canvas[role='img']");
+                .getStatComponent();
+
+        assertFalse(new ScreenDiffResult(
+                expected,
+                statComponent.chartScreenshot()
+        ), "Screen comparison failure");
+
+        statComponent.checkBubbles(new Bubble(Color.GREEN, "Food 50 ₽"));
 
         new MainPage().getSpendingTable()
                 .editSpending("apples")
                 .setSpendingAmount(1000)
                 .save();
-        new MainPage().getStatComponent()
-                .checkStatisticBubblesContains("Food 1000", "Animal 350");
-        ;
+
+        statComponent.checkBubbles(new Bubble(Color.YELLOW, "Food 1000 ₽"),
+                new Bubble(Color.GREEN, "Animal 350 ₽"));
 
         expected = ImageIO.read(
                 new ClassPathResource(
                         "img/spend-after-edit.png"
                 ).getInputStream());
 
-        checkActualImageEqualsExpected(expected, "canvas[role='img']");
+        assertFalse(new ScreenDiffResult(
+                expected,
+                statComponent.chartScreenshot()
+        ), "Screen comparison failure");
+    }
+
+
+    @User(
+            spendings = {
+                    @Spending(
+                            category = "Food",
+                            description = "apples",
+                            amount = 50
+                    ),
+                    @Spending(
+                            category = "Animal",
+                            description = "cat",
+                            amount = 350
+                    )
+            }
+    )
+    @Test
+    void checkSpendsTest(UserJson user) {
+        List<SpendJson> expectedSpends = user.testData().spendings();
+
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+                .doLogin(user.username(), user.testData().password());
+
+        new MainPage()
+                .getSpendingTable()
+                .checkSpendTable(expectedSpends);
     }
 }
