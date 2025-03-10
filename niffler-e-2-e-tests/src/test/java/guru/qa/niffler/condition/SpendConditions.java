@@ -34,12 +34,6 @@ public class SpendConditions {
                     return rejected(message, rows.toString());
                 }
 
-
-//                if (expectedSpends.size() != rows.size()) {
-//                    final String message = String.format("List bubbles mismatch (expected : %s, actual: %s)", expectedSpends.size(), rows.size());
-//                    return CheckResult.rejected(message, rows);
-//                }
-
                 for (int i = 0; i < rows.size(); i++) {
                     SpendJson expectedSpend = expectedSpends.get(i);
                     WebElement spendingRow = rows.get(i);
@@ -54,21 +48,6 @@ public class SpendConditions {
                     String expectedAmount = expectedSpend.amount() + " " + expectedSpend.currency().value;
                     String expectedDescription = expectedSpend.description();
                     String expectedDate = convertDate(expectedSpend.spendDate());
-
-
-                    System.out.println("!!" + expectedCategory);
-                    System.out.println("!!" + actualCategory);
-
-                    System.out.println("!!!!" + expectedAmount);
-                    System.out.println("!!!!" + actualAmount);
-
-                    System.out.println("!!!!" + expectedDescription);
-                    System.out.println("!!!!" + actualDescription);
-
-                    System.out.println("!!!!" + expectedDate);
-                    System.out.println("!!!!" + actualDate);
-
-
                     boolean passed;
 
                     passed = actualCategory.equals(expectedCategory)
