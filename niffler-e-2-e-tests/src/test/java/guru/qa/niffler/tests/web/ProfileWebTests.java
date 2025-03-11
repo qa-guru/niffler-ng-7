@@ -18,7 +18,7 @@ import java.io.IOException;
 
 @DisplayName("Тесты для страницы профиля пользователя")
 @WebTest
-public class ProfileTests {
+public class ProfileWebTests {
 
     @User(
             username = "Artur",
