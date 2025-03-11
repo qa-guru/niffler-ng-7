@@ -14,7 +14,7 @@ public @interface Spending {
 
   String description();
 
-  double amount();
+  int amount();
 
   CurrencyValues currency() default CurrencyValues.RUB;
 }

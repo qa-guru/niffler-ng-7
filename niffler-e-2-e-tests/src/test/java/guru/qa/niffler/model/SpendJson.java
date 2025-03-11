@@ -17,7 +17,7 @@ public record SpendJson(
         @JsonProperty("currency")
         CurrencyValues currency,
         @JsonProperty("amount")
-        Double amount,
+        int amount,
         @JsonProperty("description")
         String description,
         @JsonProperty("username")

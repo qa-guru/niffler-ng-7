@@ -45,7 +45,7 @@ public class SpendEntity implements Serializable {
   private Date spendDate;
 
   @Column(nullable = false)
-  private Double amount;
+  private int amount;
 
   @Column(nullable = false)
   private String description;

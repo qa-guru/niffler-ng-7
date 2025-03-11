@@ -34,7 +34,7 @@ public class JdbcTest {
                                 false
                         ),
                         CurrencyValues.RUB,
-                        1000.0,
+                        1000,
                         randomDescription(2),
                         username
                 )
