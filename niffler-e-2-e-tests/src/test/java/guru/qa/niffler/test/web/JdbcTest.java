@@ -3,7 +3,6 @@ package guru.qa.niffler.test.web;
 import guru.qa.niffler.config.Constants;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.model.*;
-import guru.qa.niffler.service.AuthUserDBClient;
 import guru.qa.niffler.service.spend.CategoryDBClient;
 import guru.qa.niffler.service.spend.SpendDBClient;
 import guru.qa.niffler.service.UserdataDBClient;
@@ -14,8 +13,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Date;
 import java.util.List;
 
-import static guru.qa.niffler.model.Authority.read;
-import static guru.qa.niffler.model.Authority.write;
+import static guru.qa.niffler.data.entity.auth.Authority.read;
+import static guru.qa.niffler.data.entity.auth.Authority.write;
 import static guru.qa.niffler.model.CurrencyValues.RUB;
 import static guru.qa.niffler.util.RandomDataUtils.*;
 

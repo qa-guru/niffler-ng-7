@@ -1,6 +1,5 @@
 package guru.qa.niffler.data.entity.auth;
 
-import guru.qa.niffler.model.Authority;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +13,6 @@ public class AuthorityEntity implements Serializable {
 
     private Authority authority;
 
-    private AuthUserEntity user;
+    private UUID userId;
 
 }

@@ -6,12 +6,16 @@ import guru.qa.niffler.data.dao.auth.impl.AuthUserDAOJdbc;
 import guru.qa.niffler.data.dao.auth.impl.AuthorityDAOJdbc;
 import guru.qa.niffler.data.dao.userdata.impl.UserdataUserDAOJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
+import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UserdataUserEntity;
-import guru.qa.niffler.model.AuthUserJson;
+import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.model.UserdataUserJson;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.Nullable;
 import java.sql.Connection;
+import java.util.Arrays;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -20,52 +24,107 @@ import static guru.qa.niffler.data.DataBases.xaTransaction;
 
 public class UserdataDBClient {
     private static final Config CFG = Config.getInstance();
+    private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-    public UserdataUserJson create(AuthUserJson authUserJson, UserdataUserJson userdataJson) {
-        return xaTransaction(Connection.TRANSACTION_READ_UNCOMMITTED,
-                new DataBases.XaFunction<UserdataUserJson>(connection -> {
-                    AuthUserEntity authUser = new AuthUserDAOJdbc(connection)
-                            .create(AuthUserEntity.fromJson(authUserJson));
-                    authUser.getAuthorities().forEach(x -> x.setUser(authUser));
-                    new AuthorityDAOJdbc(connection).create(authUser);
-                    return null;
-                }, CFG.authJdbcUrl()),
-                new DataBases.XaFunction<UserdataUserJson>(connection ->
-                        UserdataUserJson.fromEntity(new UserdataUserDAOJdbc(connection)
-                                .create(UserdataUserEntity.fromJson(userdataJson))),
-                        CFG.userdataJdbcUrl()));
+    public UserdataUserJson createBySpring(UserdataUserJson user) {
+        return UserdataUserJson.fromEntity(
+                xaTransaction(Connection.TRANSACTION_READ_UNCOMMITTED,
+                        new DataBases.XaFunction<UserdataUserEntity>(
+                                con -> {
+                                    AuthUserEntity authUser = new AuthUserEntity();
+                                    authUser.setUsername(user.username());
+                                    authUser.setPassword(pe.encode("12345"));
+                                    authUser.setEnabled(true);
+                                    authUser.setAccountNonExpired(true);
+                                    authUser.setAccountNonLocked(true);
+                                    authUser.setCredentialsNonExpired(true);
+                                    new AuthUserDAOJdbc(con).create(authUser);
+                                    new AuthorityDAOJdbc(con).create(
+                                            Arrays.stream(Authority.values())
+                                                    .map(a -> {
+                                                                AuthorityEntity ae = new AuthorityEntity();
+                                                                ae.setUserId(authUser.getId());
+                                                                ae.setAuthority(a);
+                                                                return ae;
+                                                            }
+                                                    ).toArray(AuthorityEntity[]::new));
+                                    return null;
+                                },
+                                CFG.authJdbcUrl()
+                        ),
+                        new DataBases.XaFunction<UserdataUserEntity>(
+                                con -> {
+                                    UserdataUserEntity ue = new UserdataUserEntity();
+                                    ue.setUsername(user.username());
+                                    ue.setFullname(user.fullname());
+                                    ue.setCurrency(user.currency());
+                                    new UserdataUserDAOJdbc(con).create(ue);
+                                    return ue;
+                                },
+                                CFG.userdataJdbcUrl()
+                        )
+                ),
+                null);
+    }
+
+    public UserdataUserJson createUser(UserdataUserJson user) {
+        return UserdataUserJson.fromEntity(
+                xaTransaction(Connection.TRANSACTION_READ_UNCOMMITTED,
+                        new DataBases.XaFunction<UserdataUserEntity>(
+                                con -> {
+                                    AuthUserEntity authUser = new AuthUserEntity();
+                                    authUser.setUsername(user.username());
+                                    authUser.setPassword(pe.encode("12345"));
+                                    authUser.setEnabled(true);
+                                    authUser.setAccountNonExpired(true);
+                                    authUser.setAccountNonLocked(true);
+                                    authUser.setCredentialsNonExpired(true);
+                                    new AuthUserDAOJdbc(con).create(authUser);
+                                    new AuthorityDAOJdbc(con).create(
+                                            Arrays.stream(Authority.values())
+                                                    .map(a -> {
+                                                                AuthorityEntity ae = new AuthorityEntity();
+                                                                ae.setUserId(authUser.getId());
+                                                                ae.setAuthority(a);
+                                                                return ae;
+                                                            }
+                                                    ).toArray(AuthorityEntity[]::new));
+                                    return null;
+                                },
+                                CFG.authJdbcUrl()
+                        ),
+                        new DataBases.XaFunction<UserdataUserEntity>(
+                                con -> {
+                                    UserdataUserEntity ue = new UserdataUserEntity();
+                                    ue.setUsername(user.username());
+                                    ue.setFullname(user.fullname());
+                                    ue.setCurrency(user.currency());
+                                    new UserdataUserDAOJdbc(con).create(ue);
+                                    return ue;
+                                },
+                                CFG.userdataJdbcUrl()
+                        )
+                ),
+                null);
     }
 
     public @Nullable UserdataUserJson findById(UUID id) {
         return transaction(Connection.TRANSACTION_READ_COMMITTED,
                 (Function<Connection, UserdataUserJson>) connection ->
                         new UserdataUserDAOJdbc(connection).findById(id)
-                                .map(UserdataUserJson::fromEntity).orElse(null),
+                                .map(x -> UserdataUserJson.fromEntity(x, null)).orElse(null),
                 CFG.userdataJdbcUrl());
     }
 
     public @Nullable UserdataUserJson findByUsername(String username) {
         return transaction(Connection.TRANSACTION_READ_COMMITTED,
                 (Function<Connection, UserdataUserJson>) connection ->
-                        new UserdataUserDAOJdbc(connection).findByUsername(username).
-                                map(UserdataUserJson::fromEntity).orElse(null),
+                        new UserdataUserDAOJdbc(connection).findByUsername(username)
+                                .map(x -> UserdataUserJson.fromEntity(x, null)).orElse(null),
                 CFG.userdataJdbcUrl());
     }
 
     public void delete(UserdataUserJson userdataUserJson) {
-        xaTransaction(Connection.TRANSACTION_SERIALIZABLE,
-                new DataBases.XaConsumer<>(connection ->
-                        new UserdataUserDAOJdbc(connection)
-                                .delete(UserdataUserEntity.fromJson(userdataUserJson)),
-                        CFG.userdataJdbcUrl()),
-                new DataBases.XaConsumer<>(connection -> {
-                    AuthUserDAOJdbc userDAOJdbc = new AuthUserDAOJdbc(connection);
-                    userDAOJdbc.findByUsername(userdataUserJson.username())
-                            .ifPresent(x -> {
-                                new AuthorityDAOJdbc(connection).delete(x);
-                                userDAOJdbc.delete(x);
-                            });
-                },
-                        CFG.authJdbcUrl()));
+
     }
 }

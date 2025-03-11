@@ -1,13 +1,12 @@
 package guru.qa.niffler.data.dao.auth.impl;
 
+
 import guru.qa.niffler.data.dao.auth.AuthorityDAO;
-import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 
 public class AuthorityDAOJdbc implements AuthorityDAO {
 
@@ -18,30 +17,35 @@ public class AuthorityDAOJdbc implements AuthorityDAO {
     }
 
     @Override
-    public void create(AuthUserEntity authUser) {
-        String query = "INSERT INTO authority (user_id, authority) VALUES (?, ?)";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(
-                query, PreparedStatement.RETURN_GENERATED_KEYS
-        )) {
-            for (AuthorityEntity authority : authUser.getAuthorities()) {
-                preparedStatement.setObject(1, authority.getUser().getId());
-                preparedStatement.setString(2, authority.getAuthority().name());
-                preparedStatement.addBatch();
+    public void create(AuthorityEntity... authority) {
+        try (PreparedStatement ps = connection.prepareStatement(
+                "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)",
+                PreparedStatement.RETURN_GENERATED_KEYS)) {
+            for (AuthorityEntity a : authority) {
+                ps.setObject(1, a.getUserId());
+                ps.setString(2, a.getAuthority().name());
+                ps.addBatch();
+                ps.clearParameters();
             }
-            preparedStatement.executeBatch();
+            ps.executeBatch();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void delete(AuthUserEntity authUserEntity) {
+    public void delete(AuthorityEntity... authority) {
         String query = "DELETE FROM authority WHERE user_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 query
         )) {
-            preparedStatement.setObject(1, authUserEntity.getId());
-            preparedStatement.executeUpdate();
+            for (AuthorityEntity entity : authority) {
+                preparedStatement.setObject(1, entity.getId());
+                preparedStatement.setObject(2, entity.getAuthority().name());
+                preparedStatement.addBatch();
+                preparedStatement.clearParameters();
+            }
+            preparedStatement.executeBatch();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

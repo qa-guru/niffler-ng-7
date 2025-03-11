@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 @Getter
@@ -20,18 +21,18 @@ public class UserdataUserEntity implements Serializable {
     private byte[] photo;
     private byte[] photoSmall;
 
-    public static UserdataUserEntity fromJson(UserdataUserJson userdataUserJson) {
-        String photo = userdataUserJson.photo();
-        String photoSmall = userdataUserJson.photoSmall();
+    public static UserdataUserEntity fromJson(UserdataUserJson userJson) {
+        String photo = userJson.photo();
+        String photoSmall = userJson.photoSmall();
         UserdataUserEntity userdataUserEntity = new UserdataUserEntity();
-        userdataUserEntity.setId(userdataUserJson.id());
-        userdataUserEntity.setUsername(userdataUserJson.username());
-        userdataUserEntity.setCurrency(userdataUserJson.currency());
-        userdataUserEntity.setFirstname(userdataUserJson.firstname());
-        userdataUserEntity.setSurname(userdataUserJson.surname());
-        userdataUserEntity.setFullname(userdataUserJson.fullname());
-        userdataUserEntity.setPhoto(photo == null ? null : photo.getBytes());
-        userdataUserEntity.setPhotoSmall(photoSmall == null ? null : photoSmall.getBytes());
+        userdataUserEntity.setId(userJson.id());
+        userdataUserEntity.setUsername(userJson.username());
+        userdataUserEntity.setCurrency(userJson.currency());
+        userdataUserEntity.setFirstname(userJson.firstname());
+        userdataUserEntity.setSurname(userJson.surname());
+        userdataUserEntity.setFullname(userJson.fullname());
+        userdataUserEntity.setPhoto(photo != null ? photo.getBytes(StandardCharsets.UTF_8) : null);
+        userdataUserEntity.setPhotoSmall(photoSmall != null ? photoSmall.getBytes(StandardCharsets.UTF_8) : null);
         return userdataUserEntity;
     }
 }
