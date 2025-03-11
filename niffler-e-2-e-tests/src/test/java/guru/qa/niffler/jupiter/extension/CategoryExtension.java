@@ -34,7 +34,7 @@ public class CategoryExtension implements BeforeEachCallback, ParameterResolver 
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
         .ifPresent(userAnno -> {
           if (ArrayUtils.isNotEmpty(userAnno.categories())) {
-            final UserJson user = UserExtension.createdUser(context);
+            final UserJson user = UserExtension.createdUser();
 
             final String username = user != null
                 ? user.username()

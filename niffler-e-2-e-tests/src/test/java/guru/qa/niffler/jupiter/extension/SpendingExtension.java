@@ -34,7 +34,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
     AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
         .ifPresent(userAnno -> {
           if (ArrayUtils.isNotEmpty(userAnno.spendings())) {
-            final UserJson user = UserExtension.createdUser(context);
+            final UserJson user = UserExtension.createdUser();
             final String username = user != null
                 ? user.username()
                 : userAnno.username();
