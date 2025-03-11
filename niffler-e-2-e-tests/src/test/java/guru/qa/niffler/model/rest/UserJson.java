@@ -52,6 +52,14 @@ public record UserJson(
     );
   }
 
+  public UserJson(@Nonnull String username) {
+    this(username, null);
+  }
+
+  public UserJson(@Nonnull String username, @Nullable TestData testData) {
+    this(null, username, null, null, null, null, null, null, null, testData);
+  }
+
   public @Nonnull UserJson addTestData(@Nonnull TestData testData) {
     return new UserJson(
         id, username, firstname, surname, fullname, currency, photo, photoSmall, friendshipStatus, testData
