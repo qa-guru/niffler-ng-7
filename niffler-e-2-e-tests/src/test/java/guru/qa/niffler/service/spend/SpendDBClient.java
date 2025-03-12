@@ -57,7 +57,7 @@ public class SpendDBClient {
                 new DataBases.XaConsumer<>(
                         connection ->
                                 new SpendDAOJdbc(connection)
-                                        .deleteSpend(SpendEntity.fromJson(spendJson)),
+                                        .delete(SpendEntity.fromJson(spendJson)),
                         CFG.spendJdbcUrl()));
     }
 

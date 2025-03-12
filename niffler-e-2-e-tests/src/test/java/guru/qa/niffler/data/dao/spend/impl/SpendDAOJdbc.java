@@ -80,7 +80,28 @@ public class SpendDAOJdbc implements SpendDAO {
     }
 
     @Override
-    public void deleteSpend(SpendEntity spend) {
+    public List<SpendEntity> findAll() {
+        String query = "SELECT * FROM spend";
+        try(PreparedStatement ps = connection.prepareStatement(query)) {
+            try(ResultSet resultSet = ps.executeQuery()) {
+                List<SpendEntity> entities = new ArrayList<>();
+                while (resultSet.next()) {
+                    entities.add(extractSpendEntityFromResultSet(resultSet));
+                }
+                return entities;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Optional<SpendEntity> findAllByUsernameAndDescription(String username, String name) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void delete(SpendEntity spend) {
         String query = "DELETE FROM spend WHERE id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setObject(1, spend.getId());

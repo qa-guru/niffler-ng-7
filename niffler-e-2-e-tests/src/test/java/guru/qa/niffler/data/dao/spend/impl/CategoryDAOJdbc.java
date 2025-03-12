@@ -98,6 +98,22 @@ public class CategoryDAOJdbc implements CategoryDAO {
     }
 
     @Override
+    public List<CategoryEntity> findAll() {
+        String query = "SELECT * FROM category";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                List<CategoryEntity> entities = new ArrayList<>();
+                while (resultSet.next()) {
+                    entities.add(extractCategoryEntityFromResultSet(resultSet));
+                }
+                return entities;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public CategoryEntity update(CategoryEntity category) {
         String query = "UPDATE category SET username = ?, name = ?, archived = ? " +
                 "WHERE id = ?";
