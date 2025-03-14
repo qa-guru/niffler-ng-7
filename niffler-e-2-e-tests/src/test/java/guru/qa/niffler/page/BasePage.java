@@ -19,6 +19,8 @@ public abstract class BasePage<T extends BasePage<?>> {
 
     private final SelenideElement alert;
 
+    public abstract T checkThatPageLoaded();
+
     public BasePage() {
         this.alert = $(".MuiSnackbar-root");
     }

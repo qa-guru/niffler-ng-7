@@ -19,7 +19,7 @@ import static com.codeborne.selenide.Selenide.$;
 @Getter
 public class MainPage extends BasePage<MainPage> {
 
-    private final static String MAIN_PAGE_URL = CONFIG.frontUrl() + "login";
+    public final static String MAIN_PAGE_URL = CONFIG.frontUrl() + "login";
 
     private final SearchField searchField = new SearchField();
     private final Header header;
@@ -62,5 +62,15 @@ public class MainPage extends BasePage<MainPage> {
     public StatComponent getStatComponent() {
         statComponent.getSelf().scrollIntoView(true);
         return statComponent;
+    }
+
+    @Override
+    @Step("Check that page is loaded")
+    @Nonnull
+    public MainPage checkThatPageLoaded() {
+        header.getSelf().should(visible).shouldHave(text("Niffler"));
+        statComponent.getSelf().should(visible).shouldHave(text("Statistics"));
+        spendingTable.getSelf().should(visible).shouldHave(text("History of Spendings"));
+        return this;
     }
 }

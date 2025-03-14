@@ -15,9 +15,8 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import javax.annotation.Nonnull;
+import java.util.*;
 
 public class SpendingExtension implements BeforeEachCallback, ParameterResolver {
 
@@ -30,10 +29,7 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
         AnnotationSupport.findAnnotation(context.getRequiredTestMethod(), User.class)
                 .ifPresent(userAnno -> {
                     if (ArrayUtils.isNotEmpty(userAnno.spendings())) {
-                        UserJson user = context.getStore(UserExtension.NAMESPACE).get(
-                                context.getUniqueId(),
-                                UserJson.class
-                        );
+                        final UserJson user = UserExtension.createdUser();
 
                         final String username = user != null
                                 ? user.username()
@@ -83,8 +79,13 @@ public class SpendingExtension implements BeforeEachCallback, ParameterResolver 
     @Override
     @SuppressWarnings("unchecked")
     public SpendJson[] resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return (SpendJson[]) extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), List.class)
-                .stream()
-                .toArray(SpendJson[]::new);
+        return createdSpends(extensionContext).toArray(SpendJson[]::new);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    public static List<SpendJson> createdSpends(ExtensionContext extensionContext) {
+        return Optional.ofNullable(extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), List.class))
+                .orElse(Collections.emptyList());
     }
 }

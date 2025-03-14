@@ -1,4 +1,4 @@
-package guru.qa.niffler.tests.jdbc;
+package guru.qa.niffler.tests.fake;
 
 import guru.qa.niffler.jupiter.extension.InjectClientExtension;
 import guru.qa.niffler.model.rest.CategoryJson;
