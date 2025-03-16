@@ -1,12 +1,13 @@
 package guru.qa.niffler.tests.web;
 
+import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
-import guru.qa.niffler.model.rest.CategoryJson;
 import guru.qa.niffler.model.rest.UserJson;
-import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.ProfilePage;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
@@ -22,43 +23,34 @@ public class ProfileWebTests {
 
     @User(
             username = "Artur",
-            categories = @Category( archived = true)
+            categories = @Category(archived = true)
     )
+    @ApiLogin
     @DisplayName("Архивная категория должна присутствовать и отображаться в списке категорий")
     @Test
-    void archivedCategoryShouldPresentInCategoriesList(@NotNull CategoryJson[] category) {
-        new LoginPage()
-                .open()
-                .login(category[0].username(), "12345")
-                .getHeader()
-                .toProfilePage()
+    void archivedCategoryShouldPresentInCategoriesList(@NotNull UserJson user) {
+        Selenide.open(ProfilePage.PROFILE_PAGE_URL, ProfilePage.class)
                 .clickArchivedCheckbox()
-                .checkCategoryInCategoryList(category[0].name());
+                .checkCategoryInCategoryList(user.testData().categories().getFirst().name());
     }
 
     @User(
             categories = @Category
     )
+    @ApiLogin
     @DisplayName("Активная категория должна присутствовать и отображаться в списке категорий")
     @Test
     void activeCategoryShouldPresentInCategoriesList(@NotNull UserJson user) {
-        new LoginPage()
-                .open()
-                .login(user.testData().categories().getFirst().username(), user.testData().password())
-                .getHeader()
-                .toProfilePage()
+        Selenide.open(ProfilePage.PROFILE_PAGE_URL, ProfilePage.class)
                 .checkCategoryInCategoryList(user.testData().categories().getFirst().name());
     }
 
     @User
+    @ApiLogin
     @DisplayName("Обновление всех полей профиля")
     @Test
-    void updateAllFieldsProfile(@NotNull UserJson user) {
-        new LoginPage()
-                .open()
-                .login(user.username(), user.testData().password())
-                .getHeader()
-                .toProfilePage()
+    void updateAllFieldsProfile() {
+        Selenide.open(ProfilePage.PROFILE_PAGE_URL, ProfilePage.class)
                 .uploadImage("image/duck.png")
                 .setName(RandomDataUtils.randomName())
                 .setNewCategory(RandomDataUtils.randomCategoryName())
@@ -68,13 +60,10 @@ public class ProfileWebTests {
 
     @DisplayName("Проверка корректной загрузки аватарки")
     @User
+    @ApiLogin
     @ScreenShotTest(value = "image/expected-avatar.png")
-    void checkCorrectUploadAvatar(@NotNull UserJson user, BufferedImage expected) throws IOException {
-        new LoginPage()
-                .open()
-                .login(user.username(), user.testData().password())
-                .getHeader()
-                .toProfilePage()
+    void checkCorrectUploadAvatar(BufferedImage expected) throws IOException {
+        Selenide.open(ProfilePage.PROFILE_PAGE_URL, ProfilePage.class)
                 .uploadImage("image/duck.png")
                 .saveChanges()
                 .checkPhoto(expected);

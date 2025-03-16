@@ -1,10 +1,13 @@
 package guru.qa.niffler.page;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.components.Header;
 import guru.qa.niffler.page.components.SearchField;
+import io.qameta.allure.Step;
 import lombok.Getter;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.Condition.text;
@@ -12,7 +15,7 @@ import static com.codeborne.selenide.Selenide.$;
 
 @Getter
 @ParametersAreNonnullByDefault
-public class PeoplePage extends BasePage<MainPage> {
+public class PeoplePage extends BasePage<PeoplePage> {
 
     public static final String PEOPLE_PAGE_URL = CONFIG.frontUrl() + "people/all";
 
@@ -31,5 +34,14 @@ public class PeoplePage extends BasePage<MainPage> {
         allPeopleTable.$$("tr").findBy(text(outcomeUserName))
                 .shouldHave(text("Waiting..."));
 
+    }
+
+    @Override
+    @Step("Проверка, что страница загружена")
+    @Nonnull
+    public PeoplePage checkThatPageLoaded() {
+        peopleTab.shouldBe(Condition.visible);
+        allTab.shouldBe(Condition.visible);
+        return this;
     }
 }

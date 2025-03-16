@@ -7,9 +7,14 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.model.TestData;
+import guru.qa.niffler.model.rest.CategoryJson;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.service.impl.AuthApiClient;
+import guru.qa.niffler.service.impl.SpendApiClient;
+import guru.qa.niffler.service.impl.UsersApiClient;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -19,6 +24,10 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import org.openqa.selenium.Cookie;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static guru.qa.niffler.model.FriendshipStatus.*;
 
 @ParametersAreNonnullByDefault
 public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver {
@@ -27,6 +36,8 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ApiLoginExtension.class);
 
     private final AuthApiClient authApiClient = new AuthApiClient();
+    private final SpendApiClient spendApiClient = new SpendApiClient();
+    private final UsersApiClient usersApiClient = new UsersApiClient();
     private final boolean setupBrowser;
 
     private ApiLoginExtension(boolean setupBrowser) {
@@ -37,6 +48,7 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
         this.setupBrowser = true;
     }
 
+    @NotNull
     public static ApiLoginExtension restApiLoginExtension() {
         return new ApiLoginExtension(false);
     }
@@ -54,11 +66,9 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
                         }
                         userToLogin = userFromUserExtension;
                     } else {
-                        UserJson fakeUser = new UserJson(
+                        UserJson fakeUser = existUser(
                                 apiLogin.username(),
-                                new TestData(
-                                        apiLogin.password()
-                                )
+                                apiLogin.password()
                         );
                         if (userFromUserExtension != null) {
                             throw new IllegalStateException("@User must not be present in case that @ApiLogin contains username or password!");
@@ -113,10 +123,43 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
         return TestMethodContextExtension.context().getStore(NAMESPACE).get("code", String.class);
     }
 
+    @NotNull
     public static Cookie getJsessionIdCookie() {
         return new Cookie(
                 "JSESSIONID",
                 ThreadSafeCookieStore.INSTANCE.cookieValue("JSESSIONID")
+        );
+    }
+
+    @NotNull
+    private UserJson existUser(String username, String password) {
+        List<CategoryJson> categories = spendApiClient.getAllCategories(username);
+        List<SpendJson> spends = spendApiClient.getAllSpends(username);
+
+        List<UserJson> listInFriendsTab = usersApiClient.getFriends(username);
+        List<UserJson> listInAllTab = usersApiClient.getAllPeople(username);
+
+        List<UserJson> friends = listInFriendsTab.stream()
+                .filter(userJson -> userJson.friendshipStatus().equals(FRIEND))
+                .collect(Collectors.toList());
+        List<UserJson> incomeInvitations = listInFriendsTab.stream()
+                .filter(userJson -> userJson.friendshipStatus().equals(INVITE_RECEIVED))
+                .collect(Collectors.toList());
+        List<UserJson> outcomeInvitations = listInAllTab.stream()
+                .filter(userJson -> userJson.friendshipStatus() != null)
+                .filter(userJson -> userJson.friendshipStatus().equals(INVITE_SENT))
+                .collect(Collectors.toList());
+
+        return new UserJson(
+                username,
+                new TestData(
+                        password,
+                        categories,
+                        spends,
+                        friends,
+                        outcomeInvitations,
+                        incomeInvitations
+                )
         );
     }
 }

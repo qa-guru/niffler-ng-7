@@ -11,6 +11,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import java.time.LocalDate;
 
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 @Getter
@@ -68,4 +69,11 @@ public class EditSpendingPage extends BasePage<EditSpendingPage> {
         return new MainPage();
     }
 
+    @Step("Проверка, что страница загружена")
+    @Override
+    @Nonnull
+    public EditSpendingPage checkThatPageLoaded() {
+        amountInput.should(visible);
+        return this;
+    }
 }

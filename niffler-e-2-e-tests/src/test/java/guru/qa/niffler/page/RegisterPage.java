@@ -8,10 +8,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 @ParametersAreNonnullByDefault
-public class RegisterPage extends BasePage<MainPage> {
+public class RegisterPage extends BasePage<RegisterPage> {
 
     public static final String REGISTER_PAGE_URL = CONFIG.authUrl() + "register";
 
@@ -72,5 +73,15 @@ public class RegisterPage extends BasePage<MainPage> {
     @Step("Проверка успешной регистрации")
     public void checkUnsuccessfulRegistrationIfPasswordAndConfirmPasswordAreNotEqual(String text) {
         errorMessage.shouldBe(text(text));
+    }
+
+    @Step("Проверка, что страница загружена")
+    @Override
+    @Nonnull
+    public RegisterPage checkThatPageLoaded() {
+        usernameInput.should(visible);
+        passwordInput.should(visible);
+        submitPasswordInput.should(visible);
+        return this;
     }
 }
