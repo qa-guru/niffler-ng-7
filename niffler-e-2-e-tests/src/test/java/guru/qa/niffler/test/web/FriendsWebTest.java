@@ -1,6 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
@@ -16,15 +17,11 @@ public class FriendsWebTest {
     @User(
             friends = 1
     )
-
+    @ApiLogin
     @Test
     void friendShouldBePresentInFriendsTable(UserJson user) {
         final String friendUsername = user.testData().friendsUsernames()[0];
-        open(LoginPage.URL, LoginPage.class)
-                .doLogin(user.username(), user.testData().password())
-                .checkThatPageLoaded()
-                .getHeader()
-                .toFriendsPage()
+        open(FriendsPage.URL, FriendsPage.class)
                 .checkThatPageLoaded()
                 .checkUserInUserFriendsList(friendUsername);
     }

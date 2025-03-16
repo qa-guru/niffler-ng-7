@@ -1,13 +1,11 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.api.SpendApi;
-import guru.qa.niffler.config.Config;
+import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,7 +23,7 @@ public class SpendApiClient extends RestClient implements SpendClient {
 
     public SpendApiClient() {
         super(CFG.spendUrl());
-        this.spendApi = retrofit.create(SpendApi.class);
+        this.spendApi = create(SpendApi.class);
     }
 
     @Nonnull

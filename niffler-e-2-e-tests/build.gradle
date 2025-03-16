@@ -1,4 +1,4 @@
-buildscript {
+ buildscript {
     ext {
         grpcVersion = '1.66.0'
         junitVersion = '5.11.0'
@@ -102,6 +102,7 @@ dependencies {
     testImplementation("com.squareup.retrofit2:converter-jackson:${retrofitVersion}") {
         exclude group: "com.squareup.okhttp3"
     }
+    testImplementation "com.squareup.retrofit2:converter-scalars:${retrofitVersion}"
     testImplementation "org.springframework.data:spring-data-commons:${springDataCommonsVersion}"
     // GraphQL
     testImplementation "com.apollographql.java:client:${apollographqlVersion}"

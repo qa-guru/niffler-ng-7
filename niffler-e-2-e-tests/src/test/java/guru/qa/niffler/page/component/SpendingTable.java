@@ -25,7 +25,7 @@ import static com.codeborne.selenide.Selenide.$$;
 public class SpendingTable extends BaseComponent<SpendingTable>{
 
     public SpendingTable() {
-        super($("#spendings tbody"));
+        super($("#spendings"));
     }
 
 
