@@ -4,13 +4,13 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.condition.Bubble;
 import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.page.component.StatComponent;
 import guru.qa.niffler.utils.ScreenDiffResult;
@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomSentence;
-import static guru.qa.niffler.utils.ScreenDiffResult.checkActualImageEqualsExpected;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @WebTest
@@ -40,31 +39,32 @@ public class SpendingWebTest {
                     amount = 50
             )
     )
+    @ApiLogin
     @Test
-    void categoryDescriptionShouldBeChangedFromTable(UserJson user) {
+    void categoryDescriptionShouldBeChangedFromTable() {
         final String newDescription = "bananas";
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(user.username(), "123")
+        Selenide.open(MainPage.URL, MainPage.class)
+                .checkThatPageLoaded()
                 .editSpending("apples")
                 .setDescription(newDescription)
-                .save()
-                .checkAlertMessage("Spending is edited successfully");
-        ;
+                .save();
 
-        new MainPage().checkThatTableContainsSpending(newDescription);
+        new MainPage()
+                .checkThatPageLoaded()
+                .checkThatTableContainsSpending(newDescription);
     }
 
     @User
+    @ApiLogin
     @Test
-    void shouldAddNewSpending(UserJson user) {
+    void shouldAddNewSpending() {
         String category = "Food";
         int amount = 100;
         Date currentDate = new Date();
         String description = randomSentence(1);
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(user.username(), user.testData().password())
+        Selenide.open(MainPage.URL, MainPage.class)
                 .checkIsLoaded()
                 .getHeader()
                 .addSpendingPage()
@@ -72,8 +72,7 @@ public class SpendingWebTest {
                 .setCategory(category)
                 .setSpendingDate(currentDate)
                 .setDescription(description)
-                .save()
-                .checkAlertMessage("New spending is successfully created");
+                .save();
 
         new MainPage().getSpendingTable()
                 .checkTableContains(description);
@@ -87,12 +86,10 @@ public class SpendingWebTest {
                     amount = 50
             )
     )
-
+    @ApiLogin
     @ScreenShotTest("img/expected-stat.png")
-    void checkStatComponentTest(UserJson user, BufferedImage expected) throws InterruptedException, IOException {
-
-        StatComponent statComponent = Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(user.username(), "123")
+    void checkStatComponentTest(BufferedImage expected) throws InterruptedException, IOException {
+        StatComponent statComponent = Selenide.open(MainPage.URL, MainPage.class)
                 .getStatComponent();
 
         Thread.sleep(3000);
@@ -119,10 +116,10 @@ public class SpendingWebTest {
                     )
             }
     )
+    @ApiLogin
     @ScreenShotTest("img/spend.png")
-    void checkStatComponentAfterDeleteSpending(UserJson user, BufferedImage expected) throws IOException {
-        StatComponent statComponent = Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(user.username(), "123")
+    void checkStatComponentAfterDeleteSpending(BufferedImage expected) throws IOException {
+        StatComponent statComponent = Selenide.open(MainPage.URL, MainPage.class)
                 .getStatComponent();
 
         assertFalse(new ScreenDiffResult(
@@ -163,10 +160,10 @@ public class SpendingWebTest {
                     )
             }
     )
+    @ApiLogin
     @ScreenShotTest("img/spend.png")
-    void checkStatComponentAfterEditSpending(UserJson user, BufferedImage expected) throws IOException {
-        StatComponent statComponent = Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(user.username(), "123")
+    void checkStatComponentAfterEditSpending(BufferedImage expected) throws IOException {
+        StatComponent statComponent = Selenide.open(MainPage.URL, MainPage.class)
                 .getStatComponent();
 
         assertFalse(new ScreenDiffResult(
@@ -210,15 +207,13 @@ public class SpendingWebTest {
                     )
             }
     )
+    @ApiLogin
     @Test
     void checkSpendsTest(UserJson user) {
         List<SpendJson> expectedSpends = user.testData().spendings();
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(user.username(), user.testData().password());
-
-        new MainPage()
-                .getSpendingTable()
+        Selenide.open(MainPage.URL, MainPage.class)
+                .checkThatPageLoaded().getSpendingTable()
                 .checkSpendTable(expectedSpends);
     }
 }

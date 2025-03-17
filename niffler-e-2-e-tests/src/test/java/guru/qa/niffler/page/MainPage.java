@@ -51,7 +51,7 @@ public class MainPage extends BasePage<MainPage>{
             avatarIcon = $(".MuiAvatar-root"),
             uploadPickButton = $x("//label[@for='image__input']"),
             placeholder = $("input[placeholder]");
-    private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
+    private final ElementsCollection tableRows = $("#spendings").$$("tr");
 
 
     @Nonnull

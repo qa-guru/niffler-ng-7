@@ -6,24 +6,28 @@ import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Token;
-import guru.qa.niffler.model.TestData;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.*;
 import guru.qa.niffler.page.MainPage;
-import guru.qa.niffler.service.AuthApiClient;
+import guru.qa.niffler.service.*;
 import org.junit.jupiter.api.extension.*;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.openqa.selenium.Cookie;
 
+import java.util.List;
+
 import static com.codeborne.selenide.Selenide.localStorage;
 import static com.codeborne.selenide.Selenide.open;
 
-public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver {
+public class
+ApiLoginExtension implements BeforeEachCallback, ParameterResolver {
 
     private static Config CFG = Config.getInstance();
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ApiLoginExtension.class);
 
     private final AuthApiClient authApiClient = new AuthApiClient();
+    private final SpendClient spendClient = new SpendApiClient();
+    private final UsersClient usersClient = new UserApiClient();
     private final boolean setupBrowser;
 
     private ApiLoginExtension(boolean setupBrowser) {
@@ -58,14 +62,18 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
                                         apiLogin.password()
                                 )
                         );
+
                         if (userFromUserExtension != null) {
                             throw new IllegalArgumentException("@User must not be present");
                         }
                         UserExtension.setUser(fakeUser);
                         userToLogin = fakeUser;
-
+                        getUserCategories(userToLogin);
+                        getUserSpends(userToLogin);
+                        getFriendsByStatus(userToLogin, FriendshipStatus.FRIEND);
+                        getFriendsByStatus(userToLogin,FriendshipStatus.INVITE_RECEIVED);
+                        getFriendsByStatus(userToLogin, FriendshipStatus.INVITE_SENT);
                     }
-
 
                     final String token = authApiClient.login(
                             userToLogin.username(),
@@ -78,15 +86,11 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
                         open(CFG.frontUrl());
                         localStorage().setItem("id_token", getToken());
                         WebDriverRunner.getWebDriver().manage().addCookie(
-                                new Cookie("JSESSIONID",
-                                        ThreadSafeCookieStore.INSTANCE.cookieValue("JSESSIONID")
-                                ));
+                              getJSessionId());
 
                         Selenide.open(MainPage.URL, MainPage.class).checkThatPageLoaded();
                     }
                 });
-
-
     }
 
     @Override
@@ -121,5 +125,25 @@ public class ApiLoginExtension implements BeforeEachCallback, ParameterResolver 
                 "JSESSIONID",
                 ThreadSafeCookieStore.INSTANCE.cookieValue("JSESSIONID")
         );
+    }
+
+    private void getUserCategories(UserJson user){
+        List<CategoryJson> categories = spendClient.allCategory(user.username());
+        user.testData().categories().addAll(categories);
+    }
+
+    private void getUserSpends(UserJson user){
+        List<SpendJson> spends = spendClient.allSpends(user.username(), null, null, null);
+        user.testData().spendings().addAll(spends);
+    }
+
+    private void getFriendsByStatus(UserJson user, FriendshipStatus status) {
+        List<UserJson> allFriends = usersClient.allUsers(user.username());
+        user.testData()
+                .friends()
+                .addAll(
+                        allFriends.stream()
+                                .filter(f -> status.equals(f.friendshipStatus()))
+                                .toList());
     }
 }

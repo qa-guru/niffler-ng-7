@@ -13,6 +13,8 @@ import static com.codeborne.selenide.Selenide.$;
 @ParametersAreNonnullByDefault
 public class PeoplesPage extends BasePage<PeoplesPage>{
 
+    public static final String URL = CFG.frontUrl() + "people/all";
+
     private final SelenideElement
             searchInput = $("input[aria-label='search']"),
             peopleTab = $("a[href='/people/friends']"),

@@ -6,7 +6,7 @@ import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.FriendsPage;
-import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.PeoplesPage;
 import org.junit.jupiter.api.Test;
 
 import static com.codeborne.selenide.Selenide.open;
@@ -27,13 +27,10 @@ public class FriendsWebTest {
     }
 
     @User
+    @ApiLogin
     @Test
-    void friendShouldBeEmptyForNewUser(UserJson user) {
-        open(LoginPage.URL, LoginPage.class)
-                .doLogin(user.username(), user.testData().password())
-                .checkThatPageLoaded()
-                .getHeader()
-                .toFriendsPage()
+    void friendShouldBeEmptyForNewUser() {
+        open(FriendsPage.URL, FriendsPage.class)
                 .checkThatPageLoaded()
                 .checkFriendsIsEmpty();
     }
@@ -41,14 +38,11 @@ public class FriendsWebTest {
     @User(
             incomeInvitations = 2
     )
+    @ApiLogin
     @Test
     void incomeInvitationShouldBePresentInFriendsTable(UserJson user) {
         final String friendUsername = user.testData().incomeInvitationsUsernames()[0];
-        open(LoginPage.URL, LoginPage.class)
-                .doLogin(user.username(), user.testData().password())
-                .checkThatPageLoaded()
-                .getHeader()
-                .toFriendsPage()
+        open(FriendsPage.URL, FriendsPage.class)
                 .checkThatPageLoaded()
                 .checkIncomeRequest(friendUsername);
     }
@@ -56,25 +50,21 @@ public class FriendsWebTest {
     @User(
             outcomeInvitations = 3
     )
+    @ApiLogin
     @Test
     void outcomeInvitationShouldBePresentInAllPeopleTable(UserJson user) {
         final String friendUsername = user.testData().outcomeInvitationsUsernames()[0];
-        open(LoginPage.URL, LoginPage.class)
-                .doLogin(user.username(), user.testData().password())
-                .getHeader()
-                .toAllPeoplesPage()
+        open(PeoplesPage.URL, PeoplesPage.class)
+                .checkThatPageLoaded()
                 .checkOutcomeRequest(friendUsername);
     }
 
     @User(incomeInvitations = 1)
+    @ApiLogin
     @Test
     void acceptInvitationTest(UserJson user) {
         final String userToAccept = user.testData().incomeInvitationsUsernames()[0];
-        FriendsPage friendsPage = open(LoginPage.URL, LoginPage.class)
-                .doLogin(user.username(), user.testData().password())
-                .checkThatPageLoaded()
-                .getHeader()
-                .toFriendsPage()
+        FriendsPage friendsPage = open(FriendsPage.URL, FriendsPage.class)
                 .checkExistingInvitationsCount(1)
                 .acceptFriendInvitationFromUser(userToAccept)
                 .checkExistingInvitationsCount(0);
@@ -86,13 +76,11 @@ public class FriendsWebTest {
     }
 
     @User(incomeInvitations = 1)
+    @ApiLogin
     @Test
     void declineInvitationTest(UserJson user) {
         final String userToAccept = user.testData().incomeInvitationsUsernames()[0];
-        FriendsPage friendsPage = open(LoginPage.URL, LoginPage.class)
-                .doLogin(user.username(), user.testData().password())
-                .getHeader()
-                .toFriendsPage()
+        FriendsPage friendsPage = open(FriendsPage.URL, FriendsPage.class)
                 .checkExistingInvitationsCount(1)
                 .declineFriendInvitationFromUser(userToAccept)
                 .checkExistingInvitationsCount(0);

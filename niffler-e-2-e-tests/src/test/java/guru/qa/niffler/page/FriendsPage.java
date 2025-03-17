@@ -16,7 +16,7 @@ import static com.codeborne.selenide.Selenide.$;
 @ParametersAreNonnullByDefault
 public class FriendsPage extends BasePage<FriendsPage>{
 
-    public static final String URL = CFG.frontUrl() + "friends";
+    public static final String URL = CFG.frontUrl() + "people/friends";
 
     private final SelenideElement
             noFriendsTextElement = $("#simple-tabpanel-friends .MuiTypography-root"),
