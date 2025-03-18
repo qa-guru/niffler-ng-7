@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Getter
 @ParametersAreNonnullByDefault
-public class ProfilePage extends BasePage<MainPage> {
+public class ProfilePage extends BasePage<ProfilePage> {
 
     public static final String PROFILE_PAGE_URL = CONFIG.frontUrl() + "profile";
 
@@ -40,6 +40,7 @@ public class ProfilePage extends BasePage<MainPage> {
             showArchivedCheckbox,
             alert,
             avatarImage,
+            userName,
             avatar;
 
     private final ElementsCollection
@@ -55,6 +56,7 @@ public class ProfilePage extends BasePage<MainPage> {
         this.showArchivedCheckbox = $("input[type='checkbox']");
         this.alert = $(".MuiSnackbar-root");
         this.avatarImage = $(".MuiAvatar-img");
+        this.userName = $("#username");
         this.avatar = $("#image__input").parent().$("img");
         this.listCategory = $("div").$$("div[role='button']");
         this.archiveSubmitButtons = $$("div[role='dialog'] button");
@@ -70,6 +72,7 @@ public class ProfilePage extends BasePage<MainPage> {
         this.showArchivedCheckbox = driver.$("input[type='checkbox']");
         this.alert = driver.$(".MuiSnackbar-root");
         this.avatarImage = driver.$(".MuiAvatar-img");
+        this.userName = driver.$("#username");
         this.avatar = driver.$("#image__input").parent().$("img");
         this.listCategory = driver.$("div").$$("div[role='button']");
         this.archiveSubmitButtons = driver.$$("div[role='dialog'] button");
@@ -110,7 +113,7 @@ public class ProfilePage extends BasePage<MainPage> {
     }
 
     @Step("Проверка нахождения категории <categoryName> в отображаемом списке на странице профиля")
-    public void checkCategoryInCategoryList(String categoryName,SelenideDriver driver) {
+    public void checkCategoryInCategoryList(String categoryName, SelenideDriver driver) {
         driver.$$(".MuiChip-filled.MuiChip-clickable").findBy(text(categoryName)).shouldBe(visible);
     }
 
@@ -139,6 +142,14 @@ public class ProfilePage extends BasePage<MainPage> {
                 ),
                 ScreenShotTestExtension.ASSERT_SCREEN_MESSAGE
         );
+        return this;
+    }
+
+    @Override
+    @Step("Проверка, что страница загружена")
+    @Nonnull
+    public ProfilePage checkThatPageLoaded() {
+        userName.should(visible);
         return this;
     }
 }

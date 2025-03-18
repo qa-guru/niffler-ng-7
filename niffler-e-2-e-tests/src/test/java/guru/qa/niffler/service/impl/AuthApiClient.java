@@ -11,10 +11,6 @@ import guru.qa.niffler.utils.OAuthUtils;
 import lombok.SneakyThrows;
 import retrofit2.Response;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Objects;
-
-@ParametersAreNonnullByDefault
 public class AuthApiClient extends RestClient {
 
     private static final Config CFG = Config.getInstance();
@@ -30,7 +26,7 @@ public class AuthApiClient extends RestClient {
         final String codeVerifier = OAuthUtils.generateCodeVerifier();
         final String codeChallenge = OAuthUtils.generateCodeChallange(codeVerifier);
         final String redirectUri = CFG.frontUrl() + "authorized";
-        final String clientId = "client";
+        String clientId = "client";
 
         authApi.authorize(
                 "code",
@@ -39,6 +35,7 @@ public class AuthApiClient extends RestClient {
                 redirectUri,
                 codeChallenge,
                 "S256"
+
         ).execute();
 
         authApi.login(
@@ -48,13 +45,13 @@ public class AuthApiClient extends RestClient {
         ).execute();
 
         Response<JsonNode> tokenResponse = authApi.token(
-                ApiLoginExtension.getCode(),
-                redirectUri,
                 clientId,
-                codeVerifier,
-                "authorization_code"
+                redirectUri,
+                "authorization_code",
+                ApiLoginExtension.getCode(),
+                codeVerifier
         ).execute();
 
-        return Objects.requireNonNull(tokenResponse.body()).get("id_token").asText();
+        return tokenResponse.body().get("id_token").asText();
     }
 }

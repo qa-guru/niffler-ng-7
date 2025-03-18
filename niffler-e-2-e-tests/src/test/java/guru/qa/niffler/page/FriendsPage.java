@@ -1,5 +1,6 @@
 package guru.qa.niffler.page;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.components.Header;
 import guru.qa.niffler.page.components.SearchField;
@@ -28,7 +29,9 @@ public class FriendsPage extends BasePage<FriendsPage> {
             friendsTable = $("#friends"),
             requestTable = $("#requests"),
             popup = $("div[role='dialog']"),
-            simpleTableFriend = $("div[id='simple-tabpanel-friends']");
+            simpleTableFriend = $("div[id='simple-tabpanel-friends']"),
+            peopleTab = $("a[href='/people/friends']"),
+            allTab = $("a[href='/people/all']");
 
     @Step("Принятие входящего приглашения дружбы от <username>")
     @Nonnull
@@ -72,6 +75,15 @@ public class FriendsPage extends BasePage<FriendsPage> {
     @Step("Проверка входящего запроса для дружбы")
     public void checkThatFriendsTableEmpty() {
         simpleTableFriend.shouldHave(text("There are no users yet"));
+    }
+
+    @Step("Проверка, что страница загружена")
+    @Override
+    @Nonnull
+    public FriendsPage checkThatPageLoaded() {
+        peopleTab.shouldBe(Condition.visible);
+        allTab.shouldBe(Condition.visible);
+        return this;
     }
 }
 

@@ -65,7 +65,7 @@ public class MainPage extends BasePage<MainPage> {
     }
 
     @Override
-    @Step("Check that page is loaded")
+    @Step("Проверка, что страница загружена")
     @Nonnull
     public MainPage checkThatPageLoaded() {
         header.getSelf().should(visible).shouldHave(text("Niffler"));

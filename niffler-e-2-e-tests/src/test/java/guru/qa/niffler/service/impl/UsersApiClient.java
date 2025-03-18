@@ -12,8 +12,11 @@ import io.qameta.allure.Step;
 import org.jetbrains.annotations.NotNull;
 import retrofit2.Response;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 import static java.util.Objects.requireNonNull;
@@ -131,6 +134,52 @@ public class UsersApiClient implements UsersClient {
                         .friends()
                         .add(response.body());
             }
+        }
+    }
+
+    @Step("Get friends of a user '{username}'")
+    @Nonnull
+    public List<UserJson> getFriends(String username) {
+        final Response<List<UserJson>> response;
+
+        try {
+            response = userdataApi.friends(
+                    username,
+                    null
+            ).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        assertEquals(200, response.code());
+
+        if (response.isSuccessful() && response.body() != null) {
+            return response.body();
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    @Step("Get 'All people' list of a user '{username}'")
+    @Nonnull
+    public List<UserJson> getAllPeople(String username) {
+        final Response<List<UserJson>> response;
+
+        try {
+            response = userdataApi.allUsers(
+                    username,
+                    null
+            ).execute();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        assertEquals(200, response.code());
+
+        if (response.isSuccessful() && response.body() != null) {
+            return response.body();
+        } else {
+            return Collections.emptyList();
         }
     }
 }
