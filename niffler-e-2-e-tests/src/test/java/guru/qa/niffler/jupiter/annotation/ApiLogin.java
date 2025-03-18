@@ -11,9 +11,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ExtendWith({ApiLoginExtension.class,
-        UserExtension.class
-})
 public @interface ApiLogin {
     String username() default "";
 

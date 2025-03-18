@@ -5,6 +5,7 @@ import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.meta.User;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.UserProfilePage;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ import java.io.IOException;
 import static guru.qa.niffler.utils.RandomDataUtils.randomName;
 import static guru.qa.niffler.utils.ScreenDiffResult.checkActualImageEqualsExpected;
 
-
+@WebTest
 public class ProfileTest {
     @User(
             categories = @Category(
