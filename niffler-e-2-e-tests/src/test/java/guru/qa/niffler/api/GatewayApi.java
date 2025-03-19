@@ -30,15 +30,15 @@ public interface GatewayApi {
 
     @POST("api/invitations/send")
     Call<UserJson> sendInvitation(@Header("Authorization") String bearerToken,
-                                  @Body FriendJson friend);
+                                  @Body UserJson friend);
 
     @POST("api/invitations/accept")
     Call<UserJson> acceptInvitation(@Header("Authorization") String bearerToken,
-                                    @Body FriendJson friend);
+                                    @Body UserJson friend);
 
     @POST("api/invitations/decline")
     Call<UserJson> declineInvitation(@Header("Authorization") String bearerToken,
-                                     @Body FriendJson friend);
+                                     @Body UserJson friend);
 
     @GET("api/session/current")
     Call<SessionJson> currentSession(@Header("Authorization") String bearerToken);

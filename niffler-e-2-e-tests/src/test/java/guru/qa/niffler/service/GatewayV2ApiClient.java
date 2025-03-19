@@ -18,9 +18,10 @@ public class GatewayV2ApiClient extends RestClient {
 
     private final GatewayV2Api gatewayApi;
 
+
     public GatewayV2ApiClient() {
         super(CFG.gatewayUrl());
-        this.gatewayApi=create(GatewayV2Api.class);
+        this.gatewayApi = create(GatewayV2Api.class);
     }
 
     @Step("Отправляем GET запрос на api/v2/friends/all")
@@ -29,8 +30,8 @@ public class GatewayV2ApiClient extends RestClient {
                                                  int page,
                                                  int size,
                                                  @Nullable String sort,
-                                                 @Nullable String searchQuery){
-        Response<RestResponsePage<UserJson> > response;
+                                                 @Nullable String searchQuery) {
+        Response<RestResponsePage<UserJson>> response;
         try {
             response = gatewayApi.allFriends(bearerToken, page, size, sort, searchQuery).execute();
 

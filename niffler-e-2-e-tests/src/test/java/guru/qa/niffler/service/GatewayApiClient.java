@@ -35,6 +35,52 @@ public class GatewayApiClient extends RestClient {
         }
         assertEquals(200, response.code());
         return requireNonNull(response.body());
-
     }
+
+    @Step("Отправляем DELETE запрос на api/friends/remove")
+    public void removeFriend(String bearerToken, @Nullable String targetUsername) {
+        try {
+            gatewayApi.removeFriend(bearerToken, targetUsername).execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+    }
+
+    @Step("Отправляем POST запрос на api/invitations/accept")
+    public UserJson acceptInvitation(String bearerToken, UserJson friend) {
+        Response<UserJson> response;
+        try {
+            response = gatewayApi.acceptInvitation(bearerToken, friend).execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(200, response.code());
+        return response.body();
+    }
+
+    @Step("Отправляем POST запрос на api/invitations/decline")
+    public UserJson declineInvitation(String bearerToken, UserJson friend) {
+        Response<UserJson> response;
+        try {
+            response = gatewayApi.declineInvitation(bearerToken, friend).execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(200, response.code());
+        return response.body();
+    }
+
+    @Step("Отправляем POST запрос на api/invitations/send")
+    public UserJson sendInvitation(String bearerToken, UserJson friend) {
+        Response<UserJson> response;
+        try {
+            response = gatewayApi.sendInvitation(bearerToken, friend).execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(200, response.code());
+        return response.body();
+    }
+
 }
+
