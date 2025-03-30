@@ -7,11 +7,15 @@ import guru.qa.niffler.data.repository.SpendRepository;
 import guru.qa.niffler.data.repository.impl.SpendRepositorySpringJdbc;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import io.qameta.allure.Step;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
@@ -43,5 +47,17 @@ public class SpendDbClient implements SpendClient {
                         spendRepository.createCategory(CategoryEntity.fromJson(category))
                 )
         ));
+    }
+
+    @NotNull
+    @Override
+    public List<SpendJson> allSpends(String username, @Nullable CurrencyValues currency, @Nullable String from, @Nullable String to) {
+        return List.of();
+    }
+
+    @NotNull
+    @Override
+    public List<CategoryJson> allCategory(String username) {
+        return List.of();
     }
 }

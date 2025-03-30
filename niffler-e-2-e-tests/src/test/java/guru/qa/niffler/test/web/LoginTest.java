@@ -6,13 +6,13 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.meta.User;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.jupiter.converter.Browser;
 import guru.qa.niffler.jupiter.converter.BrowserConverter;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.extension.NonStaticBrowsersExtension;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.utils.SelenideUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -24,8 +24,8 @@ import java.util.List;
 import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
 
+@WebTest
 public class LoginTest {
-
 
 
     private final BrowserExtension browserExtension = new BrowserExtension();

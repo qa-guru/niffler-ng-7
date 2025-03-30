@@ -12,11 +12,13 @@ import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.Authority;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import static guru.qa.niffler.utils.DataUtils.randomUserName;
@@ -104,6 +106,12 @@ public class UserDbClient implements UsersClient {
                 );
             }
         }
+    }
+
+    @NotNull
+    @Override
+    public List<UserJson> allUsers(String username) {
+        return List.of();
     }
 
     private UserEntity createNewUser(String username, String password) {

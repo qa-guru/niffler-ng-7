@@ -22,10 +22,10 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
-public class SpendingTable extends BaseComponent<SpendingTable>{
+public class SpendingTable extends BaseComponent<SpendingTable> {
 
     public SpendingTable() {
-        super($("#spendings tbody"));
+        super($("#spendings"));
     }
 
 
@@ -37,10 +37,7 @@ public class SpendingTable extends BaseComponent<SpendingTable>{
 
     private final ElementsCollection menuItems =
             $$(".MuiList-padding li"),
-            headerCells = tableHeader.$$(".MuiTableCell-root"),
-            tableRows = self.$$("tr");
-
-
+            tableRows = self.$("tbody").$$("tr");
 
 
     @Step("Выбираем период")
