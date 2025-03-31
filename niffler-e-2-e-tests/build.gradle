@@ -24,7 +24,7 @@ buildscript {
         userdataWsdlUrl = System.getProperty("test.env") == "docker"
                 ? "http://userdata.niffler.dc:8089/ws/userdata.wsdl"
                 : "http://127.0.0.1:8089/ws/userdata.wsdl"
-        gatewayGraphqlUrl = System.getProperty("test.env") == "docker"
+        gatewayIntrospectionUrl = System.getProperty("test.env") == "docker"
                 ? "http://gateway.niffler.dc:8090/graphql"
                 : "http://127.0.0.1:8090/graphql"
     }
@@ -34,7 +34,7 @@ plugins {
     id 'io.qameta.allure' version '2.12.0'
     id 'io.qameta.allure-adapter' version '2.12.0'
     id 'com.github.edeandrea.xjc-generation' version '1.6'
-    id 'com.apollographql.apollo' version '4.0.0'
+    id 'com.apollographql.apollo' version '4.1.0'
 }
 
 group = 'guru.qa'
@@ -66,7 +66,7 @@ apollo {
         srcDir("src/test/graphql")
         mapScalar("Date", "java.util.Date")
         introspection {
-            endpointUrl.set("${gatewayGraphqlUrl}")
+            endpointUrl.set("$gatewayIntrospectionUrl")
             schemaFile.set(file("src/test/graphql/schema.graphqls"))
         }
         outputDirConnection {
@@ -80,7 +80,7 @@ sourceSets {
         java {
             srcDir('src/test/java')
             srcDir("$buildDir/generated-sources/test/xjc")
-            srcDir("$buildDir/generated/source/apollo/e2e")
+            srcDir("$buildDir/generated/source/apollo/niffler")
         }
     }
 }
@@ -94,6 +94,7 @@ dependencies {
     // REST
     testImplementation "com.squareup.okhttp3:logging-interceptor:${okhttp3Version}"
     testImplementation "com.squareup.okhttp3:okhttp-urlconnection:${okhttp3Version}"
+    testImplementation "com.squareup.okhttp3:okhttp:${okhttp3Version}"
     testImplementation("com.squareup.retrofit2:retrofit:${retrofitVersion}") {
         exclude group: "com.squareup.okhttp3"
     }
@@ -105,6 +106,7 @@ dependencies {
     // GraphQL
     testImplementation "com.apollographql.java:client:${apollographqlVersion}"
     testImplementation "com.apollographql.java:rx2:${apollographqlVersion}"
+    testImplementation 'com.apollographql.adapters:apollo-adapters-core:0.0.4'
     // DB
     testImplementation "org.springframework:spring-jdbc:${springJdbcVersion}"
     testImplementation "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
