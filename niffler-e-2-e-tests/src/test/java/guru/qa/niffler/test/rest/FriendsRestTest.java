@@ -28,7 +28,7 @@ public class FriendsRestTest {
 
     @RegisterExtension
     private static final ApiLoginExtension apiLoginExtension = ApiLoginExtension.api();
-    ;
+
 
 
     @ApiLogin
