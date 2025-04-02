@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum CurrencyValues {
-  RUB("₽"), USD("$"), EUR(""), KZT("");
+  RUB, USD, EUR, KZT;
 
-  public final String value;
 }

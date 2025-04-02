@@ -45,7 +45,7 @@ public class SpendConditions {
                     String actualDate = cells.get(4).getText();
 
                     String expectedCategory = expectedSpend.category().name();
-                    String expectedAmount = expectedSpend.amount() + " " + expectedSpend.currency().value;
+                    String expectedAmount = expectedSpend.amount() + " " + expectedSpend.currency().name();
                     String expectedDescription = expectedSpend.description();
                     String expectedDate = convertDate(expectedSpend.spendDate());
                     boolean passed;
