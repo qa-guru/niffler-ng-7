@@ -2,12 +2,15 @@ package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.condition.SpendConditions;
 import guru.qa.niffler.model.DataFilterValues;
+import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.page.EditSpendingPage;
 import io.qameta.allure.Step;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 import static com.codeborne.selenide.ClickOptions.usingJavaScript;
 import static com.codeborne.selenide.CollectionCondition.size;
@@ -77,6 +80,20 @@ public class SpendingTable extends BaseComponent<SpendingTable> {
   public SpendingTable checkTableContains(String expectedSpend) {
     searchSpendingByDescription(expectedSpend);
     tableRows.find(text(expectedSpend)).should(visible);
+    return this;
+  }
+
+  @Step("Check that table contains data '{0}'")
+  @Nonnull
+  public SpendingTable checkTableContains(SpendJson... expectedSpends) {
+    tableRows.should(SpendConditions.containsSpending(expectedSpends));
+    return this;
+  }
+
+  @Step("Check that table contains data '{0}'")
+  @Nonnull
+  public SpendingTable checkTableContains(List<SpendJson> expectedSpends) {
+    tableRows.should(SpendConditions.haveSpendings(expectedSpends));
     return this;
   }
 
