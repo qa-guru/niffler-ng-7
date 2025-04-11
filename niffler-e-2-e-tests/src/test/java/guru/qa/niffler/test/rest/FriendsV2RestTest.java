@@ -5,12 +5,16 @@ import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.RestTest;
 import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
+import guru.qa.niffler.model.FriendshipStatus;
 import guru.qa.niffler.model.pageable.RestResponsePage;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.impl.GatewayV2ApiClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 @RestTest
 public class FriendsV2RestTest {
@@ -36,5 +40,23 @@ public class FriendsV2RestTest {
 
     Assertions.assertEquals(expectedFriend.id(), actualFriend.id());
     Assertions.assertEquals(expectedInvitation.id(), actualInvitation.id());
+  }
+
+  @ApiLogin
+  @User(friends = 2, outcomeInvitations = 1)
+  @Test
+  void friendsAndIncomeInvitationsListShouldBeReturnedWithFiltrationBySearchQuery(UserJson user,
+                                                                                  @Token String token) {
+    final UserJson testFriend = user.testData().friends().getFirst();
+
+    final RestResponsePage<UserJson> response = gatewayApiClient.allFriends(token, 0, 2, null, testFriend.surname());
+
+    assertEquals(1, response.getContent().size());
+
+    final UserJson foundedFriend = response.getContent().getFirst();
+
+    assertSame(FriendshipStatus.FRIEND, foundedFriend.friendshipStatus());
+    assertEquals(testFriend.id(), foundedFriend.id());
+    assertEquals(testFriend.username(), foundedFriend.username());
   }
 }

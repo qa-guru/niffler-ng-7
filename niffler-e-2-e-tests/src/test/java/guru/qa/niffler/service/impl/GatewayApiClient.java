@@ -37,4 +37,16 @@ public class GatewayApiClient extends RestClient {
     assertEquals(200, response.code());
     return requireNonNull(response.body());
   }
+
+  @Step("Send DELETE request /api/friends/remove to niffler-gateway")
+  public void removeFriend(String bearerToken, String targetUsername) {
+    final Response<Void> response;
+    try {
+      response = gatewayApi.removeFriend(bearerToken, targetUsername)
+          .execute();
+    } catch (IOException e) {
+      throw new AssertionError(e);
+    }
+    assertEquals(200, response.code());
+  }
 }
