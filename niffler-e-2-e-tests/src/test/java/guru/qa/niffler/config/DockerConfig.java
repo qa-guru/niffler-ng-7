@@ -68,4 +68,9 @@ public class DockerConfig implements Config {
         return "";
     }
 
+    @NotNull
+    @Override
+    public String userdataGrpcAddress() {
+        return "";
+    }
 }

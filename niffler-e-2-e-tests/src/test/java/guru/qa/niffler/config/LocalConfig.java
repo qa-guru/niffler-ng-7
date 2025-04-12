@@ -64,7 +64,15 @@ public class LocalConfig implements Config {
 
     @NotNull
     @Override
+    public String userdataGrpcAddress() {
+        return "127.0.0.1";
+    }
+
+    @NotNull
+    @Override
     public String currencyGrpcAddress() {
         return "127.0.0.1";
     }
+
+
 }

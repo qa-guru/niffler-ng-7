@@ -37,6 +37,13 @@ public interface Config {
   String currencyJdbcUrl();
 
   @Nonnull
+  String userdataGrpcAddress();
+
+  default int userdataGrpcPort(){
+    return 8095;
+  }
+
+  @Nonnull
   String currencyGrpcAddress();
 
   default int currencyGrpcPort(){

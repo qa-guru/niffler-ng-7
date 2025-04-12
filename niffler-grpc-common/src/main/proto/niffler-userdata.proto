@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "niffler-currency.proto";
+
+
+package guru.qa.grpc.niffler;
+
+option java_multiple_files = true;
+option java_outer_classname = "NifflerUserdataProto";
+
+service NifflerUserdataService {
+  rpc GetAllUsers(UserRequest) returns (UserListResponse);
+}
+
+message UserRequest {
+  string username = 1;
+  string searchQuery = 2;
+}
+
+message UserListResponse {
+  repeated UserResponse users = 1;
+}
+
+message UserResponse {
+  string id = 1;
+  string username = 2;
+  string firstname = 3;
+  string surname = 4;
+  string full_name = 5;
+  CurrencyValues currency = 6;
+  string photo = 7;
+  string photo_small = 8;
+  FriendshipStatus friendship_status = 9;
+}
+
+enum FriendshipStatus {
+  PENDING = 0;
+  ACCEPTED = 1;
+  DECLINED = 2;
+  REMOVED = 3;
+}
+
+message FriendshipResponse {
+  UserResponse user = 1;
+  FriendshipStatus status = 2;
+}
