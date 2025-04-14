@@ -146,6 +146,7 @@ dependencies {
     testImplementation 'com.github.vertical-blank:sql-formatter:2.0.5'
     testImplementation 'com.github.h-thurow:simple-jndi:0.24.0'
     // gRPC
+    testImplementation "io.grpc:grpc-api:${project.ext.grpcVersion}"
     testImplementation "io.grpc:grpc-protobuf:${project.ext.grpcVersion}"
     testImplementation "io.grpc:grpc-stub:${project.ext.grpcVersion}"
     testImplementation "io.grpc:grpc-netty:${project.ext.grpcVersion}"
