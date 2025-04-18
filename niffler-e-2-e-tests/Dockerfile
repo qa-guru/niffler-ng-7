@@ -9,4 +9,4 @@ COPY ./build.gradle ./
 COPY ./settings.gradle ./
 COPY ./gradle.properties ./
 
-CMD ./gradlew test -Dtest.env=docker -Drepository=jpa
+CMD ./gradlew test -Dtest.env=docker -Duser.timezone=Europe/Moscow

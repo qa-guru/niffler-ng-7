@@ -1,21 +1,11 @@
 #!/bin/bash
 source ./docker.properties
 export PROFILE=docker
+export COMPOSE_PROFILES=test
 export PREFIX="${IMAGE_PREFIX}"
 export ALLURE_DOCKER_API=http://allure:5050/
 export HEAD_COMMIT_MESSAGE="local build"
-export FRONT_VERSION="2.1.0"
-export COMPOSE_PROFILES=test
 export ARCH=$(uname -m)
-
-echo '### Java version ###'
-java --version
-
-if [[ "$1" = "gql" ]]; then
-  export FRONT="niffler-ng-gql-client"
-else
-  export FRONT="niffler-ng-client"
-fi
 
 docker compose down
 
@@ -33,6 +23,8 @@ if [ ! -z "$docker_images" ]; then
   docker rmi $docker_images
 fi
 
+echo '### Java version ###'
+java --version
 bash ./gradlew clean
 bash ./gradlew jibDockerBuild -x :niffler-e-2-e-tests:test
 
