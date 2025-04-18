@@ -2,6 +2,7 @@ package guru.qa.niffler.api;
 
 import guru.qa.jaxb.userdata.AllUsersRequest;
 import guru.qa.jaxb.userdata.CurrentUserRequest;
+import guru.qa.jaxb.userdata.FriendsPageRequest;
 import guru.qa.jaxb.userdata.UserResponse;
 import guru.qa.jaxb.userdata.UsersResponse;
 import retrofit2.Call;
@@ -25,5 +26,10 @@ public interface UserdataSoapApi {
   @POST("ws")
   Call<UsersResponse> allUsers(@Body AllUsersRequest allUsersRequest);
 
-
+  @Headers(value = {
+      "Content-type: text/xml",
+      "Accept-Charset: utf-8"
+  })
+  @POST("ws")
+  Call<UsersResponse> friendsPageable(@Body FriendsPageRequest friendsPageRequest);
 }
