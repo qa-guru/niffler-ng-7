@@ -111,7 +111,7 @@ public class SpendingWebTest {
       )
   )
   @ApiLogin
-  @ScreenShotTest("img/expected-stat.png")
+  @ScreenShotTest(expected = "expected-stat.png")
   void checkStatComponentTest(BufferedImage expected) throws IOException {
     new MainPage().getStatComponent()
         .checkBubbles(new Bubble(Color.yellow, "Обучение 79990 ₽"))
@@ -143,7 +143,7 @@ public class SpendingWebTest {
       }
   )
   @ApiLogin
-  @ScreenShotTest(value = "img/expected-stat-archived.png")
+  @ScreenShotTest(expected = "expected-stat-archived.png")
   void statComponentShouldDisplayArchivedCategories(BufferedImage expected) throws IOException {
     new MainPage().getStatComponent()
         .checkBubbles(
