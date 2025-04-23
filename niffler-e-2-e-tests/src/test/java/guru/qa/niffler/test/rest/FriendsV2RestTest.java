@@ -43,13 +43,13 @@ public class FriendsV2RestTest {
   }
 
   @ApiLogin
-  @User(friends = 2, outcomeInvitations = 1)
+  @User(friends = 2, incomeInvitations = 1)
   @Test
   void friendsAndIncomeInvitationsListShouldBeReturnedWithFiltrationBySearchQuery(UserJson user,
                                                                                   @Token String token) {
     final UserJson testFriend = user.testData().friends().getFirst();
 
-    final RestResponsePage<UserJson> response = gatewayApiClient.allFriends(token, 0, 2, null, testFriend.surname());
+    final RestResponsePage<UserJson> response = gatewayApiClient.allFriends(token, 0, 2, null, testFriend.username());
 
     assertEquals(1, response.getContent().size());
 

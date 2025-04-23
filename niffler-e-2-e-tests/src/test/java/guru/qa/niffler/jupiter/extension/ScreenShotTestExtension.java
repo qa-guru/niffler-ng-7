@@ -1,6 +1,7 @@
 package guru.qa.niffler.jupiter.extension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.model.allure.ScreenDif;
 import io.qameta.allure.Allure;
@@ -24,6 +25,8 @@ import java.util.Base64;
 @ParametersAreNonnullByDefault
 public class ScreenShotTestExtension implements ParameterResolver, TestExecutionExceptionHandler {
 
+  private static final Config CFG = Config.getInstance();
+
   public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(ScreenShotTestExtension.class);
   public static final String ASSERT_SCREEN_MESSAGE = "Screen comparison failure";
 
@@ -42,7 +45,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
     final ScreenShotTest screenShotTest = extensionContext.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
     return ImageIO.read(
         new ClassPathResource(
-            screenShotTest.value()
+            CFG.screenshotBaseDir() + screenShotTest.expected()
         ).getInputStream()
     );
   }
@@ -56,7 +59,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
         ImageIO.write(
             actual,
             "png",
-            new File("src/test/resources/" + screenShotTest.value())
+            new File(".screen-output/" + CFG.screenshotBaseDir() + screenShotTest.expected())
         );
       }
     }
