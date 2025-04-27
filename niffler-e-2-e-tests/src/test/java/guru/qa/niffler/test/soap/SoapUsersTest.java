@@ -1,10 +1,10 @@
 package guru.qa.niffler.test.soap;
 
+import guru.qa.jaxb.userdata.*;
 import guru.qa.niffler.jupiter.annotation.meta.SoapTest;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.UserSoapClient;
-import guru.qa.niffler.userdata.wsdl.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

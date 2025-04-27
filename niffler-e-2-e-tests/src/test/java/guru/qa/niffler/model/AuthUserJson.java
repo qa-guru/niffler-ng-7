@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-public record AuthUserJson(
+public record   AuthUserJson(
         @JsonProperty("id")
         UUID id,
         @JsonProperty("username")

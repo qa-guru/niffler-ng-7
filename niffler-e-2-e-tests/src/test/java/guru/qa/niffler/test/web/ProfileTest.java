@@ -61,7 +61,7 @@ public class ProfileTest {
 
     @User
     @ApiLogin
-    @ScreenShotTest("img/avatar.png")
+    @ScreenShotTest(expected = "img/avatar.png")
     void checkProfileAvatar(BufferedImage expected) throws IOException {
         Selenide.open(UserProfilePage.URL, UserProfilePage.class)
                 .checkPageIsLoaded();

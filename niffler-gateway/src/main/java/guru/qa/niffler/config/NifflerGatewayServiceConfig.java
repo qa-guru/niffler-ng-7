@@ -38,7 +38,7 @@ public class NifflerGatewayServiceConfig {
   @Bean
   public Jaxb2Marshaller marshaller() {
     Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-    marshaller.setContextPath("jaxb.userdata");
+    marshaller.setContextPath("guru.qa.jaxb.userdata");
     return marshaller;
   }
 
@@ -62,17 +62,17 @@ public class NifflerGatewayServiceConfig {
     Server server = new Server();
     server.setUrl(nifflerGatewayBaseUri);
     return new OpenAPI()
-        .servers(List.of(server))
-        .info(new Info()
-            .title("Niffler Gateway API Documentation")
-            .version("1.0")
-            .description("API documentation with Swagger and SpringDoc"))
-        .addSecurityItem(new SecurityRequirement().addList(OPEN_API_AUTH_SCHEME))
-        .components(new Components()
-            .addSecuritySchemes(OPEN_API_AUTH_SCHEME, new SecurityScheme()
-                .name(OPEN_API_AUTH_SCHEME)
-                .type(SecurityScheme.Type.HTTP)
-                .scheme("bearer")
-                .bearerFormat("JWT")));
+            .servers(List.of(server))
+            .info(new Info()
+                    .title("Niffler Gateway API Documentation")
+                    .version("1.0")
+                    .description("API documentation with Swagger and SpringDoc"))
+            .addSecurityItem(new SecurityRequirement().addList(OPEN_API_AUTH_SCHEME))
+            .components(new Components()
+                    .addSecuritySchemes(OPEN_API_AUTH_SCHEME, new SecurityScheme()
+                            .name(OPEN_API_AUTH_SCHEME)
+                            .type(SecurityScheme.Type.HTTP)
+                            .scheme("bearer")
+                            .bearerFormat("JWT")));
   }
 }

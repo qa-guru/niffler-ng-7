@@ -87,7 +87,7 @@ public class SpendingWebTest {
             )
     )
     @ApiLogin
-    @ScreenShotTest("img/expected-stat.png")
+    @ScreenShotTest(expected = "img/expected-stat.png")
     void checkStatComponentTest(BufferedImage expected) throws InterruptedException, IOException {
         StatComponent statComponent = Selenide.open(MainPage.URL, MainPage.class)
                 .getStatComponent();
@@ -117,7 +117,7 @@ public class SpendingWebTest {
             }
     )
     @ApiLogin
-    @ScreenShotTest("img/spend.png")
+    @ScreenShotTest(expected = "img/spend.png")
     void checkStatComponentAfterDeleteSpending(BufferedImage expected) throws IOException {
         StatComponent statComponent = Selenide.open(MainPage.URL, MainPage.class)
                 .getStatComponent();
@@ -161,7 +161,7 @@ public class SpendingWebTest {
             }
     )
     @ApiLogin
-    @ScreenShotTest("img/spend.png")
+    @ScreenShotTest(expected = "img/spend.png")
     void checkStatComponentAfterEditSpending(BufferedImage expected) throws IOException {
         StatComponent statComponent = Selenide.open(MainPage.URL, MainPage.class)
                 .getStatComponent();

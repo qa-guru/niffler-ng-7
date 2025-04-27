@@ -1,11 +1,12 @@
 package guru.qa.niffler.service;
 
+
+import guru.qa.jaxb.userdata.*;
 import guru.qa.niffler.api.UserdataSoapApi;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
 import guru.qa.niffler.api.core.converter.SoapConverterFactory;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.userdata.wsdl.*;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

@@ -33,18 +33,18 @@ public class SecurityConfigLocal {
     corsCustomizer.corsCustomizer(http);
 
     http.csrf(AbstractHttpConfigurer::disable)
-        .authorizeHttpRequests(customizer ->
-            customizer.requestMatchers(
-                    antMatcher("/api/session/current"),
-                    antMatcher("/actuator/health"),
-                    antMatcher("/swagger-ui/**"),
-                    antMatcher("/v3/api-docs/**"),
-                    antMatcher("/graphiql/**"),
-                    antMatcher(HttpMethod.POST, "/graphql"))
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-        ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
+            .authorizeHttpRequests(customizer ->
+                    customizer.requestMatchers(
+                                    antMatcher("/api/session/current"),
+                                    antMatcher("/actuator/health"),
+                                    antMatcher("/swagger-ui/**"),
+                                    antMatcher("/v3/api-docs/**"),
+                                    antMatcher("/graphiql/**"),
+                                    antMatcher(HttpMethod.POST, "/graphql"))
+                            .permitAll()
+                            .anyRequest()
+                            .authenticated()
+            ).oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
     return http.build();
   }
 }

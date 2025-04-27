@@ -1,6 +1,7 @@
 package guru.qa.niffler.jupiter.extension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.model.allure.ScreenDiff;
 import io.qameta.allure.Allure;
@@ -22,6 +23,9 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
 
     public static final ObjectMapper objectMapper = new ObjectMapper();
 
+    private static final Config CFG = Config.getInstance();
+
+
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
         return AnnotationSupport.isAnnotated(extensionContext.getRequiredTestMethod(), ScreenShotTest.class) &&
@@ -34,7 +38,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
         final ScreenShotTest screenShotTest = extensionContext.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
         return ImageIO.read(
                 new ClassPathResource(
-                        screenShotTest.value()
+                        CFG.screenshotBaseDir() + screenShotTest.expected()
                 ).getInputStream()
         );
     }
@@ -50,7 +54,7 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
                     ImageIO.write(
                             actual,
                             "png",
-                            new File("src/test/resources/" + screenShotTest.value())
+                            new File(".screen-output/" + CFG.screenshotBaseDir() + screenShotTest.expected())
                     );
                 }
             }

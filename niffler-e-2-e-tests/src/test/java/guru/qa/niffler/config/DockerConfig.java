@@ -1,6 +1,6 @@
 package guru.qa.niffler.config;
 
-import org.jetbrains.annotations.NotNull;
+import javax.annotation.Nonnull;
 
 public class DockerConfig implements Config {
     static final DockerConfig INSTANCE = new DockerConfig();
@@ -8,69 +8,75 @@ public class DockerConfig implements Config {
     private DockerConfig() {
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String frontUrl() {
-        return "";
+        return "http://frontend.niffler.dc/";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String authUrl() {
-        return "";
+        return "http://auth.niffler.dc:9000/";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String authJdbcUrl() {
-        return "";
+        return "jdbc:postgresql://niffler-all-db:5432/niffler-auth";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String gatewayUrl() {
-        return "";
+        return "http://gateway.niffler.dc:8090/";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String userdataUrl() {
-        return "";
+        return "http://userdata.niffler.dc:8089/";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String userdataJdbcUrl() {
-        return "";
+        return "jdbc:postgresql://niffler-all-db:5432/niffler-userdata";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String spendUrl() {
-        return "";
+        return "http://spend.niffler.dc:8093/";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String spendJdbcUrl() {
-        return "";
+        return "jdbc:postgresql://niffler-all-db:5432/niffler-spend";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String currencyJdbcUrl() {
-        return "";
+        return "jdbc:postgresql://niffler-all-db:5432/niffler-currency";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String currencyGrpcAddress() {
-        return "";
+        return "currency.niffler.dc";
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public String userdataGrpcAddress() {
-        return "";
+        return "userdata.niffler.dc";
+    }
+
+    @Nonnull
+    @Override
+    public String screenshotBaseDir() {
+        return "screenshots/selenoid/";
     }
 }

@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import jaxb.userdata.Currency;
 import jaxb.userdata.User;
 
+
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
