@@ -1,5 +1,7 @@
 package guru.qa.niffler.config;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.annotation.Nonnull;
 
 enum DockerConfig implements Config {
@@ -69,5 +71,11 @@ enum DockerConfig implements Config {
   @Override
   public String screenshotBaseDir() {
     return "screenshots/selenoid/";
+  }
+
+  @NotNull
+  @Override
+  public String kafkaAddress() {
+    return "kafka:9092";
   }
 }
