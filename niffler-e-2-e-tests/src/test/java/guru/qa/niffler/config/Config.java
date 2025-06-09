@@ -1,6 +1,7 @@
 package guru.qa.niffler.config;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public interface Config {
 
@@ -51,4 +52,12 @@ public interface Config {
 
   @Nonnull
   String screenshotBaseDir();
+
+  @Nonnull
+  String kafkaAddress();
+
+  @Nonnull
+  default List<String> kafkaTopcis() {
+    return List.of("users");
+  }
 }
